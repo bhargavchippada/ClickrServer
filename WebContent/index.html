@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="./bootstrap-dist/css/bootstrap.min.css">
+    <title>Home Page</title>
+    <style>
+      body{
+        background-color: #ffffff;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: center;
+        padding-left:48px;
+        padding-top:144px;
+      }
+      .formcontainer{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 16px;
+        width: 328px;
+      }
+      .buttoncls{
+        width: 144px; 
+        height: 40px;
+      }
+      .form-heading{
+        font-size: 36px;
+        margin-bottom: 12px; 
+        float: left;
+      }
+      .inputcls{
+        margin-bottom:12px;
+      }
+      .logoimage{
+        width: 200px;
+        height: 200px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row-fluid">
+          <div class="col-md-3">
+            <img src="./media/inverted_launcher.png" class="logoimage">
+          </div>
+          <div class="col-md-5">
+            <p style="font-size:144px;">Clicker</p>
+          </div>
+          <div class="col-md-4">
+            <form role="form" action="AdminLogin" class="formcontainer">
+              <p style="font-size: 48px;">Administrator</p>
+              <p class="form-heading">Sign In</p>
+              <input type="text" name="user_username" class="form-control inputcls" placeholder="Username" autofocus>
+              <input type="password" name="user_password" class="form-control inputcls" placeholder="Password">
+              <button class="buttoncls btn btn-primary btn-lg" type="submit" name="signin_btn" value="Sign_In">Log In</button>
+            </form>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
