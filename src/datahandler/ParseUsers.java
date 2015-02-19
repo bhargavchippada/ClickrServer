@@ -12,7 +12,7 @@ public class ParseUsers {
 	
 	void parseFile(String path){
 		ClassRoom.users_map.clear();
-		Utils.logi(classname, path);
+		Utils.logv(classname, path);
 		File file = new File(path);
 	
 		try {
@@ -27,9 +27,9 @@ public class ParseUsers {
 				ClassRoom.addUser(user);
 			}
 			sc.close();
-			Utils.logi(classname, "File parsing successful");
+			Utils.logv(classname, "File parsing successful");
 		} catch (Exception e) {
-			Utils.logi(classname, "File parsing failed");
+			Utils.logv(classname, "File parsing failed");
 			e.printStackTrace();
 		}
 		

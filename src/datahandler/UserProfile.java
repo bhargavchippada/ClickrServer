@@ -17,7 +17,7 @@ public class UserProfile {
 	public ArrayList<String> answers = new ArrayList<String>();
 	
 	void print(){
-		Utils.logi(classname, rollnumber+","+password+","+name);
+		Utils.logv(classname, rollnumber+","+password+","+name);
 	}
 	
 	public String getPassword(){

@@ -23,7 +23,7 @@ public class AdminLogin extends HttpServlet{
 		String username = req.getParameter("user_username");
 		String password = req.getParameter("user_password");
 		if(Utils.adminAuthentication(username, password)){
-			Utils.logi(classname, "Admin log in success!");
+			Utils.logv(classname, "Admin log in success!");
 			ServerSettings.serveronline = 1;
 			AdminProfile.createClassroom(ServerSettings.clsnm, ServerSettings.userlist);
 			ClassRoom.print();
@@ -31,7 +31,7 @@ public class AdminLogin extends HttpServlet{
 			Question.print();
 			resp.sendRedirect("/ClickerServer/hello.html");
 		}else{
-			Utils.logi(classname, "Admin log in failed! "+username+" "+password);
+			Utils.logv(classname, "Admin log in failed! "+username+" "+password);
 			resp.sendRedirect("/ClickerServer/index.html");
 		}
 	}

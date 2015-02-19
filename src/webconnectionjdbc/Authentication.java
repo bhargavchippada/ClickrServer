@@ -42,21 +42,23 @@ public class Authentication extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		Utils.logv(classname, "Protocol: "+request.getProtocol());
+		Utils.logv(classname, "Ip: "+request.getRemoteHost());
+		Utils.logv(classname, "port: "+request.getRemotePort());
 		ByteBuffer inputBB = new ByteBuffer(request.getInputStream());
 		ByteBuffer outputBB = null;
 		  try {
-	
+			 
 		    // extract the hashmap
-			Utils.logi(classname, "trying to extract hashtable from request");
+			Utils.logv(classname, "trying to extract hashtable from request");
 	
 		    ObjectInputStream ois = new ObjectInputStream(inputBB.getInputStream());
 		    HashMap<String, String> input = (HashMap<String, String>) ois.readObject();
 		    
-		    Utils.logi(classname, "got the uid/pwd from the client:" + input);
+		    Utils.logv(classname, "got the uid/pwd from the client:" + input);
 	
 		    Object retval = _processInput(input);
-		    Utils.logi(classname, "created response hashtable, sending it back");
+		    Utils.logv(classname, "created response hashtable, sending it back");
 	
 		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ObjectOutputStream oos = new ObjectOutputStream(baos);

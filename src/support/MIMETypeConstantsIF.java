@@ -46,5 +46,5 @@ public static String RTF_TYPE = "application/rtf";
 public static String MSWORD_TYPE = "application/msword";
 public static String ZIP_TYPE = "application/zip";
 public static String BINARY_TYPE = "application/octet-stream";
-
+public static String JSON_TYPE = "application/json";
 }
