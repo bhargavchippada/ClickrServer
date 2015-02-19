@@ -19,11 +19,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import datahandler.ClassRoom;
+import datahandler.UserProfile;
+
 // Tells whether the 
 public class Ping extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	String classname = "Ping";
-
+	HttpSession mySession;
+	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -31,14 +35,14 @@ public class Ping extends HttpServlet{
 		Utils.logv(classname, "Ip: "+request.getRemoteHost());
 		Utils.logv(classname, "port: "+request.getRemotePort());
 		
-		HttpSession mySession = request.getSession(true);
+		mySession = request.getSession(true);
 		Cookie[] cookies = request.getCookies();
 		HashMap<String, Object> cookies_map = new HashMap<String, Object>();
 		if(cookies!=null){
 			for(int i=0; i<cookies.length; i++){
 				cookies_map.put(cookies[i].getName(), cookies[i].getValue());
 			}
-			Utils.logv(classname, "cookie: "+cookies_map.toString());
+			Utils.logv(classname, "cookie: "+cookies_map);
 		}
 		
 		JsonObject output = null;
@@ -48,7 +52,7 @@ public class Ping extends HttpServlet{
 			JsonObject  input = jelement.getAsJsonObject();
 			Utils.logv(classname, "got the request from client:" + input.toString());
 
-			output = _processInput(input);
+			output = _processInput(input, request, response);
 			Utils.logv(classname, "created response, sending it back...");
 		}catch (Exception e) {
 			Utils.logv(classname,"Error processing response");
@@ -57,17 +61,14 @@ public class Ping extends HttpServlet{
 
 		PrintWriter out = response.getWriter();
 		
-		Cookie cookie = new Cookie("msg", "server has started");
 		if (output != null) {
-			response.addCookie(cookie);
 			response.setContentType(MIMETypeConstantsIF.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());
 		}else {
 			output = new JsonObject();
-			output.addProperty("ping",0);
-			response.addCookie(cookie);
+			output.addProperty("status",3); // error processing request
 			response.setContentType(MIMETypeConstantsIF.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
@@ -78,13 +79,24 @@ public class Ping extends HttpServlet{
 		out.close();
 	}
 
-	// put ping = 1 meaning the server is responding
-	private JsonObject _processInput(JsonObject input) {
+	private JsonObject _processInput(JsonObject input, HttpServletRequest request, HttpServletResponse response) {
 		JsonObject output = new JsonObject();
+		String uid = input.get("uid").getAsString();
+		String pwd = input.get("pwd").getAsString();
 		if(ServerSettings.serveronline == 1){
-			output.addProperty("ping", 1);
+			UserProfile user = ClassRoom.users_map.get(uid);
+			if(user!=null && user.getPassword().equals(pwd)){
+		    	output.addProperty("status",2); // authentication success
+		    	Cookie cookie = new Cookie("uid", uid);
+		    	response.addCookie(cookie);
+		    	Utils.logv(classname, "New cookie added: "+cookie);
+		    	output.addProperty("name", user.name);
+		    	output.addProperty("clsnm", ClassRoom.clsnm);
+		    }else{
+		    	output.addProperty("status", 1); // authentication failed
+		    }
 		}else{
-			output.addProperty("ping",0);
+			output.addProperty("status",0); //server is not ready
 		}
 		return output;
 	}
