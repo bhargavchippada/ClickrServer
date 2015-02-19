@@ -11,12 +11,6 @@
   </welcome-file-list>
   <servlet>
     <description></description>
-    <display-name>Ping</display-name>
-    <servlet-name>Ping</servlet-name>
-    <servlet-class>webconnectionjdbc.Ping</servlet-class>
-  </servlet>
-  <servlet>
-    <description></description>
     <display-name>Authentication</display-name>
     <servlet-name>Authentication</servlet-name>
     <servlet-class>webconnectionjdbc.Authentication</servlet-class>
@@ -45,10 +39,6 @@
     <servlet-name>PrintStats</servlet-name>
     <servlet-class>webinterfacehandler.PrintStats</servlet-class>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>Ping</servlet-name>
-    <url-pattern>/ping</url-pattern>
-  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>Authentication</servlet-name>
     <url-pattern>/authentication</url-pattern>
