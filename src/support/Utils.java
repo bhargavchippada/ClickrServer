@@ -11,14 +11,14 @@ public class Utils {
 		System.out.println(s);
 	}
 	
-	public static void logi(String classname, String msg){
+	public static void logv(String classname, String msg){
 		System.out.println(classname+" : "+msg);
 	}
 	
 	public static ByteBuffer convertToBB(Object ob) throws IOException{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	    ObjectOutputStream oos = new ObjectOutputStream(baos);
-	    oos.writeObject(ob);
+	    oos.writeObject(ob.toString());
 	    
 	    return new ByteBuffer(baos.toByteArray());
 	}

@@ -47,15 +47,15 @@ public class ReceiveAnswer extends HttpServlet{
 		  try {
 	
 		    // extract the hashmap
-			Utils.logi(classname, "trying to extract hashtable from request");
+			Utils.logv(classname, "trying to extract hashtable from request");
 	
 		    ObjectInputStream ois = new ObjectInputStream(inputBB.getInputStream());
 		    HashMap<String, Serializable> input = (HashMap<String, Serializable>) ois.readObject();
 		    
-		    Utils.logi(classname, "got the uid/pwd from the client:" + input);
+		    Utils.logv(classname, "got the uid/pwd from the client:" + input);
 	
 		    Object retval = _processInput(input);
-		    Utils.logi(classname, "created response hashtable, sending it back");
+		    Utils.logv(classname, "created response hashtable, sending it back");
 	
 		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ObjectOutputStream oos = new ObjectOutputStream(baos);
