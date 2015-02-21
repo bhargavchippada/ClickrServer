@@ -85,7 +85,7 @@ public class ReceiveAnswer extends HttpServlet{
 	private JsonObject _processInput(JsonObject input, HttpServletRequest request, HttpServletResponse response) {
 		JsonObject output = new JsonObject();
 		if(ClassRoom.users_responsemap.containsKey(input.get("uid").getAsString())){
-			output.addProperty("status",0);
+			output.addProperty("status",2);
 			return output;
 		}
 
