@@ -24,7 +24,7 @@ import datahandler.UserProfile;
 
 // Tells whether the 
 public class Authentication extends HttpServlet{
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -340324876755957651L;
 	String classname = "Authentication";
 	HttpSession mySession;
 	
