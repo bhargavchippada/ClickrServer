@@ -14,9 +14,9 @@ import datahandler.ClassRoom;
 import datahandler.Question;
 
 public class AdminLogin extends HttpServlet{
-	
+
 	String classname = "AdminLogin";
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -35,7 +35,7 @@ public class AdminLogin extends HttpServlet{
 			resp.sendRedirect("/ClickerServer/index.html");
 		}
 	}
-	
+
 	void makeQuestion(){
 		Question.addQuestionContent("Who is the present chief minister of Delhi?");
 		Question.addOption("Modi");

@@ -44,4 +44,20 @@ public class Question{
 		for(int i=0; i<options.size();i++) Utils.logv(classname, options.get(i));
 		for(int i=0; i<answer.size();i++) Utils.logv(classname, answer.get(i));
 	}
+	
+	public synchronized static void incrementNumAttempts(){
+		num_attempts++;
+	}
+	
+	public synchronized static void incrementNumCorrects(){
+		num_correct++;
+	}
+	
+	public synchronized static void incrementNumWrongs(){
+		num_wrong++;
+	}
+	
+	public synchronized static void updateOptionStats(int pos){
+		option_stat.set(pos,option_stat.get(pos)+1);
+	}
 }

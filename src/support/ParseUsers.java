@@ -1,16 +1,17 @@
-package datahandler;
+package support;
 
 import java.io.File;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-import support.Utils;
+import datahandler.ClassRoom;
+import datahandler.UserProfile;
 
 
 public class ParseUsers {
 	String classname = "ParseUsers";
 	
-	void parseFile(String path){
+	public void parseFile(String path){
 		ClassRoom.users_map.clear();
 		Utils.logv(classname, path);
 		File file = new File(path);
@@ -21,7 +22,7 @@ public class ParseUsers {
 				String line = sc.next();
 				StringTokenizer tokens = new StringTokenizer(line,",");
 				UserProfile user = new UserProfile();
-				user.rollnumber = tokens.nextToken();
+				user.username = tokens.nextToken();
 				user.password = tokens.nextToken();
 				user.name = tokens.nextToken();
 				ClassRoom.addUser(user);
@@ -32,14 +33,5 @@ public class ParseUsers {
 			Utils.logv(classname, "File parsing failed");
 			e.printStackTrace();
 		}
-		
-		//ClassRoom.print();
-
 	}
-	
-	public static void main(String args[]){
-		new ParseUsers().parseFile("users.txt");
-	}
-	
-	
 }

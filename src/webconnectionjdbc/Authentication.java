@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import support.MIMETypeConstantsIF;
 import support.ServerSettings;
 import support.Utils;
 
@@ -62,14 +61,14 @@ public class Authentication extends HttpServlet{
 		PrintWriter out = response.getWriter();
 		
 		if (output != null) {
-			response.setContentType(MIMETypeConstantsIF.JSON_TYPE);
+			response.setContentType(ServerSettings.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());
 		}else {
 			output = new JsonObject();
 			output.addProperty("status",3); // error processing request
-			response.setContentType(MIMETypeConstantsIF.JSON_TYPE);
+			response.setContentType(ServerSettings.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());
