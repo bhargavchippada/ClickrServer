@@ -22,7 +22,7 @@ import com.google.gson.JsonParser;
 import datahandler.Question;
 
 public class PushQuiz extends HttpServlet{
-	private static final long serialVersionUID = 2117385637713944115L;
+	private static final long serialVersionUID = 3622456660944045304L;
 	String classname = "PushQuiz";
 	HttpSession mySession;
 
