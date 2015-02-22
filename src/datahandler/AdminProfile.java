@@ -9,9 +9,14 @@ public class AdminProfile {
 	
 	public final static String username=ServerSettings.admin_username;
 	public final static String password=ServerSettings.admin_password;
+	public static String SESSIONID;
 	
 	public static void createClassroom(String clsnm, String filepath){
 		new ParseUsers().parseFile(ServerSettings.globalpath+filepath);
 		if(ClassRoom.users_map.size()!=0) ClassRoom.clsnm = clsnm;
+	}
+	
+	public synchronized static void updateSESSIONID(String SID){
+		SESSIONID = SID;
 	}
 }
