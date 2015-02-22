@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" type="text/css" href="./bootstrap-dist/css/bootstrap.min.css">
-    <title>Home Page</title>
+    <title>Index Page</title>
     <style>
       body{
         background-color: #ffffff;
@@ -36,9 +36,13 @@
         width: 200px;
         height: 200px;
       }
+      .header3{
+        font-size: 18px;
+        margin-top: 8px;
+      }
     </style>
+    <script type="text/javascript" src="./bootstrap-dist/jquery.js"></script>
   </head>
-
   <body>
     <div class="container-fluid">
       <div class="row-fluid">
@@ -49,15 +53,36 @@
             <p style="font-size:144px;">Clicker</p>
           </div>
           <div class="col-md-4">
-            <form role="form" action="AdminLogin" class="formcontainer">
+            <form class="formcontainer">
               <p style="font-size: 48px;">Administrator</p>
               <p class="form-heading">Sign In</p>
-              <input type="text" name="user_username" class="form-control inputcls" placeholder="Username" autofocus>
-              <input type="password" name="user_password" class="form-control inputcls" placeholder="Password">
-              <button class="buttoncls btn btn-primary btn-lg" type="submit" name="signin_btn" value="Sign_In">Log In</button>
+              <input type="text" id="user_username" class="form-control inputcls" placeholder="Username" autofocus required>
+              <input type="password" id="user_password" class="form-control inputcls" placeholder="Password" required>
+              <button class="buttoncls btn btn-primary btn-lg" id="login_btn" type="submit">Log In</button>
+              <p id="error-display" class="header3 text-danger"></p>
             </form>
           </div>
       </div>
     </div>
   </body>
+  <script type="text/javascript">
+  (function( $ ) {
+    $(function() {
+      $('form').on('submit',function(e) {
+        e.preventDefault();
+        console.log ( '#login_btn was clicked' );
+        var $username=$("#user_username").val();
+        var $password=$("#user_password").val();
+        console.log ( "details: " + $username +","+ $password );
+        $.get('AdminLogin',{user_username:$username, user_password:$password}, function(data){
+          if(data.redirectURL) {
+            window.location = data.url;
+          }else{
+            document.getElementById("error-display").innerHTML = data.error_msg;
+          }
+        });
+      });
+    });
+  })( jQuery );
+  </script>
 </html>

@@ -144,8 +144,7 @@
       </div>
   </body>
 
-
-  <script type="text/javascript">
+  <script type="text/javascript" src="./bootstrap-dist/jquery.js">
 
       String.format = function() {
         var s = arguments[0];
@@ -170,11 +169,11 @@
       $(document).ready(function() {
           $('.add-option').click(function() {
               addOption();
-          })
+          });
 
           $('.remove-option').click(function() {
               $(this).parent().remove();
-          })
+          });
       });
 
       function addOption() {
