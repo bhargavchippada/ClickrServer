@@ -3,7 +3,6 @@ package webinterfacehandler;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,11 @@ public class AdminLogin extends HttpServlet{
 			throws ServletException, IOException {
 		String username = request.getParameter("user_username");
 		String password = request.getParameter("user_password");
-
+		
+		JsonObject responseJson = new JsonObject();
+		response.setContentType(ServerSettings.JSON_TYPE);
+		response.setHeader("Cache-Control", "nocache");
+		
 		if(Utils.adminAuthentication(username, password)){
 			Utils.logv(classname, "Admin log in success!");
 			HttpSession mySession = request.getSession(true);
@@ -41,13 +44,25 @@ public class AdminLogin extends HttpServlet{
 			ClassRoom.print();
 			makeQuestion();
 			Question.print();
-			response.sendRedirect("/ClickerServer/hello.html");
+			responseJson.addProperty("url","/ClickerServer/hello.html");
+			responseJson.addProperty("redirectURL",true);
+			//response.sendRedirect("/ClickerServer/hello.html");
 		}else{
+			/*
 			RequestDispatcher rd = request.getRequestDispatcher("error.jsp");
         	request.setAttribute("error_msg","Oops! Authentication error...");
 			Utils.logv(classname, "Admin log in failed! "+username+" "+password);
 			rd.forward(request, response);
+			*/
+			Utils.logv(classname, "Admin log in failed! "+username+" "+password);
+			responseJson.addProperty("error_msg","Username/Password doesn't match!");
+			responseJson.addProperty("redirectURL",false);
 		}
+		PrintWriter out = response.getWriter();
+		out.print(responseJson.toString());
+		Utils.logv(classname, "response: "+responseJson.toString());
+		out.flush();
+		out.close();
 	}
 
 	void makeQuestion(){
