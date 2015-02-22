@@ -39,12 +39,12 @@ public class AdminLogin extends HttpServlet{
 			mySession.setAttribute("username", username);
 			Utils.logv(username, "SESSIONID: "+mySession.getId());
 			Utils.logv(username, "Username: "+mySession.getAttribute("username"));
-			ServerSettings.setServerStatus(1);
+			//ServerSettings.setServerStatus(1);
 			AdminProfile.createClassroom(ServerSettings.clsnm, ServerSettings.userlist);
 			ClassRoom.print();
 			makeQuestion();
 			Question.print();
-			responseJson.addProperty("url","/ClickerServer/hello.html");
+			responseJson.addProperty("url","/ClickerServer/home.jsp");
 			responseJson.addProperty("redirectURL",true);
 			//response.sendRedirect("/ClickerServer/hello.html");
 		}else{
