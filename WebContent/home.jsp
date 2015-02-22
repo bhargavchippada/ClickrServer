@@ -62,11 +62,9 @@
 
   <body>
       <div class="questioncontainer">
-          <form role="form" action="" class="container">
             <p class="form-heading"> <img src="./media/inverted_launcher.png" class="logoimage"> Clicker
-            <button class="buttoncls btn btn-success btn-lg" type="submit" name="serverstatus" value="start">Start Server</button>
+            <button class="buttoncls btn btn-success btn-lg" type="submit" id="server_state" value="1">Start Server</button>
             </p>
-          </form>
           <p class="form-heading">Question:</p>
           <form role="form" action="" id="question-form">
             <textarea type="text" rows="5" placeholder="Type Question" class="form-control question-style" name="questiontext" aria-label="..."></textarea>
@@ -144,7 +142,7 @@
       </div>
   </body>
 
-  <script type="text/javascript" src="./bootstrap-dist/jquery.js">
+  <script type="text/javascript">
 
       String.format = function() {
         var s = arguments[0];
@@ -166,15 +164,33 @@
                           "</div>",
       options_index = 0;
 
-      $(document).ready(function() {
-          $('.add-option').click(function() {
-              addOption();
-          });
+      (function( $ ) {
+        $(function() {
+            $('.add-option').click(function() {
+                addOption();
+            });
 
-          $('.remove-option').click(function() {
-              $(this).parent().remove();
-          });
-      });
+            $('.remove-option').click(function() {
+                $(this).parent().remove();
+            });
+
+            $('#server_state').on('click',function() {
+              console.log ( '#server_state was clicked' );
+              var button = $('#server_state');
+              if(button.attr("value")=="1"){
+                button.removeClass("btn-success");
+                button.addClass("btn-danger");
+                button.attr("value", "0");
+                button.html("Stop Server");
+              }else{
+                button.removeClass("btn-danger");
+                button.addClass("btn-success");
+                button.attr("value", "1");
+                button.html("Start Server");
+              }
+            });
+        });
+      })( jQuery );
 
       function addOption() {
           $('#question-options').append(String.format(option_html, options_index, options_index));

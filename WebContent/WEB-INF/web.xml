@@ -35,6 +35,12 @@
   </servlet>
   <servlet>
     <description></description>
+    <display-name>ServerState</display-name>
+    <servlet-name>ServerState</servlet-name>
+    <servlet-class>webinterfacehandler.ServerState</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
     <display-name>PrintStats</display-name>
     <servlet-name>PrintStats</servlet-name>
     <servlet-class>webinterfacehandler.PrintStats</servlet-class>
@@ -46,6 +52,10 @@
   <servlet-mapping>
     <servlet-name>AdminLogin</servlet-name>
     <url-pattern>/AdminLogin</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServerState</servlet-name>
+    <url-pattern>/ServerState</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>PrintStats</servlet-name>
