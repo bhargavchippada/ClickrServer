@@ -35,8 +35,10 @@ public class AdminLogin extends HttpServlet{
 		if(Utils.adminAuthentication(username, password)){
 			Utils.logv(classname, "Admin log in success!");
 			HttpSession mySession = request.getSession(true);
+			mySession.setMaxInactiveInterval(-1);
 			AdminProfile.updateSESSIONID(mySession.getId());
 			mySession.setAttribute("username", username);
+			mySession.setAttribute("server-state", ServerSettings.getServerStatus());
 			Utils.logv(username, "SESSIONID: "+mySession.getId());
 			Utils.logv(username, "Username: "+mySession.getAttribute("username"));
 			//ServerSettings.setServerStatus(1);

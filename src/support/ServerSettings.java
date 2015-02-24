@@ -15,6 +15,10 @@ public class ServerSettings {
 		serveronline = status;
 	}
 	
+	public static synchronized int getServerStatus(){
+		return serveronline;
+	}
+	
 	public static synchronized void setQuizsStatus(int status){
 		quizonline = status;
 	}

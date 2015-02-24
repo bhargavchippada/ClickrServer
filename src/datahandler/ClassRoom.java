@@ -5,7 +5,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import support.Utils;
+
 public class ClassRoom {
+	static String classname = "ClassRoom";
 	public static String clsnm;
 	//<username, userprofile> pair
 	public static ConcurrentHashMap<String, UserProfile> users_map = new ConcurrentHashMap<String, UserProfile>();
@@ -75,6 +78,7 @@ public class ClassRoom {
 	}
 	
 	public synchronized static void clear(){
+		Utils.logv(classname, "ClassRoom is cleared");
 		users_map.clear();
 		users_responsemap.clear();
 	}
