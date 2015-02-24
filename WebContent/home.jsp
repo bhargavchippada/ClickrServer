@@ -71,12 +71,16 @@ body {
 </head>
 
 <body>
+	<% Integer serverstate = (Integer)session.getAttribute("server-state"); %>
 	<div class="questioncontainer">
 		<p class="form-heading">
 			<img src="./media/inverted_launcher.png" class="logoimage">
 			Clicker
-			<button class="buttoncls btn btn-success btn-lg" type="submit"
-				id="server_state" value="0">Start Server</button>
+			<button class="buttoncls btn
+			<% if(serverstate==1) out.print("btn-danger"); else out.print("btn-success"); %>
+			btn-lg" type="submit" id="server_state">
+			<% if(serverstate==1) out.print("Stop Server"); else out.print("Start Server"); %>
+			</button>
 		</p>
 		<p class="form-heading">Question:</p>
 		<form role="form" action="" id="question-form">
@@ -188,6 +192,9 @@ body {
 
       (function( $ ) {
         $(function() {
+        	
+        	console.log(${sessionScope.JSESSIONID});
+        	
             $('.add-option').click(function() {
                 addOption();
             });
@@ -199,13 +206,17 @@ body {
             $('#server_state').on('click',function() {
               console.log ( '#server_state was clicked' );
               var button = $('#server_state');
-              if(button.attr("value")=="0"){
-            	changeButtonState('#server_state','btn-success','btn-danger','1','Stop Server');
-            	console.log ( 'server has started' );
-              }else{
-            	changeButtonState('#server_state','btn-danger','btn-success','0','Start Server');
-            	console.log ( 'server has stopped' );
-              }
+              $.get('ServerState',function(data){
+	            	if(data.serverstate==1){
+	            		changeButtonState('#server_state','btn-success','btn-danger','1','Stop Server');
+	  	               	console.log ( 'server has started' );
+	                }else if(data.serverstate==0){
+	                	changeButtonState('#server_state','btn-danger','btn-success','0','Start Server');
+	  	               	console.log ( 'server has stopped' );
+	                }else{
+	                	console.log( 'server conn failed ');
+	                }
+              });
              });
         });
       })( jQuery );
