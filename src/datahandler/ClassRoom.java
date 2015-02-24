@@ -73,4 +73,9 @@ public class ClassRoom {
 			}
 		}
 	}
+	
+	public synchronized static void clear(){
+		users_map.clear();
+		users_responsemap.clear();
+	}
 }
