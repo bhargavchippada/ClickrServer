@@ -41,6 +41,12 @@
   </servlet>
   <servlet>
     <description></description>
+    <display-name>SaveQuestion</display-name>
+    <servlet-name>SaveQuestion</servlet-name>
+    <servlet-class>webinterfacehandler.SaveQuestion</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
     <display-name>PrintStats</display-name>
     <servlet-name>PrintStats</servlet-name>
     <servlet-class>webinterfacehandler.PrintStats</servlet-class>
@@ -58,6 +64,10 @@
     <url-pattern>/ServerState</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>SaveQuestion</servlet-name>
+    <url-pattern>/SaveQuestion</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>PrintStats</servlet-name>
     <url-pattern>/PrintStats</url-pattern>
   </servlet-mapping>
@@ -69,4 +79,5 @@
     <servlet-name>ReceiveAnswer</servlet-name>
     <url-pattern>/receiveanswer</url-pattern>
   </servlet-mapping>
+  
 </web-app>
