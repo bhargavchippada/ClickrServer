@@ -92,14 +92,14 @@ public class ReceiveAnswer extends HttpServlet{
 		output.addProperty("status",1);
 		int correct;
 		JsonArray answer_array = input.get("answer").getAsJsonArray();
-		if(Question.answer.get(0).equals(answer_array.get(0).getAsString())){
+		if(Question.answers.get(0).equals(answer_array.get(0).getAsString())){
 			correct=1;
 		}else{
 			correct=0;
 		}
 		output.addProperty("correct", correct);
 		Gson gson = new Gson();
-		output.add("answer", gson.toJsonTree(Question.answer).getAsJsonArray());
+		output.add("answer", gson.toJsonTree(Question.answers).getAsJsonArray());
 		Type ArrayListType = new TypeToken<ArrayList<String>>() {
 		}.getType();
 		ClassRoom.addResponse(input.get("uid").getAsString(), correct, (ArrayList<String>)gson.fromJson(answer_array,ArrayListType));
