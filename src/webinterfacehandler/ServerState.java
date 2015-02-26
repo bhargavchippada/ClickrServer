@@ -33,6 +33,7 @@ public class ServerState extends HttpServlet{
 			Utils.logv(classname, "Server is online!");
 			ServerSettings.setServerStatus(1);
 			mySession.setAttribute("server-state", 1);
+			mySession.setAttribute("serverstate1", 1);
 			AdminProfile.createClassroom(ServerSettings.clsnm, ServerSettings.userlist);
 			ClassRoom.print();
 			responseJson.addProperty("serverstate",1);
@@ -41,6 +42,7 @@ public class ServerState extends HttpServlet{
 			ServerSettings.setServerStatus(0);
 			ClassRoom.clear();
 			mySession.setAttribute("server-state", 0);
+			mySession.setAttribute("serverstate1", 0);
 			responseJson.addProperty("serverstate",0);
 		}
 		PrintWriter out = response.getWriter();
