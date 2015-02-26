@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page language="java" import="java.util.*, java.lang.*" %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -76,23 +77,23 @@ body {
 		<p class="form-heading">
 			<img src="./media/inverted_launcher.png" class="logoimage">
 			Clicker
-			<button class="buttoncls btn
+			<button id="server_state" class="buttoncls btn
 			<% if(serverstate==1) out.print("btn-danger"); else out.print("btn-success"); %>
-			btn-lg" type="submit" id="server_state">
+			btn-lg" type="submit">
 			<% if(serverstate==1) out.print("Stop Server"); else out.print("Start Server"); %>
 			</button>
 		</p>
 		<p class="form-heading">Question:</p>
-		<form role="form" action="" id="question-form">
+		<form id="question-form">
 			<textarea type="text" rows="5" placeholder="Type Question"
-				class="form-control question-style" name="questiontext"
-				aria-label="..."></textarea>
+				class="form-control question-style" id="questiontext"
+				aria-label="..." required></textarea>
 			<div id="question-options" class="btn-group-vertical full-width">
 				<div class="input-group option-style">
 					<span class="input-group-addon"> <input type="radio"
 						name="options-group" value="0" aria-label="...">
 					</span> <input type="text" class="form-control" name="option0"
-						aria-label="..."> <span
+						aria-label="..." required> <span
 						class="input-group-btn remove-option">
 						<button class="btn btn-default" type="button">
 							<b>X</b>
@@ -100,13 +101,13 @@ body {
 					</span>
 				</div>
 			</div>
-			<button class="btn add-option btn-default pull-left">
+			<button class="btn btn-default pull-left" id="add-option" type="button">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true">
 					Add new option...</span>
 			</button>
 			<button class="buttoncls btn btn-success btn-lg"
 				style="margin-left: 16px; margin-top: 48px;" type="submit"
-				name="submitquiz" value="1">Save Quiz</button>
+				id="submit-quiz">Save Quiz</button>
 		</form>
 
 		<form role="form" action="">
@@ -183,7 +184,7 @@ body {
                           '<span class="input-group-addon">'+
                             '<input type="radio" name="options-group" value="{0}" aria-label="...">'+
                           "</span>"+
-                          '<input type="text" class="form-control" name="option{1}" aria-label="...">'+
+                          '<input type="text" class="form-control" name="option{1}" aria-label="..." required>'+
                           '<span class="input-group-btn remove-option">'+
                             '<button class="btn btn-default" type="button"><b>X</b></button>'+
                           "</span>"+
@@ -193,13 +194,11 @@ body {
       (function( $ ) {
         $(function() {
         	
-        	console.log(${sessionScope.JSESSIONID});
-        	
-            $('.add-option').click(function() {
+            $('#add-option').click(function() {
                 addOption();
             });
 
-            $('.remove-option').click(function() {
+            $('.remove-option').on('click',function() {
                 $(this).parent().remove();
             });
 
@@ -231,6 +230,7 @@ body {
       
       function addOption() {
           $('#question-options').append(String.format(option_html, options_index, options_index));
+          
           $('.remove-option').click(function() {
               $(this).parent().remove();
           })
@@ -241,5 +241,10 @@ body {
          document.getElementById("quiztoggle").value = "end";
          document.getElementById("quiztoggle").textContent = "End Quiz";
       }
+      
+      $('#question-form').on('submit',function(e) {
+          e.preventDefault();
+          console.log("form save clicked!");
+      });
     </script>
 </html>
