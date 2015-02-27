@@ -39,6 +39,7 @@ public class AdminLogin extends HttpServlet{
 			AdminProfile.updateSESSIONID(mySession.getId());
 			mySession.setAttribute("username", username);
 			mySession.setAttribute("server-state", ServerSettings.getServerStatus());
+			mySession.setAttribute("quiz-state", ServerSettings.getQuizsStatus());
 			Utils.logv(username, "SESSIONID: "+mySession.getId());
 			Utils.logv(username, "Username: "+mySession.getAttribute("username"));
 			//ServerSettings.setServerStatus(1);
