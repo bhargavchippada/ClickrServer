@@ -22,4 +22,8 @@ public class ServerSettings {
 	public static synchronized void setQuizsStatus(int status){
 		quizonline = status;
 	}
+	
+	public static synchronized int getQuizsStatus(){
+		return quizonline;
+	}
 }

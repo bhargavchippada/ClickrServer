@@ -71,6 +71,7 @@ body {
 
 <body>
 	<%Integer serverstate = (Integer) session.getAttribute("server-state");%>
+	<%Integer quizstate = (Integer) session.getAttribute("quiz-state");%>
 	<div class="questioncontainer">
 		<p class="form-heading">
 			<img src="./media/inverted_launcher.png" class="logoimage">
@@ -106,12 +107,11 @@ body {
 				style="margin-left: 16px; margin-top: 48px;" type="submit"
 				id="submit-quiz">Save Quiz</button>
 		</form>
-
-		<form role="form" action="">
-			<button class="buttoncls btn btn-success btn-lg pull-right"
-				style="margin-top: -46px;" type="submit" name="quizstatus"
-				value="start" onclick="quizToggle()">Start Quiz</button>
-		</form>
+		<button id="quiz_state" class="buttoncls btn 
+				<%if (quizstate == 1) out.print("btn-danger"); else out.print("btn-success");%>
+				btn-lg pull-right" style="margin-top: -46px;">
+				<% if (quizstate == 1) out.print("Stop Quiz"); else out.print("Start Quiz");%>
+		</button>
 	</div>
 	<div class="darkline"></div>
 	<div class="trackingcontainer">
@@ -196,27 +196,45 @@ body {
 				$(this).parent().remove();
 			});
 
-			$('#server_state').on(
-					'click',
-					function() {
-						console.log('#server_state was clicked');
-						var button = $('#server_state');
-						$.get('ServerState', function(data) {
-							if (data.serverstate == 1) {
-								changeButtonState('#server_state',
-										'btn-success', 'btn-danger', '1',
-										'Stop Server');
-								console.log('server has started');
-							} else if (data.serverstate == 0) {
-								changeButtonState('#server_state',
-										'btn-danger', 'btn-success', '0',
-										'Start Server');
-								console.log('server has stopped');
-							} else {
-								console.log('server conn failed ');
-							}
-						});
-					});
+			$('#server_state').on('click', function() {
+				console.log('#server_state was clicked');
+				var button = $('#server_state');
+				$.get('ServerState', function(data) {
+					if (data.serverstate == 1) {
+						changeButtonState('#server_state',
+								'btn-success', 'btn-danger', '1',
+								'Stop Server');
+						console.log('server has started');
+					} else if (data.serverstate == 0) {
+						changeButtonState('#server_state',
+								'btn-danger', 'btn-success', '0',
+								'Start Server');
+						console.log('server has stopped');
+					} else {
+						console.log('server conn failed ');
+					}
+				});
+			});
+			
+			$('#quiz_state').on('click', function() {
+				console.log('#quiz_state was clicked');
+				var button = $('#quiz_state');
+				$.get('QuizState', function(data) {
+					if (data.quizstate == 1) {
+						changeButtonState('#quiz_state',
+								'btn-success', 'btn-danger', '1',
+								'Stop Quiz');
+						console.log('quiz has started');
+					} else if (data.quizstate == 0) {
+						changeButtonState('#quiz_state',
+								'btn-danger', 'btn-success', '0',
+								'Start Quiz');
+						console.log('quiz has stopped');
+					} else {
+						console.log('server conn failed ');
+					}
+				});
+			});
 		});
 	})(jQuery);
 
