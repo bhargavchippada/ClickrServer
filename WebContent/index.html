@@ -2,41 +2,49 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="./bootstrap-dist/css/bootstrap.min.css">
-    <title>Index Page</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <!-- 1. Load platform support before any code that touches the DOM. -->
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="bower_components/core-media-query/core-media-query.html">
+    <link rel="stylesheet" type="text/css" href="bootstrap-dist/css/bootstrap.min.css">
+    <title>Clickr Index Page</title>
     <style>
       body{
         background-color: #ffffff;
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: auto;
         text-align: center;
-        padding-left:48px;
-        padding-top:144px;
+        padding-top:128px;
+      }
+      .height200{
+        height: 200px;
+      }
+      .logoimage{
+        width: 200px;
+        height: 200px;
+        margin-left:64px;
+        margin-right: 64px;
+      }
+      .title{
+        font-size: 144px;
       }
       .formcontainer{
         display: block;
         margin-left: auto;
         margin-right: auto;
-        margin-bottom: 16px;
         width: 328px;
+      }
+      .form-heading{
+        font-size: 32px;
+        margin-bottom: 12px;
+        text-align: left;
       }
       .buttoncls{
         width: 128px;
       }
-      .form-heading{
-        font-size: 36px;
-        margin-bottom: 12px; 
-        float: left;
-      }
       .inputcls{
         margin-bottom:12px;
       }
-      .logoimage{
-        width: 200px;
-        height: 200px;
-      }
-      .header3{
+      .errormsg{
         font-size: 18px;
         margin-top: 8px;
       }
@@ -44,26 +52,23 @@
     <script type="text/javascript" src="./bootstrap-dist/jquery.js"></script>
   </head>
   <body>
-    <div class="container-fluid">
-      <div class="row-fluid">
-          <div class="col-md-3">
-            <img src="./media/inverted_launcher.png" class="logoimage">
-          </div>
-          <div class="col-md-5">
-            <p style="font-size:144px;">Clicker</p>
-          </div>
-          <div class="col-md-4">
-            <form class="formcontainer">
-              <p style="font-size: 48px;">Administrator</p>
+    <template is="auto-binding">
+        <core-media-query query="max-width: 640px" queryMatches="{{phoneScreen}}"></core-media-query>
+        <div layout vertical?="{{phoneScreen}}" horizontal?="{{!phoneScreen}}">
+            <div auto-vertical><img src="./media/inverted_launcher.png" class="logoimage"/></div>
+            <div auto-vertical><p class="title">Clickr</p></div>
+            <form class="formcontainer" auto-vertical layout vertical>
+              <p style="font-size: 36px;">Administrator</p>
               <p class="form-heading">Sign In</p>
               <input type="text" id="user_username" class="form-control inputcls" placeholder="Username" autofocus required>
               <input type="password" id="user_password" class="form-control inputcls" placeholder="Password" required>
-              <button class="buttoncls btn btn-primary btn-lg" id="login_btn" type="submit">Log In</button>
-              <p id="error-display" class="header3 text-danger"></p>
+              <div>
+                  <button class="buttoncls btn btn-primary btn-lg" id="login_btn" type="submit">Log In</button>
+              </div>
+              <p id="error-display" class="errormsg text-danger"></p>
             </form>
-          </div>
-      </div>
-    </div>
+        </div>
+    </template>
   </body>
   <script type="text/javascript">
   (function( $ ) {
