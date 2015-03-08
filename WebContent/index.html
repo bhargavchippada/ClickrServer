@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
     <!-- 1. Load platform support before any code that touches the DOM. -->
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="bower_components/core-media-query/core-media-query.html">
+    <link rel="import" href="./bower_components/core-media-query/core-media-query.html">
     <link rel="stylesheet" type="text/css" href="bootstrap-dist/css/bootstrap.min.css">
+    <script type="text/javascript" src="./bootstrap-dist/jquery.js"></script>
     <title>Clickr Index Page</title>
     <style>
       body{
@@ -49,7 +50,6 @@
         margin-top: 8px;
       }
     </style>
-    <script type="text/javascript" src="./bootstrap-dist/jquery.js"></script>
   </head>
   <body>
     <template is="auto-binding">
@@ -57,37 +57,37 @@
         <div layout vertical?="{{phoneScreen}}" horizontal?="{{!phoneScreen}}">
             <div auto-vertical><img src="./media/inverted_launcher.png" class="logoimage"/></div>
             <div auto-vertical><p class="title">Clickr</p></div>
-            <form class="formcontainer" auto-vertical layout vertical>
+            <form id="loginform" class="formcontainer" auto-vertical layout vertical>
               <p style="font-size: 36px;">Administrator</p>
               <p class="form-heading">Sign In</p>
               <input type="text" id="user_username" class="form-control inputcls" placeholder="Username" autofocus required>
               <input type="password" id="user_password" class="form-control inputcls" placeholder="Password" required>
               <div>
-                  <button class="buttoncls btn btn-primary btn-lg" id="login_btn" type="submit">Log In</button>
+                <button class="buttoncls btn btn-primary btn-lg" id="login_btn" type="submit">Log In</button>
               </div>
               <p id="error-display" class="errormsg text-danger"></p>
             </form>
         </div>
+        <script type="text/javascript">
+          (function($) {
+            $(function() {
+              $('form').on('submit',function(e) {
+                e.preventDefault();
+                console.log ( '#login_btn was clicked' );
+                var $username=$("#user_username").val();
+                var $password=$("#user_password").val();
+                console.log ( "details: " + $username +","+ $password );
+                $.get('AdminLogin',{user_username:$username, user_password:$password}, function(data){
+                  if(data.redirectURL) {
+                    window.location = data.url;
+                  }else{
+                    document.getElementById("error-display").innerHTML = data.error_msg;
+                  }
+                });
+              });
+            });
+          })(jQuery);
+        </script>
     </template>
   </body>
-  <script type="text/javascript">
-  (function( $ ) {
-    $(function() {
-      $('form').on('submit',function(e) {
-        e.preventDefault();
-        console.log ( '#login_btn was clicked' );
-        var $username=$("#user_username").val();
-        var $password=$("#user_password").val();
-        console.log ( "details: " + $username +","+ $password );
-        $.get('AdminLogin',{user_username:$username, user_password:$password}, function(data){
-          if(data.redirectURL) {
-            window.location = data.url;
-          }else{
-            document.getElementById("error-display").innerHTML = data.error_msg;
-          }
-        });
-      });
-    });
-  })( jQuery );
-  </script>
 </html>

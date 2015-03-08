@@ -1,72 +1,74 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page language="java" import="java.util.*, java.lang.*"%>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" type="text/css" href="./bootstrap-dist/css/bootstrap.min.css">
-<title>Home Page</title>
-<style>
-body {
-	background-color: #ffffff;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+		<!-- 1. Load platform support before any code that touches the DOM. -->
+  	<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+  	<script type="text/javascript" src="./bootstrap-dist/jquery.js"></script>
+  	<link rel="stylesheet" type="text/css" href="bootstrap-dist/css/bootstrap.min.css">
+		<title>Home Page</title>
+		<style>
+		body {
+			background-color: #ffffff;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
 
-.option-style {
-	width: 100%;
-	margin-bottom: 8px;
-}
+		.option-style {
+			width: 100%;
+			margin-bottom: 8px;
+		}
 
-.full-width {
-	width: 100%;
-}
+		.full-width {
+			width: 100%;
+		}
 
-.question-style {
-	margin-bottom: 8px;
-}
+		.question-style {
+			margin-bottom: 8px;
+		}
 
-.questioncontainer {
-	position: relative;
-	margin-top: 48px;
-	margin-bottom: 72px;
-	margin-left: 25%;
-	width: 50%;
-}
+		.questioncontainer {
+			position: relative;
+			margin-top: 48px;
+			margin-bottom: 72px;
+			margin-left: 25%;
+			width: 50%;
+		}
 
-.form-heading {
-	font-size: 36px;
-	margin-bottom: 12px;
-}
+		.form-heading {
+			font-size: 36px;
+			margin-bottom: 12px;
+		}
 
-.buttoncls {
-	position: relative;
-	width: 144px;
-}
+		.buttoncls {
+			position: relative;
+			width: 144px;
+		}
 
-.logoimage {
-	width: 48px;
-	height: 48px;
-	margin-bottom: 8px;
-}
+		.logoimage {
+			width: 48px;
+			height: 48px;
+			margin-bottom: 8px;
+		}
 
-.trackingcontainer {
-	position: relative;
-	margin-top: 32px;
-	margin-left: 20%;
-	width: 60%;
-}
+		.trackingcontainer {
+			position: relative;
+			margin-top: 32px;
+			margin-left: 20%;
+			width: 60%;
+		}
 
-.darkline {
-	position: relative;
-	background-color: #333333;
-	margin-top: 32px;
-	height: 1px;
-	margin-left: 20%;
-	width: 60%;
-}
-</style>
-<script type="text/javascript" src="./bootstrap-dist/jquery.js"></script>
+		.darkline {
+			position: relative;
+			background-color: #333333;
+			margin-top: 32px;
+			height: 1px;
+			margin-left: 20%;
+			width: 60%;
+		}
+		</style>
 </head>
 
 <body>
