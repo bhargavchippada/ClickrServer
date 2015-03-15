@@ -14,12 +14,18 @@
         overflow: auto;
         text-align: center;
         font-family: sans-serif;
-        color: #333; 
+        color: #333;
+        padding-top: 128px;        
+      }
+      @media screen and (max-width: 1020px) {
+        body {
+          padding-top: 0px;
+        }
       }
     </style>
   </head>
   <body>
-    <polymer-element name="device-match">
+    <polymer-element name="device-match" noscript>
       <template>
         <style>
           #logoimage{
@@ -28,11 +34,19 @@
             margin-left:64px;
             margin-right: 64px;
           }
-          .title{
+          #title{
             font-size: 144px;
             text-align: center;
             margin: 0 0;
             padding: 0 0;
+          }
+          @media screen and (max-width: 1020px) {
+            #logoimage {
+              display: none;
+            }
+            #title{
+              font-size: 96px;
+            }
           }
           .formcontainer{
             display: block;
@@ -41,25 +55,13 @@
             width: 328px;
           }
         </style>
-        <core-media-query query="max-width: 640px" queryMatches="{{phoneScreen}}"></core-media-query>
-        <div id="dynamic_resize" layout vertical?="{{phoneScreen}}" horizontal?="{{!phoneScreen}}" center style="padding-top:128px;">
+        <core-media-query query="max-width: 1020px" queryMatches="{{phoneScreen}}"></core-media-query>
+        <div id="dynamic_resize" layout vertical?="{{phoneScreen}}" horizontal?="{{!phoneScreen}}" center>
             <div auto-vertical><img src="./media/inverted_launcher.png" id="logoimage"/></div>
-            <div auto-vertical><p class="title">Clickr</p></div>
+            <div auto-vertical><p id="title">Clickr</p></div>
             <login-form class="formcontainer" auto-vertical></login-form>
         </div>
       </template>
-      <script>
-        Polymer({
-          phoneScreen: false,
-          phoneScreenChanged: function(){
-            if(this.phoneScreen){
-              this.$.dynamic_resize.style.padding="0 0 0 0";
-            }else{
-              this.$.dynamic_resize.style.padding="128px 0 0 0";
-            }
-          }
-        })
-      </script>
     </polymer-element>
     <device-match></device-match>
   </body>
