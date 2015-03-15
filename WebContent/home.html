@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <!-- 1. Load platform support before any code that touches the DOM. -->
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="bower_components/core-media-query/core-media-query.html">
+    <title>Clickr Index Page</title>
+    <style>
+      body{
+        background-color: #ffffff;
+        overflow: auto;
+        font-family: sans-serif;
+        color: #333; 
+      }
+    </style>
+  </head>
+  <body>
+    <polymer-element name="device-match">
+      <template>
+        <style>
+          #quizcontainer {
+            position: relative;
+            margin: 48px 256px 72px 256px;
+            background-color: green;
+          }
+        </style>
+        <core-media-query query="{{minQuery}}" queryMatches="{{minPhoneScreen}}"></core-media-query>
+        <core-media-query query="{{maxQuery}}" queryMatches="{{maxPhoneScreen}}"></core-media-query>
+        <div id="quizcontainer">
+          <h1>Hello</h1>
+        </div>
+      </template>
+      <script>
+        Polymer({
+          minQuery: "max-width: 640px",
+          maxQuery: "max-width: 720px",
+          minWidth: 640,
+          maxWidth: 720,
+          found: false,
+          minPhoneScreenChanged: function(){
+            console.log("minPhoneScreenChanged function called");
+            this.foundChanged();
+          },
+          maxPhoneScreenChanged: function(){
+            console.log("maxPhoneScreenChanged function called");
+            this.foundChanged();
+          },
+          foundChanged: function(){
+            if(this.minPhoneScreen && this.maxPhoneScreen){
+              console.log("less than both "+this.minQuery+" and "+this.maxQuery);
+              this.maxWidth = this.minWidth;
+              this.minWidth = this.minWidth - 80;
+              this.minQuery = "max-width: "+this.minWidth+"px";
+              this.maxQuery = "max-width: "+this.maxWidth+"px";
+              this.minPhoneScreen=!this.minPhoneScreen;
+              this.found=!this.found;
+            }else if(!this.minPhoneScreen && !this.maxPhoneScreen){
+              console.log("greater than both "+this.minQuery+" and "+this.maxQuery);
+              this.minWidth = this.maxWidth;
+              this.maxWidth = this.maxWidth + 80;
+              this.minQuery = "max-width: "+this.minWidth+"px";
+              this.maxQuery = "max-width: "+this.maxWidth+"px";
+              this.minPhoneScreen=!this.minPhoneScreen;
+              this.found=!this.found;
+            }else{
+              console.log("Screen width is between: "+this.minWidth+" and "+this.maxWidth);
+            }
+          }
+        })
+      </script>
+    </polymer-element>
+    <device-match></device-match>
+    <pre id="output">
+      Log of 'mediachange' events on document, from polymer-match-media:
+    </pre>
+    <script>
+      var output = document.querySelector('#output');
+      // on-mediachange would give true or false as second param to the handler
+      document.addEventListener('core-media-change', function(e) {
+        output.textContent += '\nevent: ' + e.type + ' query: ' + e.detail.media + ' matches: ' + e.detail.matches;
+      });
+    </script>
+  </body>
+</html>
