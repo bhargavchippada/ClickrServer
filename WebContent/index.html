@@ -7,68 +7,60 @@
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="bower_components/core-media-query/core-media-query.html">
     <link rel="import" href="elements/login-form.html">
-    <link rel="stylesheet" type="text/css" href="bootstrap-dist/css/bootstrap.min.css">
     <title>Clickr Index Page</title>
     <style>
       body{
         background-color: #ffffff;
         overflow: auto;
         text-align: center;
-        padding-top:128px;
-      }
-      .height200{
-        height: 200px;
-      }
-      .logoimage{
-        width: 200px;
-        height: 200px;
-        margin-left:64px;
-        margin-right: 64px;
-      }
-      .title{
-        font-size: 144px;
-      }
-      .formcontainer{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 328px;
-      }
-      .form-heading{
-        font-size: 32px;
-        margin-bottom: 12px;
-        text-align: left;
-      }
-      .buttoncls{
-        width: 128px;
-      }
-      .inputcls{
-        margin-bottom:12px;
-      }
-      .errormsg{
-        font-size: 18px;
-        margin-top: 8px;
+        font-family: sans-serif;
+        color: #333; 
       }
     </style>
   </head>
   <body>
-    <login-form></login-form>
-    <template is="auto-binding">
+    <polymer-element name="device-match">
+      <template>
+        <style>
+          #logoimage{
+            width: 200px;
+            height: 200px;
+            margin-left:64px;
+            margin-right: 64px;
+          }
+          .title{
+            font-size: 144px;
+            text-align: center;
+            margin: 0 0;
+            padding: 0 0;
+          }
+          .formcontainer{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 328px;
+          }
+        </style>
         <core-media-query query="max-width: 640px" queryMatches="{{phoneScreen}}"></core-media-query>
-        <div layout vertical?="{{phoneScreen}}" horizontal?="{{!phoneScreen}}">
-            <div auto-vertical><img src="./media/inverted_launcher.png" class="logoimage"/></div>
+        <div id="dynamic_resize" layout vertical?="{{phoneScreen}}" horizontal?="{{!phoneScreen}}" center style="padding-top:128px;">
+            <div auto-vertical><img src="./media/inverted_launcher.png" id="logoimage"/></div>
             <div auto-vertical><p class="title">Clickr</p></div>
-            <form id="loginform" class="formcontainer" auto-vertical layout vertical>
-              <p style="font-size: 36px;">Administrator</p>
-              <p class="form-heading">Sign In</p>
-              <input type="text" id="user_username" class="form-control inputcls" placeholder="Username" autofocus required>
-              <input type="password" id="user_password" class="form-control inputcls" placeholder="Password" required>
-              <div>
-                <button class="buttoncls btn btn-primary btn-lg" id="login_btn" type="submit">Log In</button>
-              </div>
-              <p id="error-display" class="errormsg text-danger"></p>
-            </form>
+            <login-form class="formcontainer" auto-vertical></login-form>
         </div>
-    </template>
+      </template>
+      <script>
+        Polymer({
+          phoneScreen: false,
+          phoneScreenChanged: function(){
+            if(this.phoneScreen){
+              this.$.dynamic_resize.style.padding="0 0 0 0";
+            }else{
+              this.$.dynamic_resize.style.padding="128px 0 0 0";
+            }
+          }
+        })
+      </script>
+    </polymer-element>
+    <device-match></device-match>
   </body>
 </html>
