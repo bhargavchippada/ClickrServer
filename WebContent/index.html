@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
     <!-- 1. Load platform support before any code that touches the DOM. -->
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="./bower_components/core-media-query/core-media-query.html">
+    <link rel="import" href="bower_components/core-media-query/core-media-query.html">
+    <link rel="import" href="elements/login-form.html">
     <link rel="stylesheet" type="text/css" href="bootstrap-dist/css/bootstrap.min.css">
-    <script type="text/javascript" src="./bootstrap-dist/jquery.js"></script>
     <title>Clickr Index Page</title>
     <style>
       body{
@@ -52,6 +52,7 @@
     </style>
   </head>
   <body>
+    <login-form></login-form>
     <template is="auto-binding">
         <core-media-query query="max-width: 640px" queryMatches="{{phoneScreen}}"></core-media-query>
         <div layout vertical?="{{phoneScreen}}" horizontal?="{{!phoneScreen}}">
@@ -68,26 +69,6 @@
               <p id="error-display" class="errormsg text-danger"></p>
             </form>
         </div>
-        <script type="text/javascript">
-          (function($) {
-            $(function() {
-              $('form').on('submit',function(e) {
-                e.preventDefault();
-                console.log ( '#login_btn was clicked' );
-                var $username=$("#user_username").val();
-                var $password=$("#user_password").val();
-                console.log ( "details: " + $username +","+ $password );
-                $.get('AdminLogin',{user_username:$username, user_password:$password}, function(data){
-                  if(data.redirectURL) {
-                    window.location = data.url;
-                  }else{
-                    document.getElementById("error-display").innerHTML = data.error_msg;
-                  }
-                });
-              });
-            });
-          })(jQuery);
-        </script>
     </template>
   </body>
 </html>
