@@ -1,0 +1,26 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-input/core-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-input-decorator.html">
+<polymer-element name="form-input" attributes="label error value">
+  <template>
+	  <style>
+	  	:host {
+	      display: block;
+	      width: 100%;
+	    }
+	    paper-input-decorator {
+	    	margin: 4px 0;
+	    	padding: 0 0;
+	      text-align: left;
+	    }
+	  </style>
+  	<paper-input-decorator label="{{label}}" floatingLabel error="{{error}}">
+      <input is="core-input" value="{{value}}">
+    </paper-input-decorator>
+  </template>
+  <<script>
+  	Polymer({
+
+  	})
+  </script>
+</polymer-element>

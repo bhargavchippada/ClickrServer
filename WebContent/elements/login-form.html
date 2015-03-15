@@ -1,0 +1,85 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="form-input.html">
+<polymer-element name="login-form">
+  <template>
+  	<style>
+  	:host {
+      display: block;
+      width: 100%;
+    }
+    div {
+      padding: 8px 0;
+      text-align: center;
+    }
+    paper-input {
+    	width: 328px;
+    }
+    paper-input::shadow #decorator {
+    	margin: 4px 0;
+    	padding: 0 0;
+    	text-align: left;
+    }
+    .form-title {
+    	font-size: 36px;
+    	margin: 0 0;
+    	color: #333;
+    }
+    .form-heading {
+      font-size: 32px;
+      margin: 0 0;
+      text-align: left;
+      color: #333;
+    }
+    paper-button {
+    	width: 128px;
+    	margin-top: 8px;
+    	background: #337AB7;
+      color: white;
+      border-radius: 6px;
+    }
+    .error-display{
+    	color:#D9534F;
+    	margin-top: 8px;
+    	font-size: 22px;
+    }
+  	</style>
+    <core-ajax
+        url="http://www.filltext.com/"
+        params='{"rows":"{{login_username}}", "fname":"{firstName}"}'
+        handleAs="json"
+        id="loginDataAuth"
+        on-core-response="{{handleResponse}}"></core-ajax>
+    <div layout vertical center>
+	    <div layout vertical>
+	    	<p class="form-title">Administrator</p>
+        <p class="form-heading">Sign In</p>
+        <form-input label="Username" error="input is required!" value="{{login_username}}"></form-input>
+	    	<paper-input id="inp_username" label="Username" floatingLabel value="{{login_username}}"></paper-input>
+	    	<paper-input id="inp_password" label="Password" floatingLabel value="{{login_password}}"></paper-input>
+	    	<div>
+	    		<paper-button on-click={{submitLoginCred}}>Log In</paper-button>
+	    		<p class="error-display">Authentication failure</p>
+	    	</div>
+	    </div>
+	  </div>
+  </template>
+  <<script>
+  	Polymer({
+  		login_username: '',
+  		login_password: '',
+  		submitLoginCred: function(){
+  			if(this.login_username != '' && this.login_password != ''){
+  				this.$.loginDataAuth.go();
+  			}else{
+  				console.log("Error");
+  			}
+  		},
+  		handleResponse: function(event, response) {
+          console.log(response);
+      }
+  	});
+  </script>
+</polymer-element>
