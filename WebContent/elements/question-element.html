@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="form-expanding-input.html">
 <link rel="import" href="question-option.html">
 <polymer-element name="question-element">
@@ -12,27 +13,44 @@
 			paper-radio-group {
 				width: 100%;
 			}
-
 			#optionsgroup /deep/ question-option {
 				padding :0 0 0 0;
 			}
-			
 			question-option {
 				width: 100%;
+			}
+			core-icon-button {
+				background-color: #F7F7F9;
 			}
     </style>
     <div layout vertical>
     	<p class="form-heading">Question:</p>
-    	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus></form-expanding-input>
+    	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus value="{{questionobj.qcontent}}"></form-expanding-input>
     	<paper-radio-group id="optionsgroup">
-    		<question-option></question-option>
-    		<question-option></question-option>
+    		<template repeat="{{qoption in questionobj.qoptions}}">
+    			<question-option optionvalue="{{qoption}}"></question-option>
+    		</template>
     	</paper-radio-group>
+    	<span><core-icon-button icon="add" on-click="{{addoption}}">add new option</core-icon-button></span>
     </div>
   </template>
   <script>
   	Polymer({
-
+  		publish:{
+  			questionobj:{
+  				value: {},
+  				reflect:true
+  			}
+  		},
+  		ready: function() {
+  		},
+  		addoption: function(){
+  			console.log("add option clicked");
+  			var qop = document.createElement('question-option');
+  			this.$.optionsgroup.appendChild(qop);
+  		},
+  		validateform: function(){
+  		}
   	})
   </script>
 </polymer-element>
