@@ -1,6 +1,38 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<polymer-element name="question-element" noscript>
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="form-expanding-input.html">
+<link rel="import" href="question-option.html">
+<polymer-element name="question-element">
   <template>
-    <span>Hello from <b>my-element</b>. This is my Shadow DOM.</span>
+    <style>
+    	.form-heading {
+				font-size: 36px;
+				margin: 8px 0 0 0;
+			}
+			paper-radio-group {
+				width: 100%;
+			}
+
+			#optionsgroup /deep/ question-option {
+				padding :0 0 0 0;
+			}
+			
+			question-option {
+				width: 100%;
+			}
+    </style>
+    <div layout vertical>
+    	<p class="form-heading">Question:</p>
+    	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus></form-expanding-input>
+    	<paper-radio-group id="optionsgroup">
+    		<question-option></question-option>
+    		<question-option></question-option>
+    	</paper-radio-group>
+    </div>
   </template>
+  <script>
+  	Polymer({
+
+  	})
+  </script>
 </polymer-element>

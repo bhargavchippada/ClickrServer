@@ -1,10 +1,32 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="form-input.html">
+<link rel="import" href="form-expanding-input.html">
 <polymer-element name="question-option">
 	<template>
-		<span>Hello from <b>my-element</b>. This is my Shadow DOM.</span>
+		<style>
+			:host {
+				display: block;
+				width: 100%;
+				margin-top: 4px;
+			}
+			form-expanding-input {
+				margin-left: 8px;
+			}
+		</style>
+		<div layout horizontal center>
+			<paper-radio-button></paper-radio-button>
+			<form-expanding-input label="" error="Please type something!" value="{{optionvalue}}"></form-expanding-input>
+			<core-icon-button icon="cancel" on-click="{{deleteoption}}"></core-icon-button>
+		</div>
 	</template>
 	<script>
 	Polymer({
-  	});
+			deleteoption: function(){
+				console.log("delete option");
+				this.remove();
+			}
+  	})
 	</script>
 </polymer-element>

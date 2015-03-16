@@ -1,0 +1,36 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<polymer-element name="custom-button" extends="paper-button" attributes="togglestate">
+  <template>
+  	<style>
+	  	:host {
+	  		text-transform: inherit;
+	    	width: 128px;
+	      color: white;
+	      border-radius: 6px;
+	      font-size: 18px;
+	  	}
+	  </style>
+    <!-- A shadow element renders the extended element's shadow DOM here. -->
+    <shadow></shadow>
+  </template>
+  <script>
+    Polymer({
+    	publish: {
+	    	togglecolor0: "#5CB85C",
+	    	togglecolor1: "#D9534F",
+	    	togglehtml0: "Toggle 0",
+	    	togglehtml1: "Toggle 1"
+	    },
+	    togglestateChanged: function(){
+    		if(this.togglestate==0){
+    			this.style.background=this.togglecolor0;
+    			this.innerHTML=this.togglehtml0;
+    		}else{
+    			this.style.background=this.togglecolor1;
+    			this.innerHTML=this.togglehtml1;
+    		}
+    	}
+    })
+  </script>
+</polymer-element>
