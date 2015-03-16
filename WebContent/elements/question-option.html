@@ -23,6 +23,12 @@
 	</template>
 	<script>
 	Polymer({
+			publish: {
+				optionvalue:{
+					value:'',
+					reflect:true
+				}
+			},
 			deleteoption: function(){
 				console.log("delete option");
 				this.remove();

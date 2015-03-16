@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-input/paper-input-decorator.html">
 <link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
-<polymer-element name="form-expanding-input" attributes="label error value autofocus">
+<polymer-element name="form-expanding-input" attributes="label error autofocus">
   <template>
 	  <style>
 	  	:host {
@@ -20,11 +20,16 @@
       </paper-autogrow-textarea>
     </paper-input-decorator>
   </template>
-  <<script>
+  <script>
   	Polymer({
+      publish:{
+        value:{
+          value:'',
+          reflect: true
+        }
+      },
   		label:'input',
   		error:'input is required!',
-  		value:'',
   		autofocus:false,
   		autofocusChanged: function(){
   			this.$.input.focus();

@@ -43,6 +43,9 @@
             padding: 0 0 0 0;
             margin: 0 8px 0 8px;
           }
+          #quizoptions {
+            margin-top: 8px;
+          }
         </style>
         <div id="quizcontainer" layout vertical>
           <div layout horizontal center>
@@ -50,11 +53,27 @@
             <p class="form-heading">Clicker</p>
             <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
           </div>
-          <question-element></question-element>
+          <question-element questionobj="{{qobj}}"></question-element>
+          <div layout horizontal end-justified id="quizoptions">
+            <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
+            <custom-button id="startquiz" togglehtml0="Start Quiz" togglehtml1="Stop Quiz" togglestate='0'  on-click="{{startquizclick}}"></custom-button>
+          </div>
         </div>
       </template>
       <script>
         Polymer({
+          publish:{
+            qobj:{
+              value:'',
+              reflect: true
+            }
+          },
+          ready: function(){
+            this.qobj={'qcontent' : 'who is the president of India?','qoptions': ['hi','bye']};
+          },
+          savequizclick: function(){
+            console.log(this.qobj);
+          }
         })
       </script>
     </polymer-element>
