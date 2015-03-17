@@ -53,7 +53,7 @@
             <p class="form-heading">Clicker</p>
             <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
           </div>
-          <question-element id="qelement" questionobj="{{qobj}}"></question-element>
+          <question-element id="qelement" qcontent="{{qcontent}}" optionsList="{{optionsList}}" answersList="{{answersList}}"></question-element>
           <div layout horizontal end-justified id="quizoptions">
             <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
             <custom-button id="startquiz" togglehtml0="Start Quiz" togglehtml1="Stop Quiz" togglestate='0'  on-click="{{startquizclick}}"></custom-button>
@@ -62,18 +62,17 @@
       </template>
       <script>
         Polymer({
-          publish:{
-            qobj:{
-              value:'',
-              reflect: true
-            }
-          },
+          qcontent:'who is the president of India?',
+          optionsList:['hi','bye','good'],
+          answersList:[1],
           ready: function(){
-            this.qobj={'qcontent' : 'who is the president of India?','qoptions': ['hi','bye']};
           },
           savequizclick: function(){
-            //console.log(this.qobj);
-            this.$.qelement.validateform();
+            if(this.$.qelement.validateform()){
+              console.log(this.qcontent);
+              console.log(this.optionsList);
+              console.log(this.answersList);
+            }
           }
         })
       </script>
