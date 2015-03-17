@@ -16,8 +16,8 @@
 			}
 		</style>
 		<div layout horizontal center>
-			<paper-radio-button></paper-radio-button>
-			<form-expanding-input label="" error="Please type something!" value="{{optionvalue}}"></form-expanding-input>
+			<paper-radio-button checked="{{checked}}" toggles></paper-radio-button>
+			<form-expanding-input id="input" label="" error="Please type something!" value="{{optionvalue}}"></form-expanding-input>
 			<core-icon-button icon="cancel" on-click="{{deleteoption}}"></core-icon-button>
 		</div>
 	</template>
@@ -27,12 +27,19 @@
 				optionvalue:{
 					value:'',
 					reflect:true
+				},
+				checked:{
+					value:false,
+					reflect:true
 				}
 			},
 			deleteoption: function(){
 				console.log("delete option");
 				this.remove();
-			}
+			},
+			triggerError: function(){
+  			this.$.input.triggerError();
+  		}
   	})
 	</script>
 </polymer-element>
