@@ -33,9 +33,9 @@
     </style>
     <div layout vertical>
     	<p class="form-heading">Question:</p>
-    	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus value="{{questionobj.qcontent}}"></form-expanding-input>
+    	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus value="{{qcontent}}"></form-expanding-input>
     	<paper-radio-group id="optionsgroup">
-    		<template repeat="{{qoption in questionobj.qoptions}}">
+    		<template repeat="{{qoption in optionsList}}">
     			<question-option optionvalue="{{qoption}}"></question-option>
     		</template>
     	</paper-radio-group>
@@ -47,28 +47,40 @@
   <script type="text/javascript">
   	Polymer({
   		publish:{
-  			questionobj:{
-  				value: {},
+  			qcontent:{
+  				value: 'dummy question',
   				reflect:true
-  			}
+  			},
+        optionsList: {
+          value: ['option1','option2'],
+          reflect:true
+        },
+        answersList: {
+          value: [1],
+          reflect:true
+        }
   		},
   		ready: function() {
+        var children = this.$.optionsgroup.querySelectorAll('question-option');
+        for(var i=0; i<this.answersList.length;i++){
+          children[this.answersList[i]].checked=true;
+        }
   		},
   		addoption: function(){
   			console.log("add option clicked");
-  			var qop = document.createElement('question-option');
-  			this.$.optionsgroup.appendChild(qop);
+  			//var qop = document.createElement('question-option');
+  			//this.$.optionsgroup.appendChild(qop);
+        this.optionsList.push('');
   		},
   		validateform: function(){
         //console.log("form validate called");
         var failed = false;
-        var qcontent = this.$.questionContent.value.trim();
-        if(qcontent==''){
+        this.qcontent = this.$.questionContent.value.trim();
+        if(this.qcontent==''){
           this.$.questionContent.triggerError();
-          this.$.questionContent.value='';
           failed=true;
         }else{
-          console.log(qcontent);
+          //console.log(this.qcontent);
         }
         var children = this.$.optionsgroup.querySelectorAll('question-option');
         var optionsList=new Array();
@@ -80,20 +92,22 @@
             children[i].triggerError();
             children[i].optionvalue='';
             failed=true;
-          }else{
-            optionsList.push(optionstr);
-            if(children[i].checked){
-              answersList.push(i);
-            }
+          }
+          optionsList.push(optionstr);
+          if(children[i].checked){
+            answersList.push(i);
           }
         }
         if(answersList.length==0){
           this.$.toast.show();
           failed=true;
         }
-        if(failed) return;
-        console.log(optionsList);
-        console.log(answersList);
+        if(failed) return false;
+        this.optionsList = optionsList;
+        this.answersList = answersList;
+        //console.log(optionsList);
+        //console.log(answersList);
+        return true;
   		}
   	})
   </script>
