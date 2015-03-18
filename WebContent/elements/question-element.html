@@ -24,10 +24,10 @@
 				background-color: #F7F7F9;
 			}
       paper-toast {
-        position: relative;
+        position: absolute;
         text-align: center;
         background-color: #D9534F;
-        bottom: 0;
+        bottom: 0 ;
         left: 0;
       }
     </style>
@@ -39,9 +39,13 @@
     			<question-option optionvalue="{{qoption}}"></question-option>
     		</template>
     	</paper-radio-group>
-    	<span><core-icon-button icon="add" on-click="{{addoption}}">add new option</core-icon-button></span>
-      <div layout horizontal end-justified>
-      <span><paper-toast id="toast" text="Please select some option!"></paper-toast></span></div>
+      <div layout vertical>
+    	 <span><core-icon-button icon="add" on-click="{{addoption}}">add new option</core-icon-button></span>
+      </div>
+      <div layout horizontal center-justified>
+        <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
+        <span><paper-toast id="toast" text="Please select some option!"></paper-toast></span>
+      </div>
     </div>
   </template>
   <script type="text/javascript">
@@ -52,7 +56,7 @@
   				reflect:true
   			},
         optionsList: {
-          value: ['option1','option2'],
+          value: ['option1','option2','option3'],
           reflect:true
         },
         answersList: {
@@ -68,8 +72,6 @@
   		},
   		addoption: function(){
   			console.log("add option clicked");
-  			//var qop = document.createElement('question-option');
-  			//this.$.optionsgroup.appendChild(qop);
         this.optionsList.push('');
   		},
   		validateform: function(){
@@ -108,7 +110,14 @@
         //console.log(optionsList);
         //console.log(answersList);
         return true;
-  		}
+  		},
+      savequizclick: function(){
+        if(this.validateform()){
+          console.log(this.qcontent);
+          console.log(this.optionsList);
+          console.log(this.answersList);
+        }
+      }
   	})
   </script>
 </polymer-element>
