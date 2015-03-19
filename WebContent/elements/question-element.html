@@ -28,6 +28,7 @@
 			}
 			core-icon-button {
 				background-color: #F7F7F9;
+        margin: 8px 0 0 0;
 			}
       paper-toast {
         position: absolute;
@@ -71,7 +72,7 @@
     <div layout vertical>
       <div layout horizontal id="questiontypediv">
         <p class="form-heading">Question:</p>
-        <paper-tabs flex id="tabs" selected='0' self-end class="transparent-teal">
+        <paper-tabs flex id="tabs" selected="{{type}}" self-end class="transparent-teal">
           <paper-tab name='0'>Single</paper-tab>
           <paper-tab name='1'>Multiple</paper-tab>
           <paper-tab name='2'>T/F</paper-tab>
@@ -82,29 +83,29 @@
     	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus value="{{qcontent}}"></form-expanding-input>
     	
       <!-- Single and multiple answer multiple choice question template-->
-      <template if="{{type<=1}}">
+      <div hidden?="{{type>1}}">
         <div id="optionsgroup">
       		<template repeat="{{qoption, qoptionIndex in optionsList}}">
       			<question-option optionvalue="{{qoption}}" type="{{type}}" id="{{qoptionIndex}}" on-click="{{optionclick}}"></question-option>
       		</template>
       	</div>
         <div layout vertical>
-         <span><core-icon-button icon="add" on-click="{{addoption}}">add new option</core-icon-button></span>
+         <span><core-icon-button icon="add" on-click="{{addoption}}" active>add new option</core-icon-button></span>
         </div>
-      </template>
+      </div>
 
       <!-- true-false -->
-      <template if="{{type==2}}">
+      <div hidden?="{{type!=2}}">
         <div layout horizontal center-justified id="truefalsediv">
           <paper-button id="truebtn" raised style="{{(tfvalue==1)? 'background-color:#5CB85C; color:#fff' : 'background-color:#F7F7F9;color:#000'}}" on-click="{{toggletf}}">True</paper-button>
           <paper-button id="falsebtn" raised style="{{(tfvalue==0)? 'background-color:#D9534F;color:#fff' : 'background-color:#F7F7F9;color:#000'}}" on-click="{{toggletf}}">False</paper-button>
         </div>
-      </template>
+      </div>
 
       <!-- textual answer question template-->
-      <template if="{{type==3}}">
-        <question-textual id="qtextual" type="{{type}}" value="{{optionsList[0]}}"></question-textual>
-      </template>
+      <div hidden?="{{type!=3}}">
+        <question-textual id="qtextual" type="{{type}}" value="{{textvalue}}"></question-textual>
+      </div>
 
       <div layout horizontal center-justified>
         <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
@@ -123,12 +124,19 @@
       *optional for now
     */
   	Polymer({
-      type:2,
-			qcontent: 'dummy question',
+      type:0,
+      qcontent: 'dummy question',
       optionsList: ['option1','option2','option3'],
       answersList: [1],
       tfvalue: -1,
+      textvalue: 'answerok',
+      savedqcontent: '',
+      savedOptionsList: [],
+      savedAnswersList: [],
+      savedquiztype: -1,
   		ready: function() {
+        console.log("ready called");
+
         if(this.type<=1){
           var children = this.$.optionsgroup.querySelectorAll('question-option');
           for(var i=0; i<this.answersList.length;i++){
@@ -141,17 +149,21 @@
         this.optionsList.push('');
   		},
       savequizclick: function(){
+        console.log("save quiz called");
+
         if(this.type<=1 && this.validateMultipleChoice()){
         }else if(this.type==2 && this.validateTrueFalse()){
         }else if(this.type==3 && this.validateTextual()){
         }else return;
 
+        this.savedqcontent = this.qcontent;
         console.log(this.qcontent);
         console.log(this.optionsList);
         console.log(this.answersList);
       },
   		validateMultipleChoice: function(){
-        //console.log("form validate called");
+        console.log("Multiple validation called");
+
         var failed = false;
         this.qcontent = this.$.questionContent.value.trim();
         if(this.qcontent==''){
@@ -181,13 +193,25 @@
           failed=true;
         }
         if(failed) return false;
+
         this.optionsList = optionsList;
         this.answersList = answersList;
+
+        this.savedOptionsList = this.optionsList;
+        this.savedAnswersList = this.answersList;
+        this.savedquiztype = this.type;
+
+        var children = this.$.optionsgroup.querySelectorAll('question-option');
+        for(var i=0; i<this.answersList.length;i++){
+          children[this.answersList[i]].checked=true;
+        }
         //console.log(optionsList);
         //console.log(answersList);
         return true;
   		},
       validateTextual: function(){
+        console.log("textual validation called");
+
         var failed = false;
         this.qcontent = this.$.questionContent.value.trim();
         if(this.qcontent==''){
@@ -195,20 +219,24 @@
           failed=true;
         }
 
-        var answerstr = this.optionsList[0].trim();
+        var answerstr = this.textvalue.trim();
         if(answerstr==''){
           this.$.qtextual.triggerError();
           failed=true;
         }
         if(failed) return false;
-      
-        var optionsList=new Array();
-        optionsList.push(answerstr);
-        this.optionsList = optionsList;
-        this.answersList = new Array();
+        
+        var textanswer=new Array();
+        textanswer.push(answerstr);
+        this.savedOptionsList = new Array();
+        this.savedAnswersList = textanswer;
+        this.savedquiztype = this.type;
+
         return true;
       },
       toggletf: function(e){
+        console.log("toggletf called");
+
         var tfid;
         if(e.toElement.id=="falsebtn"){
           tfid=0;
@@ -223,6 +251,8 @@
         }
       },
       validateTrueFalse: function(){
+        console.log("tf validation called");
+
         var failed = false;
         this.qcontent = this.$.questionContent.value.trim();
         if(this.qcontent==''){
@@ -238,12 +268,61 @@
 
         if(failed) return false;
 
-        var optionsList=new Array();
-        var answersList=new Array();
-        answersList.push(this.tfvalue);
-        this.optionsList = optionsList;
-        this.answersList = answersList;
+        var answertf=new Array();
+        answertf.push(this.tfvalue);
+        this.savedOptionsList = new Array();
+        this.savedAnswersList = answertf;
+        this.savedquiztype = this.type;
+
         return true;
+      },
+      typeChanged: function(oldValue, newValue){
+        console.log("yo: " + oldValue + " " + newValue);
+        if(oldValue==1 && newValue==0){
+          var children = this.$.optionsgroup.querySelectorAll('question-option');
+          var checkedid = -1;
+          for(var i=0; i<children.length;i++){
+            if(children[i].checked && checkedid==-1) checkedid = i;
+            else if(children[i].checked) children[i].checked=false;
+          }
+        }
+
+        /*
+        if(oldValue==2 && newValue!=2 && this.tfvalue!=-1){
+          console.log("case 1");
+          //this.optionsList = new Array();
+          //this.answersList = new Array();
+        }else if(newValue<=1 &&  oldValue>1){
+          console.log("case 2");
+          var children = this.$.optionsgroup.querySelectorAll('question-option');
+          for(var i=0; i<this.answersList.length;i++){
+            children[this.answersList[i]].checked=true;
+          }
+        }else if(oldValue==1 && newValue==0){
+          if(this.answersList.length>1){
+            console.log("case 3");
+            this.answersList = new Array();
+            var children = this.$.optionsgroup.querySelectorAll('question-option');
+            for(var i=0; i<children.length;i++){
+              children[i].checked=false;
+            }
+          }else console.log("case 4");
+        }else{
+          console.log("case 5");
+        }
+        */
+        console.log("Temporary: ")
+        console.log(this.qcontent);
+        console.log(this.optionsList);
+        console.log(this.answersList);
+        console.log(this.tfvalue);
+        console.log(this.textvalue);
+
+        console.log("Saved quiz: ");
+        console.log(this.savedquiztype);
+        console.log(this.savedqcontent);
+        console.log(this.savedOptionsList);
+        console.log(this.savedAnswersList);
       }
   	})
   </script>
