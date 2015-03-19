@@ -46,11 +46,32 @@
       #falsebtn {
         margin: 0 0 0 8px;
       }
+      paper-tab {
+        font-size: 18px;
+        text-align: center;
+      }
+      paper-tabs.transparent-teal paper-tab::shadow #ink {
+        color: #00bcd4;
+      }
+      paper-tabs.transparent-teal {
+        color: #00bcd4;
+        margin:0 8px 0 8px;
+      }
+      paper-tabs.transparent-teal::shadow #selectionBar {
+        background-color: #00bcd4;
+      }
+      paper-tabs.transparent-teal::shadow #selectionBar {
+        background-color: #00bcd4;
+      }
+      paper-tabs paper-tab.core-selected {
+        color : #00bcd4;
+        font-weight: bold;
+      }
     </style>
     <div layout vertical>
       <div layout horizontal id="questiontypediv">
         <p class="form-heading">Question:</p>
-        <paper-tabs id="tabs" selected='0' self-end>
+        <paper-tabs flex id="tabs" selected='0' self-end class="transparent-teal">
           <paper-tab name='0'>Single</paper-tab>
           <paper-tab name='1'>Multiple</paper-tab>
           <paper-tab name='2'>T/F</paper-tab>
@@ -75,8 +96,8 @@
       <!-- true-false -->
       <template if="{{type==2}}">
         <div layout horizontal center-justified id="truefalsediv">
-          <paper-button id='1' raised style="{{(tfvalue==1)? 'background-color:#5CB85C; color:#fff' : 'background-color:#F7F7F9;color:#000'}}" on-click="{{toggletf}}">True</paper-button>
-          <paper-button id='0' raised style="{{(tfvalue==0)? 'background-color:#D9534F;color:#fff' : 'background-color:#F7F7F9;color:#000'}}" on-click="{{toggletf}}">False</paper-button>
+          <paper-button id="truebtn" raised style="{{(tfvalue==1)? 'background-color:#5CB85C; color:#fff' : 'background-color:#F7F7F9;color:#000'}}" on-click="{{toggletf}}">True</paper-button>
+          <paper-button id="falsebtn" raised style="{{(tfvalue==0)? 'background-color:#D9534F;color:#fff' : 'background-color:#F7F7F9;color:#000'}}" on-click="{{toggletf}}">False</paper-button>
         </div>
       </template>
 
@@ -188,12 +209,16 @@
         return true;
       },
       toggletf: function(e){
-        var tfid = e.toElement.id;
+        var tfid;
+        if(e.toElement.id=="falsebtn"){
+          tfid=0;
+        }else tfid=1;
+
         if(this.tfvalue==-1){
           this.tfvalue = tfid;
-        }else if(this.tfvalue==1 && tfid=='0'){
+        }else if(this.tfvalue==1 && tfid==0){
           this.tfvalue = 0;
-        }else if(this.tfvalue==0 && tfid=='1'){
+        }else if(this.tfvalue==0 && tfid==1){
           this.tfvalue = 1;
         }
       },
