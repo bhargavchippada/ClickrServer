@@ -4,6 +4,7 @@
 <link rel="import" href="form-expanding-input.html">
 <link rel="import" href="question-option.html">
 <link rel="import" href="custom-button.html">
+<link rel="import" href="question-textual.html">
 <polymer-element name="question-element">
   <template>
     <style>
@@ -34,14 +35,24 @@
     <div layout vertical>
     	<p class="form-heading">Question:</p>
     	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus value="{{qcontent}}"></form-expanding-input>
-    	<div id="optionsgroup">
-    		<template repeat="{{qoption in optionsList}}">
-    			<question-option optionvalue="{{qoption}}"></question-option>
-    		</template>
-    	</div>
-      <div layout vertical>
-    	 <span><core-icon-button icon="add" on-click="{{addoption}}">add new option</core-icon-button></span>
-      </div>
+    	
+      <!-- Single and multiple answer multiple choice question template-->
+      <template if="{{type<=1}}">
+        <div id="optionsgroup">
+      		<template repeat="{{qoption, qoptionIndex in optionsList}}">
+      			<question-option optionvalue="{{qoption}}" type="{{type}}" id="{{qoptionIndex}}" on-click="{{optionclick}}"></question-option>
+      		</template>
+      	</div>
+        <div layout vertical>
+         <span><core-icon-button icon="add" on-click="{{addoption}}">add new option</core-icon-button></span>
+        </div>
+      </template>
+
+      <!-- textual answer question template-->
+      <template if="{{type==2}}">
+        <question-textual id="qtextual" type="{{type}}" value="{{optionsList[0]}}"></question-textual>
+      </template>
+
       <div layout horizontal center-justified>
         <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
         <span><paper-toast id="toast" text="Please select some option!"></paper-toast></span>
@@ -49,21 +60,43 @@
     </div>
   </template>
   <script type="text/javascript">
+    /* question types:
+      0:single answer mutliple choice
+      1:multiple answer choice
+      2:string answer
+      3:numerical answer*
+      4:fill in the blanks*
+      *optional for now
+    */
   	Polymer({
+      type:2,
 			qcontent: 'dummy question',
       optionsList: ['option1','option2','option3'],
       answersList: [1],
   		ready: function() {
-        var children = this.$.optionsgroup.querySelectorAll('question-option');
-        for(var i=0; i<this.answersList.length;i++){
-          children[this.answersList[i]].checked=true;
+        if(this.type<=1){
+          var children = this.$.optionsgroup.querySelectorAll('question-option');
+          for(var i=0; i<this.answersList.length;i++){
+            children[this.answersList[i]].checked=true;
+          }
         }
   		},
   		addoption: function(){
   			console.log("add option clicked");
         this.optionsList.push('');
   		},
-  		validateform: function(){
+      savequizclick: function(){
+        if(this.type<=1 && this.validateMultipleChoice()){
+          console.log(this.qcontent);
+          console.log(this.optionsList);
+          console.log(this.answersList);
+        }else if(this.type==2 && this.validateTextual()){
+          console.log(this.qcontent);
+          console.log(this.optionsList);
+          console.log(this.answersList);
+        }
+      },
+  		validateMultipleChoice: function(){
         //console.log("form validate called");
         var failed = false;
         this.qcontent = this.$.questionContent.value.trim();
@@ -100,11 +133,16 @@
         //console.log(answersList);
         return true;
   		},
-      savequizclick: function(){
-        if(this.validateform()){
-          console.log(this.qcontent);
-          console.log(this.optionsList);
-          console.log(this.answersList);
+      validateTextual: function(){
+        var answerstr = this.optionsList[0].trim();
+        if(answerstr!=''){
+          var optionsList=new Array();
+          optionsList.push(answerstr);
+          this.optionsList = optionsList;
+          this.answersList = new Array();
+          return true;
+        }else{
+          this.$.qtextual.triggerError();
         }
       }
   	})
