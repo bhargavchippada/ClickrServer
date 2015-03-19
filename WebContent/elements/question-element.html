@@ -86,7 +86,7 @@
       <div hidden?="{{type>1}}">
         <div id="optionsgroup">
       		<template repeat="{{qoption, qoptionIndex in optionsList}}">
-      			<question-option optionvalue="{{qoption}}" type="{{type}}" id="{{qoptionIndex}}" on-click="{{optionclick}}"></question-option>
+      			<question-option optionvalue="{{qoption}}" type="{{type}}" id="{{qoptionIndex}}" on-click="{{optionclick}}" checked="{{answersList[qoptionIndex]}}"></question-option>
       		</template>
       	</div>
         <div layout vertical>
@@ -127,7 +127,7 @@
       type:0,
       qcontent: 'dummy question',
       optionsList: ['option1','option2','option3'],
-      answersList: [1],
+      answersList: [false,true,false],
       tfvalue: -1,
       textvalue: 'answerok',
       savedqcontent: '',
@@ -136,17 +136,11 @@
       savedquiztype: -1,
   		ready: function() {
         console.log("ready called");
-
-        if(this.type<=1){
-          var children = this.$.optionsgroup.querySelectorAll('question-option');
-          for(var i=0; i<this.answersList.length;i++){
-            children[this.answersList[i]].checked=true;
-          }
-        }
   		},
   		addoption: function(){
   			console.log("add option clicked");
         this.optionsList.push('');
+        this.answersList.push(false);
   		},
       savequizclick: function(){
         console.log("save quiz called");
@@ -157,9 +151,12 @@
         }else return;
 
         this.savedqcontent = this.qcontent;
-        console.log(this.qcontent);
-        console.log(this.optionsList);
-        console.log(this.answersList);
+
+        console.log("Saved quiz: ");
+        console.log(this.savedquiztype);
+        console.log(this.savedqcontent);
+        console.log(this.savedOptionsList);
+        console.log(this.savedAnswersList);
       },
   		validateMultipleChoice: function(){
         console.log("Multiple validation called");
@@ -175,6 +172,7 @@
         var optionsList=new Array();
         var answersList=new Array();
         var optionstr;
+        var numofoptionstrue = 0;
         for (var i=0; i<children.length; i++) {
           optionstr=children[i].optionvalue;
           if(optionstr.trim()==''){
@@ -184,10 +182,13 @@
           }
           optionsList.push(optionstr);
           if(children[i].checked){
-            answersList.push(i);
+            answersList.push(true);
+            numofoptionstrue++;
+          }else{
+            answersList.push(false);
           }
         }
-        if(answersList.length==0){
+        if(numofoptionstrue==0){
           this.$.toast.text="Please select some option!";
           this.$.toast.show();
           failed=true;
@@ -197,14 +198,10 @@
         this.optionsList = optionsList;
         this.answersList = answersList;
 
-        this.savedOptionsList = this.optionsList;
-        this.savedAnswersList = this.answersList;
+        this.savedOptionsList = JSON.parse(JSON.stringify(this.optionsList));
+        this.savedAnswersList = JSON.parse(JSON.stringify(this.answersList));
         this.savedquiztype = this.type;
 
-        var children = this.$.optionsgroup.querySelectorAll('question-option');
-        for(var i=0; i<this.answersList.length;i++){
-          children[this.answersList[i]].checked=true;
-        }
         //console.log(optionsList);
         //console.log(answersList);
         return true;
@@ -278,51 +275,34 @@
       },
       typeChanged: function(oldValue, newValue){
         console.log("yo: " + oldValue + " " + newValue);
-        if(oldValue==1 && newValue==0){
-          var children = this.$.optionsgroup.querySelectorAll('question-option');
+        if(newValue==0){
           var checkedid = -1;
-          for(var i=0; i<children.length;i++){
-            if(children[i].checked && checkedid==-1) checkedid = i;
-            else if(children[i].checked) children[i].checked=false;
+          for(var i=0; i<this.answersList.length;i++){
+            if(this.answersList[i] && checkedid==-1) checkedid = i;
+            else if(this.answersList[i]) this.answersList[i]=false;
           }
         }
 
-        /*
-        if(oldValue==2 && newValue!=2 && this.tfvalue!=-1){
-          console.log("case 1");
-          //this.optionsList = new Array();
-          //this.answersList = new Array();
-        }else if(newValue<=1 &&  oldValue>1){
-          console.log("case 2");
-          var children = this.$.optionsgroup.querySelectorAll('question-option');
-          for(var i=0; i<this.answersList.length;i++){
-            children[this.answersList[i]].checked=true;
+        if(newValue==this.savedquiztype){
+          if(newValue<=1){
+            this.qcontent = this.savedqcontent;
+            this.optionsList = JSON.parse(JSON.stringify(this.savedOptionsList));
+            this.answersList = JSON.parse(JSON.stringify(this.savedAnswersList));
+          }else if(newValue==2){
+            this.tfvalue = JSON.parse(JSON.stringify(this.savedAnswersList[0]));
+          }else if(newValue==3){
+            this.textvalue = JSON.parse(JSON.stringify(this.savedAnswersList[0]));
           }
-        }else if(oldValue==1 && newValue==0){
-          if(this.answersList.length>1){
-            console.log("case 3");
-            this.answersList = new Array();
-            var children = this.$.optionsgroup.querySelectorAll('question-option');
-            for(var i=0; i<children.length;i++){
-              children[i].checked=false;
-            }
-          }else console.log("case 4");
-        }else{
-          console.log("case 5");
         }
-        */
+        
+        /*
         console.log("Temporary: ")
         console.log(this.qcontent);
         console.log(this.optionsList);
         console.log(this.answersList);
         console.log(this.tfvalue);
         console.log(this.textvalue);
-
-        console.log("Saved quiz: ");
-        console.log(this.savedquiztype);
-        console.log(this.savedqcontent);
-        console.log(this.savedOptionsList);
-        console.log(this.savedAnswersList);
+  `     */
       }
   	})
   </script>
