@@ -17,7 +17,12 @@
 			}
 		</style>
 		<div layout horizontal center>
-			<paper-checkbox checked="{{checked}}" toggles></paper-checkbox>
+			<template if="{{type==1}}">
+        <paper-checkbox checked="{{checked}}" toggles></paper-checkbox>
+      </template>
+      <template if="{{type==0}}">
+        <paper-radio-button checked="{{checked}}" on-click="{{radioclick}}"></paper-radio-button>
+      </template>
 			<form-expanding-input id="input" label="" error="Please type something!" value="{{optionvalue}}"></form-expanding-input>
 			<core-icon-button icon="cancel" on-click="{{deleteoption}}"></core-icon-button>
 		</div>
@@ -25,6 +30,10 @@
 	<script>
 	Polymer({
 			publish: {
+				type:{
+					value:0,
+					reflect:true
+				},
 				optionvalue:{
 					value:'',
 					reflect:true
@@ -40,7 +49,17 @@
 			},
 			triggerError: function(){
   			this.$.input.triggerError();
-  		}
+  		},
+  		radioclick: function(){
+        if(this.type==1) return; //because this is a multiple answer MCQ
+
+        var clickedElement = this.id;
+        //uncheck the rest of the options
+        var children = this.parentNode.querySelectorAll('question-option');
+        for (var i=0; i<children.length; i++) {
+          if(children[i].id!=clickedElement) children[i].checked=false;
+        }
+      }
   	})
 	</script>
 </polymer-element>
