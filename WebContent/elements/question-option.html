@@ -17,12 +17,12 @@
 			}
 		</style>
 		<div layout horizontal center>
-			<template if="{{type==1}}">
+			<div hidden?="{{type!=1}}">
         <paper-checkbox checked="{{checked}}" toggles></paper-checkbox>
-      </template>
-      <template if="{{type==0}}">
+      </div>
+      <div hidden?="{{type!=0}}">
         <paper-radio-button checked="{{checked}}" on-click="{{radioclick}}"></paper-radio-button>
-      </template>
+      </div>
 			<form-expanding-input id="input" label="" error="Please type something!" value="{{optionvalue}}"></form-expanding-input>
 			<core-icon-button icon="cancel" on-click="{{deleteoption}}"></core-icon-button>
 		</div>
