@@ -68,16 +68,24 @@
         color : #00bcd4;
         font-weight: bold;
       }
+      .savedtab {
+        color : #5CB85C;
+        font-weight: bold;
+      }
+      paper-tabs paper-tab.savedtab.core-selected{
+        color : #5CB85C;
+        font-weight: bold;
+      }
     </style>
     <div layout vertical>
       <div layout horizontal id="questiontypediv">
         <p class="form-heading">Question:</p>
         <paper-tabs flex id="tabs" selected="{{type}}" self-end class="transparent-teal">
-          <paper-tab name='0'>Single</paper-tab>
-          <paper-tab name='1'>Multiple</paper-tab>
-          <paper-tab name='2'>T/F</paper-tab>
-          <paper-tab name='3'>Word</paper-tab>
-          <paper-tab name='4'>Short</paper-tab>
+          <paper-tab name='0' id='tab0'>Single</paper-tab>
+          <paper-tab name='1' id='tab1'>Multiple</paper-tab>
+          <paper-tab name='2' id='tab2'>T/F</paper-tab>
+          <paper-tab name='3' id='tab3'>Word</paper-tab>
+          <paper-tab name='4' id='tab4'>Short</paper-tab>
         </paper-tabs>
       </div>
     	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus value="{{qcontent}}"></form-expanding-input>
@@ -86,7 +94,7 @@
       <div hidden?="{{type>1}}">
         <div id="optionsgroup">
       		<template repeat="{{qoption, qoptionIndex in optionsList}}">
-      			<question-option optionvalue="{{qoption}}" type="{{type}}" id="{{qoptionIndex}}" on-click="{{optionclick}}" checked="{{answersList[qoptionIndex]}}"></question-option>
+      			<question-option optionvalue="{{qoption}}" type="{{type}}" on-click="{{optionclick}}" checked="{{answersList[qoptionIndex]}}"></question-option>
       		</template>
       	</div>
         <div layout vertical>
@@ -150,6 +158,9 @@
         }else if(this.type==3 && this.validateTextual()){
         }else return;
 
+        if(this.savedquiztype!=-1) this.$.tabs.querySelector("#tab"+this.savedquiztype).className="";
+        this.$.tabs.querySelector("#tab"+this.type).setAttribute("class", "savedtab");
+        this.savedquiztype = this.type;
         this.savedqcontent = this.qcontent;
 
         console.log("Saved quiz: ");
@@ -200,7 +211,6 @@
 
         this.savedOptionsList = JSON.parse(JSON.stringify(this.optionsList));
         this.savedAnswersList = JSON.parse(JSON.stringify(this.answersList));
-        this.savedquiztype = this.type;
 
         //console.log(optionsList);
         //console.log(answersList);
@@ -227,7 +237,6 @@
         textanswer.push(answerstr);
         this.savedOptionsList = new Array();
         this.savedAnswersList = textanswer;
-        this.savedquiztype = this.type;
 
         return true;
       },
@@ -269,7 +278,6 @@
         answertf.push(this.tfvalue);
         this.savedOptionsList = new Array();
         this.savedAnswersList = answertf;
-        this.savedquiztype = this.type;
 
         return true;
       },
