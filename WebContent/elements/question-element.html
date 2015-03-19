@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="form-expanding-input.html">
 <link rel="import" href="question-option.html">
 <link rel="import" href="custom-button.html">
@@ -31,6 +32,16 @@
         bottom: 0 ;
         left: 0;
       }
+      paper-button {
+        text-transform: inherit;
+        background-color: #F7F7F9;
+      }
+      #truefalsediv {
+        margin: 16px 0 16px 0;
+      }
+      #falsebtn {
+        margin: 0 0 0 8px;
+      }
     </style>
     <div layout vertical>
     	<p class="form-heading">Question:</p>
@@ -48,8 +59,16 @@
         </div>
       </template>
 
-      <!-- textual answer question template-->
+      <!-- true-false -->
       <template if="{{type==2}}">
+        <div layout horizontal center-justified id="truefalsediv">
+          <paper-button id='1' raised style="{{(tfvalue==1)? 'background-color:#5CB85C; color:#fff' : 'background-color:#F7F7F9;color:#000'}}" on-click="{{toggletf}}">True</paper-button>
+          <paper-button id='0' raised style="{{(tfvalue==0)? 'background-color:#D9534F;color:#fff' : 'background-color:#F7F7F9;color:#000'}}" on-click="{{toggletf}}">False</paper-button>
+        </div>
+      </template>
+
+      <!-- textual answer question template-->
+      <template if="{{type==3}}">
         <question-textual id="qtextual" type="{{type}}" value="{{optionsList[0]}}"></question-textual>
       </template>
 
@@ -63,9 +82,10 @@
     /* question types:
       0:single answer mutliple choice
       1:multiple answer choice
-      2:string answer
-      3:numerical answer*
-      4:fill in the blanks*
+      2:true-false
+      3:string answer
+      4:numerical answer*
+      5:fill in the blanks*
       *optional for now
     */
   	Polymer({
@@ -73,6 +93,7 @@
 			qcontent: 'dummy question',
       optionsList: ['option1','option2','option3'],
       answersList: [1],
+      tfvalue: -1,
   		ready: function() {
         if(this.type<=1){
           var children = this.$.optionsgroup.querySelectorAll('question-option');
@@ -90,7 +111,11 @@
           console.log(this.qcontent);
           console.log(this.optionsList);
           console.log(this.answersList);
-        }else if(this.type==2 && this.validateTextual()){
+        }else if(this.type==2 && this.validateTrueFalse()){
+          console.log(this.qcontent);
+          console.log(this.optionsList);
+          console.log(this.answersList);
+        }else if(this.type==3 && this.validateTextual()){
           console.log(this.qcontent);
           console.log(this.optionsList);
           console.log(this.answersList);
@@ -103,9 +128,8 @@
         if(this.qcontent==''){
           this.$.questionContent.triggerError();
           failed=true;
-        }else{
-          //console.log(this.qcontent);
         }
+
         var children = this.$.optionsgroup.querySelectorAll('question-option');
         var optionsList=new Array();
         var answersList=new Array();
@@ -134,16 +158,56 @@
         return true;
   		},
       validateTextual: function(){
-        var answerstr = this.optionsList[0].trim();
-        if(answerstr!=''){
-          var optionsList=new Array();
-          optionsList.push(answerstr);
-          this.optionsList = optionsList;
-          this.answersList = new Array();
-          return true;
-        }else{
-          this.$.qtextual.triggerError();
+        var failed = false;
+        this.qcontent = this.$.questionContent.value.trim();
+        if(this.qcontent==''){
+          this.$.questionContent.triggerError();
+          failed=true;
         }
+
+        var answerstr = this.optionsList[0].trim();
+        if(answerstr==''){
+          this.$.qtextual.triggerError();
+          failed=true;
+        }
+        if(failed) return false;
+      
+        var optionsList=new Array();
+        optionsList.push(answerstr);
+        this.optionsList = optionsList;
+        this.answersList = new Array();
+        return true;
+      },
+      toggletf: function(e){
+        var tfid = e.toElement.id;
+        if(this.tfvalue==-1){
+          this.tfvalue = tfid;
+        }else if(this.tfvalue==1 && tfid=='0'){
+          this.tfvalue = 0;
+        }else if(this.tfvalue==0 && tfid=='1'){
+          this.tfvalue = 1;
+        }
+      },
+      validateTrueFalse: function(){
+        var failed = false;
+        this.qcontent = this.$.questionContent.value.trim();
+        if(this.qcontent==''){
+          this.$.questionContent.triggerError();
+          failed=true;
+        }
+
+        if(this.tfvalue==-1) {
+          this.$.toast.show();
+          failed=true;
+        }
+
+        if(failed) return false;
+
+        var optionsList=new Array();
+        var answersList=new Array();
+        answersList.push(this.tfvalue);
+        this.answersList = answersList;
+        return true;
       }
   	})
   </script>
