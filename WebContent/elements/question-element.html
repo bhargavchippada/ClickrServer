@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="form-expanding-input.html">
 <link rel="import" href="question-option.html">
 <link rel="import" href="custom-button.html">
@@ -11,8 +12,11 @@
     <style>
     	.form-heading {
 				font-size: 36px;
-				margin: 8px 0 0 0;
+				margin: 0 0 0 0;
 			}
+      #questiontypediv {
+        margin: 16px 0 0 0;
+      }
 			#optionsgroup {
 				width: 100%;
 			}
@@ -44,7 +48,16 @@
       }
     </style>
     <div layout vertical>
-    	<p class="form-heading">Question:</p>
+      <div layout horizontal id="questiontypediv">
+        <p class="form-heading">Question:</p>
+        <paper-tabs id="tabs" selected='0' self-end>
+          <paper-tab name='0'>Single</paper-tab>
+          <paper-tab name='1'>Multiple</paper-tab>
+          <paper-tab name='2'>T/F</paper-tab>
+          <paper-tab name='3'>Word</paper-tab>
+          <paper-tab name='4'>Short</paper-tab>
+        </paper-tabs>
+      </div>
     	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus value="{{qcontent}}"></form-expanding-input>
     	
       <!-- Single and multiple answer multiple choice question template-->
@@ -74,7 +87,7 @@
 
       <div layout horizontal center-justified>
         <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
-        <span><paper-toast id="toast" text="Please select some option!"></paper-toast></span>
+        <span><paper-toast id="toast" text=""></paper-toast></span>
       </div>
     </div>
   </template>
@@ -108,18 +121,13 @@
   		},
       savequizclick: function(){
         if(this.type<=1 && this.validateMultipleChoice()){
-          console.log(this.qcontent);
-          console.log(this.optionsList);
-          console.log(this.answersList);
         }else if(this.type==2 && this.validateTrueFalse()){
-          console.log(this.qcontent);
-          console.log(this.optionsList);
-          console.log(this.answersList);
         }else if(this.type==3 && this.validateTextual()){
-          console.log(this.qcontent);
-          console.log(this.optionsList);
-          console.log(this.answersList);
-        }
+        }else return;
+
+        console.log(this.qcontent);
+        console.log(this.optionsList);
+        console.log(this.answersList);
       },
   		validateMultipleChoice: function(){
         //console.log("form validate called");
@@ -147,6 +155,7 @@
           }
         }
         if(answersList.length==0){
+          this.$.toast.text="Please select some option!";
           this.$.toast.show();
           failed=true;
         }
@@ -197,6 +206,7 @@
         }
 
         if(this.tfvalue==-1) {
+          this.$.toast.text="Please select true or false!";
           this.$.toast.show();
           failed=true;
         }
@@ -206,6 +216,7 @@
         var optionsList=new Array();
         var answersList=new Array();
         answersList.push(this.tfvalue);
+        this.optionsList = optionsList;
         this.answersList = answersList;
         return true;
       }
