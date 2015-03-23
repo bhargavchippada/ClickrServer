@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="form-input.html">
 <link rel="import" href="form-expanding-input.html">
 <link rel="import" href="question-option.html">
 <link rel="import" href="custom-button.html">
@@ -88,14 +89,14 @@
           <paper-tab name='4' id='tab4'>Short</paper-tab>
         </paper-tabs>
       </div>
+      <form-input label="Title" error="Type some title!" value="{{qtitle}}"></form-input>
+
     	<form-expanding-input id="questionContent" label="Type Question" error="Type Some Question!" autofocus value="{{qcontent}}"></form-expanding-input>
     	
       <!-- Single and multiple answer multiple choice question template-->
       <div hidden?="{{type>1}}">
         <div id="optionsgroup">
-      		<template repeat="{{qoption, qoptionIndex in optionsList}}">
-      			<question-option optionvalue="{{qoption}}" type="{{type}}" on-click="{{optionclick}}" checked="{{answersList[qoptionIndex]}}"></question-option>
-      		</template>
+      		
       	</div>
         <div layout vertical>
          <span><core-icon-button icon="add" on-click="{{addoption}}" active>add new option</core-icon-button></span>
@@ -133,23 +134,49 @@
     */
   	Polymer({
       type:0,
+      qtitle: '',
       qcontent: 'dummy question',
       optionsList: ['option1','option2','option3'],
-      answersList: [false,true,false],
+      answersList: [false,true,true],
       tfvalue: -1,
       textvalue: 'answerok',
+      savedqtitle: '',
       savedqcontent: '',
       savedOptionsList: [],
       savedAnswersList: [],
       savedquiztype: -1,
-  		ready: function() {
-        console.log("ready called");
-  		},
   		addoption: function(){
   			console.log("add option clicked");
-        this.optionsList.push('');
-        this.answersList.push(false);
+        var qoption = document.createElement('question-option');
+        qoption.optionvalue='';
+        qoption.checked=false;
+        qoption.type=this.type;
+        this.$.optionsgroup.appendChild(qoption);
   		},
+      initializeMCQ: function(){
+        console.log("initializeMCQ");
+        var children = this.$.optionsgroup.querySelectorAll('question-option');
+        var numofchilds = children.length;
+        var check = false; // to differentiate single and multiple MCQ
+        for(var i=0 ;i<this.optionsList.length;i++){
+          var qoption;
+          if(i>=numofchilds) qoption = document.createElement('question-option');
+          else qoption=children[i];
+          qoption.optionvalue=this.optionsList[i];
+          if(this.type==0 && check) qoption.checked=false;
+          else{
+            if(this.type==0 && this.answersList[i]) check=true;
+            qoption.checked=this.answersList[i];
+          }
+          qoption.type=this.type;
+          this.$.optionsgroup.appendChild(qoption);
+        }
+        for(var j=this.optionsList.length; j<numofchilds; j++) children[i].remove();
+      },
+      ready: function() {
+        console.log("ready called");
+        this.initializeMCQ();
+      },
       savequizclick: function(){
         console.log("save quiz called");
 
@@ -162,8 +189,10 @@
         this.$.tabs.querySelector("#tab"+this.type).setAttribute("class", "savedtab");
         this.savedquiztype = this.type;
         this.savedqcontent = this.qcontent;
+        this.savedqtitle = this.qtitle.trim();
 
         console.log("Saved quiz: ");
+        console.log(this.savedqtitle);
         console.log(this.savedquiztype);
         console.log(this.savedqcontent);
         console.log(this.savedOptionsList);
@@ -173,7 +202,7 @@
         console.log("Multiple validation called");
 
         var failed = false;
-        this.qcontent = this.$.questionContent.value.trim();
+        this.qcontent = this.qcontent.trim();
         if(this.qcontent==''){
           this.$.questionContent.triggerError();
           failed=true;
@@ -185,8 +214,8 @@
         var optionstr;
         var numofoptionstrue = 0;
         for (var i=0; i<children.length; i++) {
-          optionstr=children[i].optionvalue;
-          if(optionstr.trim()==''){
+          optionstr=children[i].optionvalue.trim();
+          if(optionstr==''){
             children[i].triggerError();
             children[i].optionvalue='';
             failed=true;
@@ -220,7 +249,7 @@
         console.log("textual validation called");
 
         var failed = false;
-        this.qcontent = this.$.questionContent.value.trim();
+        this.qcontent = this.qcontent.trim();
         if(this.qcontent==''){
           this.$.questionContent.triggerError();
           failed=true;
@@ -260,7 +289,7 @@
         console.log("tf validation called");
 
         var failed = false;
-        this.qcontent = this.$.questionContent.value.trim();
+        this.qcontent = this.qcontent.trim();
         if(this.qcontent==''){
           this.$.questionContent.triggerError();
           failed=true;
@@ -283,12 +312,20 @@
       },
       typeChanged: function(oldValue, newValue){
         console.log("yo: " + oldValue + " " + newValue);
-        if(newValue==0){
-          var checkedid = -1;
-          for(var i=0; i<this.answersList.length;i++){
-            if(this.answersList[i] && checkedid==-1) checkedid = i;
-            else if(this.answersList[i]) this.answersList[i]=false;
+
+        if(oldValue==0 || oldValue==1){
+          //save the options
+          var children = this.$.optionsgroup.querySelectorAll('question-option');
+          var optionsList=new Array();
+          var answersList=new Array();
+          var optionstr;
+          for (var i=0; i<children.length; i++) {
+            optionstr=children[i].optionvalue.trim();
+            optionsList.push(optionstr);
+            if(children[i].checked) answersList.push(true); else answersList.push(false);
           }
+          this.optionsList = optionsList;
+          this.answersList = answersList;
         }
 
         if(newValue==this.savedquiztype){
@@ -302,15 +339,8 @@
             this.textvalue = JSON.parse(JSON.stringify(this.savedAnswersList[0]));
           }
         }
-        
-        /*
-        console.log("Temporary: ")
-        console.log(this.qcontent);
-        console.log(this.optionsList);
-        console.log(this.answersList);
-        console.log(this.tfvalue);
-        console.log(this.textvalue);
-  `     */
+
+        if(newValue==0 || newValue==1) this.initializeMCQ();
       }
   	})
   </script>
