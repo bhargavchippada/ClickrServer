@@ -162,6 +162,7 @@
           var qoption;
           if(i>=numofchilds) qoption = document.createElement('question-option');
           else qoption=children[i];
+          qoption.id=i;
           qoption.optionvalue=this.optionsList[i];
           if(this.type==0 && check) qoption.checked=false;
           else{
