@@ -3,6 +3,8 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/core-label/core-label.html">
 <link rel="import" href="form-input.html">
 <link rel="import" href="form-expanding-input.html">
 <link rel="import" href="question-option.html">
@@ -77,6 +79,16 @@
         color : #5CB85C;
         font-weight: bold;
       }
+      h3 {
+        padding: 0 0 0 0;
+        margin: 0 0 0 16px;
+      }
+      core-label {
+        margin: 16px 0 0 0;
+      }
+      #savequiz{
+        margin: 16px 0 0 0;
+      }
     </style>
     <div layout vertical>
       <div layout horizontal id="questiontypediv">
@@ -112,14 +124,22 @@
       </div>
 
       <!-- textual answer question template-->
-      <div hidden?="{{type!=3}}">
+      <div hidden?="{{type<3}}">
         <question-textual id="qtextual" type="{{type}}" value="{{textvalue}}"></question-textual>
       </div>
-
-      <div layout horizontal center-justified>
+      <div layout vertical center>
+        <core-label horizontal layout>
+          <paper-checkbox checked="{{qimmfeedback}}" toggles></paper-checkbox>
+          <h3>Immediate feedback to students</h3>
+        </core-label>
+        <core-label horizontal layout>
+          <paper-checkbox checked="{{qtimedquiz}}" toggles></paper-checkbox>
+          <h3>Timed Quiz</h3>
+          <form-input label="Time in sec" error="Invalid time!" value="{{qtime}}" pattern='return event.charCode >= 48 && event.charCode <= 57' disabled="{{!qtimedquiz}}"></form-input>
+        </core-label>
         <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
-        <span><paper-toast id="toast" text=""></paper-toast></span>
       </div>
+      <span><paper-toast id="toast" text=""></paper-toast></span>
     </div>
   </template>
   <script type="text/javascript">
@@ -127,9 +147,10 @@
       0:single answer mutliple choice
       1:multiple answer choice
       2:true-false
-      3:string answer
-      4:numerical answer*
-      5:fill in the blanks*
+      3:one-word answer
+      4:short answer
+      5:numerical answer*
+      6:fill in the blanks*
       *optional for now
     */
   	Polymer({
@@ -140,11 +161,16 @@
       answersList: [false,true,true],
       tfvalue: -1,
       textvalue: 'answerok',
+      qimmfeedback: false,
+      qtimedquiz: false,
       savedqtitle: '',
       savedqcontent: '',
       savedOptionsList: [],
       savedAnswersList: [],
       savedquiztype: -1,
+      savedqimmfeedback: false,
+      savedqtimedquiz: false,
+      savedqtime: 0,
   		addoption: function(){
   			console.log("add option clicked");
         var qoption = document.createElement('question-option');
@@ -183,7 +209,7 @@
 
         if(this.type<=1 && this.validateMultipleChoice()){
         }else if(this.type==2 && this.validateTrueFalse()){
-        }else if(this.type==3 && this.validateTextual()){
+        }else if(this.type>=3 && this.validateTextual()){
         }else return;
 
         if(this.savedquiztype!=-1) this.$.tabs.querySelector("#tab"+this.savedquiztype).className="";
@@ -191,13 +217,19 @@
         this.savedquiztype = this.type;
         this.savedqcontent = this.qcontent;
         this.savedqtitle = this.qtitle.trim();
+        this.savedqimmfeedback = this.qimmfeedback;
+        this.savedqtimedquiz = this.qtimedquiz;
+        this.savedqtime = this.qtime;
 
         console.log("Saved quiz: ");
-        console.log(this.savedqtitle);
-        console.log(this.savedquiztype);
-        console.log(this.savedqcontent);
-        console.log(this.savedOptionsList);
-        console.log(this.savedAnswersList);
+        console.log("Title: "+this.savedqtitle);
+        console.log("Type: "+this.savedquiztype);
+        console.log("Question: "+this.savedqcontent);
+        console.log("Options: "+this.savedOptionsList);
+        console.log("Answers: "+this.savedAnswersList);
+        console.log("Immediate feedback: "+this.savedqimmfeedback);
+        console.log("Timed Quiz: "+this.savedqtimedquiz);
+        console.log("Time: "+this.savedqtime);
       },
   		validateMultipleChoice: function(){
         console.log("Multiple validation called");
@@ -261,6 +293,16 @@
           this.$.qtextual.triggerError();
           failed=true;
         }
+        
+        if(this.type==3){
+          if (/\s/.test(answerstr)) {
+            failed=true;
+            this.$.toast.text="No spaces are allowed!!";
+            this.$.toast.show();
+            this.$.qtextual.triggerError();
+          }
+        }
+
         if(failed) return false;
         
         var textanswer=new Array();

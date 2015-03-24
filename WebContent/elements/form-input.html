@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-input/core-input.html">
 <link rel="import" href="../bower_components/paper-input/paper-input-decorator.html">
-<polymer-element name="form-input" attributes="label error value autofocus">
+<polymer-element name="form-input" attributes="label error value autofocus pattern disabled">
   <template>
 	  <style>
 	  	:host {
@@ -14,8 +14,8 @@
 	      text-align: left;
 	    }
 	  </style>
-  	<paper-input-decorator id="decorator" label="{{label}}" floatingLabel error="{{error}}">
-      <input id="input" is="core-input" value="{{value}}" required>
+  	<paper-input-decorator id="decorator" label="{{label}}" floatingLabel error="{{error}}" disabled="{{disabled}}">
+      <input id="input" is="core-input" value="{{value}}" onkeypress='{{pattern}}' required>
     </paper-input-decorator>
   </template>
   <<script>
@@ -24,6 +24,7 @@
   		error:'input is required!',
   		value:'',
   		autofocus:false,
+      disabled: false,
   		autofocusChanged: function(){
   			this.$.input.focus();
   		},
@@ -31,7 +32,10 @@
   			this.$.input.focus();
   			this.$.decorator.isInvalid = true;
   			this.$.decorator.autoValidate = true;
-  		}
+  		},
+      disabledChanged: function(){
+        this.$.input.disabled = this.disabled;
+      }
   	})
   </script>
 </polymer-element>
