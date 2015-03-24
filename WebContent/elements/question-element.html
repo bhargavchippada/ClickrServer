@@ -164,10 +164,11 @@
       qcontent: 'dummy question',
       optionsList: ['option1','option2','option3'],
       answersList: [false,true,true],
-      tfvalue: -1,
-      textvalue: 'answerok',
       qimmfeedback: false,
       qtimedquiz: false,
+      qtime: 0,
+      tfvalue: -1,
+      textvalue: 'answerok',
       publish:{
         savedqtitle: '',
         savedqcontent: '',
@@ -391,6 +392,27 @@
         }
 
         if(newValue==0 || newValue==1) this.initializeMCQ();
+
+      },
+      showsaved: function(){
+        var newValue=this.savedquiztype
+        if(newValue<=1){
+          this.qcontent = this.savedqcontent;
+          this.optionsList = JSON.parse(JSON.stringify(this.savedOptionsList));
+          this.answersList = JSON.parse(JSON.stringify(this.savedAnswersList));
+        }else if(newValue==2){
+          this.tfvalue = JSON.parse(JSON.stringify(this.savedAnswersList[0]));
+        }else if(newValue==3){
+          this.textvalue = JSON.parse(JSON.stringify(this.savedAnswersList[0]));
+        }
+
+        if(newValue==0 || newValue==1) this.initializeMCQ();
+
+        this.type = this.savedquiztype;
+        this.qtitle = this.savedqtitle;
+        this.qimmfeedback = this.savedqimmfeedback;
+        this.qtimedquiz = this.savedqtimedquiz;
+        this.qtime = this.savedqtime;
       }
   	})
   </script>

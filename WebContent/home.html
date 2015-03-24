@@ -58,7 +58,7 @@
           <div layout horizontal center>
             <div layout horizontal>
               <img src="./media/inverted_launcher.png" class="logoimage">
-              <p class="form-heading">Clicker</p>
+              <p class="form-heading">Clickr</p>
               <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
             </div>
             <div horizontal end-justified layout flex>
@@ -76,12 +76,46 @@
         </div>
       </template>
       <script type="text/javascript">
+        var fcont = 'hello';
+        var fready = false;
         Polymer({
-          fileResponse: '',
+          fresp:'hello',
           ready: function(){
           },
           HandleBrowseClick: function(){
             this.$.browse.click();
+          },
+          frespChanged: function(oldValue,newValue){
+            console.log("question uploaded");
+            var fjson;
+            try {
+              fjson = JSON.parse(fcont);
+            } catch (e) {
+              console.log(e);
+              alert("File upload failed!");
+              return;
+            }
+
+            this.$.filename.value = this.$.browse.value.replace("C:\\fakepath\\", "");
+
+            this.$.qelement.savedquiztype = fjson.type;
+            this.$.qelement.savedqtitle = fjson.title;
+            this.$.qelement.savedqcontent = fjson.question;
+            this.$.qelement.savedOptionsList = fjson.options;
+            this.$.qelement.savedAnswersList = fjson.answers;
+            this.$.qelement.savedqimmfeedback = fjson.feedback;
+            this.$.qelement.savedqtimedquiz = fjson.timed;
+            this.$.qelement.savedqtime = fjson.time;
+
+            this.$.qelement.showsaved();//typeChanged(this.$.qelement.type,this.$.qelement.savedquiztype);
+          },
+          fileUploader: function(event){
+            if (event.target.readyState == FileReader.DONE) {
+              //fresp = event.target.result;
+              fcont = event.target.result;
+              //console.log(fresp);
+              fready = true;
+            }
           },
           Handlechange: function(e,detail,sender){
             // Check for the various File API support.
@@ -90,20 +124,17 @@
               var fReader = new FileReader();
               fReader.readAsText(this.$.browse.files[0]);
               //console.log(this.$.browse.files[0]);
-              fReader.onloadend = function(event){
-                try {
-                  this.fileResponse = JSON.parse(event.target.result);
-                  console.log(this.fileResponse);
-                } catch (e) {
-                  console.log(e);
-                  alert("File upload failed!");
+              fReader.onloadend = this.fileUploader;
+              fready = false;
+              this.async(function() {
+                if(fready==true){
+                  //console.log(fcont);
+                  this.fresp = fcont;
                 }
-              }
+              }, null, 1000);
             } else {
               alert('The File APIs are not fully supported in this browser.');
             }
-
-            this.$.filename.value = this.$.browse.value.replace("C:\\fakepath\\", "");
           }
         })
       </script>
