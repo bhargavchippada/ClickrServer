@@ -8,6 +8,8 @@
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="elements/custom-button.html">
     <link rel="import" href="elements/question-element.html">
+    <link rel="import" href="bower_components/paper-input/paper-input.html">
+    <link rel="import" href="bower_components/paper-button/paper-button.html">
     <title>Clickr Index Page</title>
     <style>
       body{
@@ -46,12 +48,26 @@
           #quizoptions {
             margin-top: 8px;
           }
+          paper-button.bluecls {
+            text-transform: inherit;
+            background-color: #337ab7;
+            color: #fff;
+          }
         </style>
         <div id="quizcontainer" layout vertical>
           <div layout horizontal center>
-            <img src="./media/inverted_launcher.png" class="logoimage">
-            <p class="form-heading">Clicker</p>
-            <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
+            <div layout horizontal>
+              <img src="./media/inverted_launcher.png" class="logoimage">
+              <p class="form-heading">Clicker</p>
+              <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
+            </div>
+            <div horizontal end-justified layout flex>
+              <div>
+                <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
+                <paper-input id="filename" label="Path" disabled></paper-input>
+                <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}">Click to select file</paper-button>
+              </div>
+            </div>
           </div>
           <question-element id="qelement"></question-element>
           <div layout horizontal end-justified id="quizoptions">
@@ -62,6 +78,12 @@
       <script>
         Polymer({
           ready: function(){
+          },
+          HandleBrowseClick: function(){
+            this.$.browse.click();
+          },
+          Handlechange: function(){
+            this.$.filename.value = this.$.browse.value;
           }
         })
       </script>
