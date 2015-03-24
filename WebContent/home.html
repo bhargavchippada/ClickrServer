@@ -75,15 +75,35 @@
           </div>
         </div>
       </template>
-      <script>
+      <script type="text/javascript">
         Polymer({
+          fileResponse: '',
           ready: function(){
           },
           HandleBrowseClick: function(){
             this.$.browse.click();
           },
-          Handlechange: function(){
-            this.$.filename.value = this.$.browse.value;
+          Handlechange: function(e,detail,sender){
+            // Check for the various File API support.
+            if (window.File && window.FileReader && window.FileList && window.Blob) {
+              // Great success! All the File APIs are supported.
+              var fReader = new FileReader();
+              fReader.readAsText(this.$.browse.files[0]);
+              //console.log(this.$.browse.files[0]);
+              fReader.onloadend = function(event){
+                try {
+                  this.fileResponse = JSON.parse(event.target.result);
+                  console.log(this.fileResponse);
+                } catch (e) {
+                  console.log(e);
+                  alert("File upload failed!");
+                }
+              }
+            } else {
+              alert('The File APIs are not fully supported in this browser.');
+            }
+
+            this.$.filename.value = this.$.browse.value.replace("C:\\fakepath\\", "");
           }
         })
       </script>
