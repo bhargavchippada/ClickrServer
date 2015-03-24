@@ -168,14 +168,16 @@
       textvalue: 'answerok',
       qimmfeedback: false,
       qtimedquiz: false,
-      savedqtitle: '',
-      savedqcontent: '',
-      savedOptionsList: [],
-      savedAnswersList: [],
-      savedquiztype: -1,
-      savedqimmfeedback: false,
-      savedqtimedquiz: false,
-      savedqtime: 0,
+      publish:{
+        savedqtitle: '',
+        savedqcontent: '',
+        savedOptionsList: [],
+        savedAnswersList: [],
+        savedquiztype: -1,
+        savedqimmfeedback: false,
+        savedqtimedquiz: false,
+        savedqtime: 0
+      },
   		addoption: function(){
   			console.log("add option clicked");
         var qoption = document.createElement('question-option');

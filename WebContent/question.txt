@@ -1,0 +1,12 @@
+{	
+	"type": 0,
+	"title": "Feedback",
+	"question": "who is the president of USA?",
+	"options": ["George Bush","Bill Clinton","Barack Obama"],
+	"answers": [false,false,true],
+	"feedback": false,
+	"timed": true,
+	"time": 60
+}
+
+
