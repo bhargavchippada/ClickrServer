@@ -83,6 +83,7 @@
           ready: function(){
           },
           HandleBrowseClick: function(){
+            console.log("browse click");
             this.$.browse.click();
           },
           frespChanged: function(oldValue,newValue){
@@ -93,11 +94,12 @@
             } catch (e) {
               console.log(e);
               alert("File upload failed!");
+              this.$.browse.value=null;
               return;
             }
 
             this.$.filename.value = this.$.browse.value.replace("C:\\fakepath\\", "");
-
+            this.$.browse.value=null;
             this.$.qelement.savedquiztype = fjson.type;
             this.$.qelement.savedqtitle = fjson.title;
             this.$.qelement.savedqcontent = fjson.question;
@@ -126,6 +128,7 @@
               //console.log(this.$.browse.files[0]);
               fReader.onloadend = this.fileUploader;
               fready = false;
+              console.log("file upload initiated");
               this.async(function() {
                 if(fready==true){
                   //console.log(fcont);
