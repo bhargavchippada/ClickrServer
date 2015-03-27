@@ -7,6 +7,7 @@
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="elements/custom-button.html">
+    <link rel="import" href="elements/server-element.html">
     <link rel="import" href="elements/question-element.html">
     <link rel="import" href="bower_components/paper-input/paper-input.html">
     <link rel="import" href="bower_components/paper-button/paper-button.html">
@@ -36,27 +37,12 @@
             max-width: 800px;
             margin: 0 auto 0 auto;          
           }
-          .logoimage {
-            width: 48px;
-            height: 48px;
-          }
-          .form-heading {
-            font-size: 36px;
-            padding: 0 0 0 0;
-            margin: 0 8px 0 8px;
-          }
           #quizoptions {
             margin-top: 8px;
           }
         </style>
         <div id="quizcontainer" layout vertical>
-          <div layout horizontal center>
-            <div layout horizontal>
-              <img src="./media/inverted_launcher.png" class="logoimage">
-              <p class="form-heading">Clickr</p>
-              <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
-            </div>
-          </div>
+          <server-element></server-element>
           <question-element id="qelement"></question-element>
           <div layout horizontal end-justified id="quizoptions">
             <custom-button id="startquiz" togglehtml0="Start Quiz" togglehtml1="Stop Quiz" togglestate='0'  on-click="{{startquizclick}}"></custom-button>
