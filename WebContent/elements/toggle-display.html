@@ -1,0 +1,62 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+<polymer-element name="toggle-display">
+  <template>
+  	<style>
+    .heading {
+      font-size: 22px;
+      padding: 0 0 0 0;
+      margin: 0 16px 0 0;
+    }
+    .lineseperator {
+      height: 1px;
+      background-color: #333;
+    }
+    core-icon-button {
+      padding: 0 0 0 0;
+    }
+    .small-lineseperator {
+      width:8px;
+      height: 1px;
+      background-color: #333;
+    }
+	  </style>
+    <div layout horizontal center>
+      <h3 class="heading">{{label}}</h3>
+      <div flex class="lineseperator"></div>
+      <core-icon-button id="dropdown" icon="{{dropdownicon}}" on-tap="{{toggledropdown}}"></core-icon-button>
+      <div class="small-lineseperator"></div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      dropdownicon:'expand-less',
+      publish:{
+        show:{
+          value:1,
+          reflect:true
+        },
+        label:{
+          value:'',
+          reflect:true
+        }
+      },
+      toggledropdown: function(){
+        if(this.dropdownicon=="expand-more"){
+          this.dropdownicon="expand-less";
+          this.show=1;
+        }else{
+          this.dropdownicon="expand-more";
+          this.show=0;
+        }
+      },
+      showChanged: function(oldValue,newValue){
+        if(newValue==1){
+          this.dropdownicon="expand-less";
+        }else{
+          this.dropdownicon="expand-more";
+        }
+      }
+    })
+  </script>
+</polymer-element>
