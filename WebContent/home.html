@@ -9,6 +9,7 @@
     <link rel="import" href="elements/custom-button.html">
     <link rel="import" href="elements/server-element.html">
     <link rel="import" href="elements/question-element.html">
+    <link rel="import" href="elements/toggle-display.html">
     <link rel="import" href="bower_components/paper-input/paper-input.html">
     <link rel="import" href="bower_components/paper-button/paper-button.html">
     <title>Clickr Index Page</title>
@@ -18,7 +19,7 @@
         overflow: auto;
         font-family: sans-serif;
         color: #333;
-        margin-top: 48px;
+        margin-top: 24px;
       }
       @media screen and (max-width: 1020px) {
         body {
@@ -31,26 +32,41 @@
     <polymer-element name="device-match">
       <template>
         <style>
+          .logoimage {
+            width: 48px;
+            height: 48px;
+          }
+          .form-heading {
+            font-size: 36px;
+            padding: 0 0 0 0;
+            margin: auto 8px auto 8px;
+          }
           #quizcontainer {
             position: relative;
             background-color: #fff;
             max-width: 800px;
             margin: 0 auto 0 auto;          
           }
-          #quizoptions {
-            margin-top: 8px;
+          #clickrdiv {
+            margin: 0 0 16px 0;
           }
         </style>
         <div id="quizcontainer" layout vertical>
-          <server-element></server-element>
-          <question-element id="qelement"></question-element>
-          <div layout horizontal end-justified id="quizoptions">
-            <custom-button id="startquiz" togglehtml0="Start Quiz" togglehtml1="Stop Quiz" togglestate='0'  on-click="{{startquizclick}}"></custom-button>
+          <div layout horizontal id="clickrdiv">
+            <img src="../media/inverted_launcher.png" class="logoimage">
+            <p class="form-heading">Clickr</p>
           </div>
+          <toggle-display show="{{showserverele}}" label="User Settings"></toggle-display>
+          <server-element hidden?="{{showserverele==0}}"></server-element>
+          <toggle-display show="{{showquestionele}}" label="Question"></toggle-display>
+          <question-element id="qelement" hidden?="{{showquestionele==0}}"></question-element>
+          <toggle-display show="0" label="Users Info"></toggle-display>
         </div>
       </template>
       <script type="text/javascript">
         Polymer({
+          showserverele:1,
+          showquestionele:1
         })
       </script>
     </polymer-element>

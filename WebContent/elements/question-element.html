@@ -14,13 +14,13 @@
 <polymer-element name="question-element">
   <template>
     <style>
-    	.form-heading {
-				font-size: 36px;
-				margin: 0 0 0 0;
-			}
-      #uploadquestiondiv {
-        margin: 16px 0 0 0;
+      :host {
+        margin:0 0 16px 0;
       }
+    	.form-heading {
+				font-size: 32px;
+				margin: auto 0 auto 0;
+			}
 			#optionsgroup {
 				width: 100%;
 			}
@@ -91,8 +91,17 @@
       core-label {
         margin: 16px 0 0 0;
       }
-      #savequiz{
+      #savequiz {
         margin: 16px 0 0 0;
+      }
+      #startquiz {
+        position: absolute;
+        right:0;
+        margin: -46px 0 0 0;
+      }
+      #toast {
+        position: absolute;
+        bottom: 54px;
       }
       paper-button.bluecls {
         text-transform: inherit;
@@ -104,7 +113,7 @@
       }
     </style>
     <div layout vertical>
-      <div id="uploadquestiondiv">
+      <div>
         <div horizontal layout flex>
           <div>
             <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
@@ -122,7 +131,7 @@
         </div>
       </div>
       <div layout horizontal>
-        <p class="form-heading">Question:</p>
+        <p class="form-heading">Type:</p>
         <paper-tabs flex id="tabs" selected="{{type}}" self-end class="transparent-teal">
           <paper-tab name='0' id='tab0'>Single</paper-tab>
           <paper-tab name='1' id='tab1'>Multiple</paper-tab>
@@ -157,6 +166,7 @@
       <div hidden?="{{type<3}}">
         <question-textual id="qtextual" type="{{type}}" value="{{textvalue}}"></question-textual>
       </div>
+
       <div layout vertical center>
         <core-label horizontal layout>
           <paper-checkbox checked="{{qimmfeedback}}" toggles></paper-checkbox>
@@ -168,8 +178,9 @@
           <form-input label="Time in sec" error="Invalid time!" value="{{qtime}}" pattern='return event.charCode >= 48 && event.charCode <= 57' disabled="{{!qtimedquiz}}"></form-input>
         </core-label>
         <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
+        <custom-button id="startquiz" togglehtml0="Start Quiz" togglehtml1="Stop Quiz" togglestate='0'  on-click="{{startquizclick}}"></custom-button>
+        <span><paper-toast id="toast" text=""></paper-toast></span>
       </div>
-      <span><paper-toast id="toast" text=""></paper-toast></span>
     </div>
   </template>
   <script type="text/javascript">

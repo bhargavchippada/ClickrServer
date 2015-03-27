@@ -5,19 +5,10 @@
 <polymer-element name="server-element">
   <template>
   	<style>
-    .logoimage {
-      width: 48px;
-      height: 48px;
-    }
-    .form-heading {
-      font-size: 36px;
-      padding: 0 0 0 0;
-      margin: auto 8px auto 8px;
-    }
     .user-heading {
       font-size: 22px;
       padding: 0 0 0 0;
-      margin: auto 8px auto 0;
+      margin: 0 8px 0 0;
     }
     #filename {
       margin: 0 0 0 8px;
@@ -28,15 +19,14 @@
       background-color: #337ab7;
       color: #fff;
     }
+    #radiogroup /deep/ paper-radio-button {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
 	  </style>
     <div layout vertical>
-      <div layout horizontal>
-        <img src="../media/inverted_launcher.png" class="logoimage">
-        <p class="form-heading">Clickr</p>
-      </div>
       <div layout horizontal center>
-        <p class="user-heading">User settings:</p>
-        <paper-radio-group selected="userlist">
+        <paper-radio-group id="radiogroup" selected="userlist">
           <paper-radio-button name="userlist" label="User List">
               <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
               <paper-input class="filenamecls" id="filename" label="Path" disabled></paper-input>
@@ -44,7 +34,9 @@
           </paper-radio-button>
           <paper-radio-button name="anyone" label="Anyone"></paper-radio-button>
         </paper-radio-group>
-        <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
+        <div flex layout end-justified horizontal>
+          <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
+        </div>
       </div>
     </div>
   </template>
