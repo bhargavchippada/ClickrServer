@@ -18,7 +18,7 @@
 				font-size: 36px;
 				margin: 0 0 0 0;
 			}
-      #questiontypediv {
+      #uploadquestiondiv {
         margin: 16px 0 0 0;
       }
 			#optionsgroup {
@@ -94,9 +94,23 @@
       #savequiz{
         margin: 16px 0 0 0;
       }
+      paper-button.bluecls {
+        text-transform: inherit;
+        background-color: #337ab7;
+        color: #fff;
+      }
     </style>
     <div layout vertical>
-      <div layout horizontal id="questiontypediv">
+      <div id="uploadquestiondiv">
+        <div horizontal center-justified layout flex>
+          <div>
+            <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
+            <paper-input id="filename" label="Path" disabled></paper-input>
+            <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}">Upload Question</paper-button>
+          </div>
+        </div>
+      </div>
+      <div layout horizontal>
         <p class="form-heading">Question:</p>
         <paper-tabs flex id="tabs" selected="{{type}}" self-end class="transparent-teal">
           <paper-tab name='0' id='tab0'>Single</paper-tab>
@@ -158,6 +172,8 @@
       6:fill in the blanks*
       *optional for now
     */
+    var fcont = 'hello';
+    var fready = false;
   	Polymer({
       type:0,
       qtitle: '',
@@ -179,6 +195,7 @@
         savedqtimedquiz: false,
         savedqtime: 0
       },
+      fresp:'hello',
   		addoption: function(){
   			console.log("add option clicked");
         var qoption = document.createElement('question-option');
@@ -413,6 +430,63 @@
         this.qimmfeedback = this.savedqimmfeedback;
         this.qtimedquiz = this.savedqtimedquiz;
         this.qtime = this.savedqtime;
+      },
+      HandleBrowseClick: function(){
+        console.log("browse click");
+        this.$.browse.click();
+      },
+      frespChanged: function(oldValue,newValue){
+        console.log("question uploaded");
+        var fjson;
+        try {
+          fjson = JSON.parse(fcont);
+        } catch (e) {
+          console.log(e);
+          alert("File upload failed!");
+          this.$.browse.value=null;
+          return;
+        }
+
+        this.$.filename.value = this.$.browse.value.replace("C:\\fakepath\\", "");
+        this.$.browse.value=null;
+        this.savedquiztype = fjson.type;
+        this.savedqtitle = fjson.title;
+        this.savedqcontent = fjson.question;
+        this.savedOptionsList = fjson.options;
+        this.savedAnswersList = fjson.answers;
+        this.savedqimmfeedback = fjson.feedback;
+        this.savedqtimedquiz = fjson.timed;
+        this.savedqtime = fjson.time;
+
+        this.showsaved();//typeChanged(this.$.qelement.type,this.$.qelement.savedquiztype);
+      },
+      fileUploader: function(event){
+        if (event.target.readyState == FileReader.DONE) {
+          //fresp = event.target.result;
+          fcont = event.target.result;
+          //console.log(fresp);
+          fready = true;
+        }
+      },
+      Handlechange: function(e,detail,sender){
+        // Check for the various File API support.
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          // Great success! All the File APIs are supported.
+          var fReader = new FileReader();
+          fReader.readAsText(this.$.browse.files[0]);
+          //console.log(this.$.browse.files[0]);
+          fReader.onloadend = this.fileUploader;
+          fready = false;
+          console.log("file upload initiated");
+          this.async(function() {
+            if(fready==true){
+              //console.log(fcont);
+              this.fresp = fcont;
+            }
+          }, null, 1000);
+        } else {
+          alert('The File APIs are not fully supported in this browser.');
+        }
       }
   	})
   </script>
