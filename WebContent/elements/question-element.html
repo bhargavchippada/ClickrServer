@@ -99,14 +99,25 @@
         background-color: #337ab7;
         color: #fff;
       }
+      .filenamecls {
+        width: 196px;
+      }
     </style>
     <div layout vertical>
       <div id="uploadquestiondiv">
-        <div horizontal center-justified layout flex>
+        <div horizontal layout flex>
           <div>
             <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
-            <paper-input id="filename" label="Path" disabled></paper-input>
+            <paper-input class="filenamecls" id="filename" label="Path" disabled></paper-input>
             <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}">Upload Question</paper-button>
+          </div>
+          <div flex>
+            <div horizontal end-justified layout>
+              <div>
+                <paper-input class="filenamecls" id="downfilename" label="Filename"></paper-input>
+                <paper-button id="downqfilebtn" raised class="bluecls" on-click="{{HandleDownloadClick}}">Download Question</paper-button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -487,6 +498,73 @@
         } else {
           alert('The File APIs are not fully supported in this browser.');
         }
+      },
+      HandleDownloadClick: function(){
+        //https://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
+        var textToWrite = this.getQuestionAsJson();
+        var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+        var fileNameToSaveAs = this.$.downfilename.value.trim();
+        if(fileNameToSaveAs==''){
+          fileNameToSaveAs="question.json";
+        }
+
+        var downloadLink = document.createElement("a");
+        downloadLink.download = fileNameToSaveAs;
+        downloadLink.innerHTML = "Download File";
+        if (window.URL != null)
+        {
+          // Chrome allows the link to be clicked
+          // without actually adding it to the DOM.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        }
+        else
+        {
+          // Firefox requires the link to be added to the DOM
+          // before it can be clicked.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+          downloadLink.onclick = this.destroyClickedElement;
+          downloadLink.style.display = "none";
+          document.body.appendChild(downloadLink);
+        }
+
+        downloadLink.click();
+      },
+      destroyClickedElement: function(event)
+      {
+        document.body.removeChild(event.target);
+      },
+      getQuestionAsJson: function(){
+        var children = this.$.optionsgroup.querySelectorAll('question-option');
+        var optionsList=new Array();
+        var answersList=new Array();
+        var optionstr;
+        
+        if(this.type<=1){
+          for (var i=0; i<children.length; i++) {
+            optionstr=children[i].optionvalue.trim();
+            optionsList.push('"'+optionstr+'"');
+            if(children[i].checked){
+              answersList.push(true);
+            }else{
+              answersList.push(false);
+            }
+          }
+        }else if(this.type==2){
+          answersList.push(this.tfvalue);
+        }else if(this.type>=3){
+          answersList.push('"'+this.textvalue.trim()+'"');
+        }else return "";
+
+
+        var qstr = '{\n'+'"type": '+this.type+',\n'+'"title": "'+this.qtitle.trim()+'",\n'+
+                    '"question": "'+this.qcontent.trim()+'",\n'+
+                    '"options": ['+optionsList+'],\n'+
+                    '"answers": ['+answersList+'],\n'+
+                    '"feedback": '+this.qimmfeedback+',\n'+
+                    '"timed": '+this.qtimedquiz+',\n'+
+                    '"time": '+this.qtime+"\n}";
+
+        return qstr;
       }
   	})
   </script>
