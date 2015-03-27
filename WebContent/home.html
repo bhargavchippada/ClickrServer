@@ -48,11 +48,6 @@
           #quizoptions {
             margin-top: 8px;
           }
-          paper-button.bluecls {
-            text-transform: inherit;
-            background-color: #337ab7;
-            color: #fff;
-          }
         </style>
         <div id="quizcontainer" layout vertical>
           <div layout horizontal center>
@@ -60,13 +55,6 @@
               <img src="./media/inverted_launcher.png" class="logoimage">
               <p class="form-heading">Clickr</p>
               <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
-            </div>
-            <div horizontal end-justified layout flex>
-              <div>
-                <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
-                <paper-input id="filename" label="Path" disabled></paper-input>
-                <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}">Click to select file</paper-button>
-              </div>
             </div>
           </div>
           <question-element id="qelement"></question-element>
@@ -76,69 +64,7 @@
         </div>
       </template>
       <script type="text/javascript">
-        var fcont = 'hello';
-        var fready = false;
         Polymer({
-          fresp:'hello',
-          ready: function(){
-          },
-          HandleBrowseClick: function(){
-            console.log("browse click");
-            this.$.browse.click();
-          },
-          frespChanged: function(oldValue,newValue){
-            console.log("question uploaded");
-            var fjson;
-            try {
-              fjson = JSON.parse(fcont);
-            } catch (e) {
-              console.log(e);
-              alert("File upload failed!");
-              this.$.browse.value=null;
-              return;
-            }
-
-            this.$.filename.value = this.$.browse.value.replace("C:\\fakepath\\", "");
-            this.$.browse.value=null;
-            this.$.qelement.savedquiztype = fjson.type;
-            this.$.qelement.savedqtitle = fjson.title;
-            this.$.qelement.savedqcontent = fjson.question;
-            this.$.qelement.savedOptionsList = fjson.options;
-            this.$.qelement.savedAnswersList = fjson.answers;
-            this.$.qelement.savedqimmfeedback = fjson.feedback;
-            this.$.qelement.savedqtimedquiz = fjson.timed;
-            this.$.qelement.savedqtime = fjson.time;
-
-            this.$.qelement.showsaved();//typeChanged(this.$.qelement.type,this.$.qelement.savedquiztype);
-          },
-          fileUploader: function(event){
-            if (event.target.readyState == FileReader.DONE) {
-              //fresp = event.target.result;
-              fcont = event.target.result;
-              //console.log(fresp);
-              fready = true;
-            }
-          },
-          Handlechange: function(e,detail,sender){
-            // Check for the various File API support.
-            if (window.File && window.FileReader && window.FileList && window.Blob) {
-              // Great success! All the File APIs are supported.
-              var fReader = new FileReader();
-              fReader.readAsText(this.$.browse.files[0]);
-              //console.log(this.$.browse.files[0]);
-              fReader.onloadend = this.fileUploader;
-              fready = false;
-              console.log("file upload initiated");
-              this.async(function() {
-                if(fready==true){
-                  //console.log(fcont);
-                  this.fresp = fcont;
-                }
-              }, null, 1000);
-            } else {
-              alert('The File APIs are not fully supported in this browser.');
-            }
-          }
         })
       </script>
     </polymer-element>
