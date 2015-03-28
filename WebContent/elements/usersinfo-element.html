@@ -97,6 +97,8 @@
     <paper-button on-click="{{addRow}}" raised>Click</paper-button>
   </template>
   <script>
+    var jssortColumn = '0';
+    var jssortDescending = true;
     Polymer({
       usersdata:[["120050053","bhargav",[1,2],"connected","time"],["120050048","sundeep",[2,3],"done","time2"]],
       sortColumn:'0',
@@ -109,9 +111,9 @@
       ready: function(){
       },
       addRow: function(){
-        //this.usersdata.push(["120050069","sumanth",[1,3],"disconnected","time3"]);
-        this.usersdata[1][1]="yo";
-        //this.$.usersinfotemplete.iterator_.updateIteratedValue(); // Force Polymer to refresh template
+        //this.usersdata[1][1]="ao";
+        this.usersdata.push(["120050069","sumanth",[1,3],"disconnected","time3"]);
+        this.resort();
       },
       changeSort: function(e,p,o){
         var clickedSortColumn = o.id;
@@ -144,9 +146,27 @@
         var b2 = value2=='' || JSON.stringify(userinfo2).indexOf(value2) > -1;
         var b3 = value3=='' || JSON.stringify(userinfo3).indexOf(value3) > -1;
         var b4 = value4=='' || JSON.stringify(userinfo4).indexOf(value4) > -1;
-        console.log(b0,b1,b2,b3,b4);
+        //console.log(b0,b1,b2,b3,b4);
         if(b0 && b1 && b2 && b3 && b4) return false;
         else return true;
+      },
+      resort: function(){
+        jssortColumn = this.sortColumn;
+        jssortDescending = this.sortDescending;
+        this.usersdata = this.usersdata.sort(function(a, b) {
+          var x = a[jssortColumn];
+          var y = b[jssortColumn];
+       
+          if (typeof x == "string"){
+            x = x.toLowerCase(); 
+            y = y.toLowerCase();
+          }
+          if(jssortDescending){
+            return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+          }else{
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+          }
+        });
       }
     })
   </script>
