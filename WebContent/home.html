@@ -61,14 +61,15 @@
           <server-element hidden?="{{showserverele==0}}"></server-element>
           <toggle-display show="{{showquestionele}}" label="Question"></toggle-display>
           <question-element id="qelement" hidden?="{{showquestionele==0}}"></question-element>
-          <toggle-display show="1" label="Users Info"></toggle-display>
-          <usersinfo-element></usersinfo-element>
+          <toggle-display show="{{showusersinfoele}}" label="Users Info"></toggle-display>
+          <usersinfo-element hidden?="{{showusersinfoele==0}}"></usersinfo-element>
         </div>
       </template>
       <script type="text/javascript">
         Polymer({
           showserverele:1,
-          showquestionele:1
+          showquestionele:1,
+          showusersinfoele:1
         })
       </script>
     </polymer-element>

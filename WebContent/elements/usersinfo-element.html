@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="info-row.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <polymer-element name="usersinfo-element">
   <template>
   	<style>
@@ -7,20 +7,86 @@
       display: block;
       margin:16px 0 0 0;
     }
-    .lineseperator {
-      height: 1px;
-      background-color: #333;
-    }
     #rowheadings {
       font-weight: 800;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse; 
+    }
+    tr.border_top {
+      width: 100%;
+      border-top: 1px solid black;
+    }
+    td,th {
+      text-align: center;
+      width: 20%;
+      padding: 8px 0 8px 0;
+    }
+    .label {
+      color: #fff;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    .bgcolor-success {
+      background-color: #5CB85C;
+    }
+    .bgcolor-danger {
+      background-color: #D9534F;
+    }
+    .bgcolor-info {
+      background-color: #5bc0de;
+    }
+    .bgcolor-warning {
+      background-color: #f0ad4e;
+    }
+    .bgcolor-primary {
+      background-color: #337ab7;
+    }
+    .color-success {
+      color: #5CB85C;
+    }
+    .color-danger {
+      color: #D9534F;
+    }
+    .color-info {
+      color: #5bc0de;
+    }
+    .color-warning {
+      color: #f0ad4e;
+    }
+    .color-primary {
+      color: #337ab7;
+    }
 	  </style>
-    <info-row id="rowheadings" username="Roll-number" name="Name" answer="Answer" status="Status" lastupdate="Last-Update"></info-row>
-    <info-row></info-row>
-    <info-row></info-row>
+    <table>
+      <tr class="border_top">
+        <th>Roll-number</th>
+        <th>Name</th>
+        <th>Answer</th>
+        <th>Status</th>
+        <th>Last-Update</th>
+      </tr>
+      <template repeat="{{userinfo in usersdata}}">
+        <tr class="border_top">
+          <td>{{userinfo[0]}}</td>
+          <td>{{userinfo[1]}}</td>
+          <td><span class="color-success">{{userinfo[2]}}</span></td>
+          <td><span class="label bgcolor-success">{{userinfo[3]}}</span></td>
+          <td>{{userinfo[4]}}</td>
+        </tr>
+      </template>
+    </table>
+    <paper-button on-click="{{addRow}}" raised>Click</paper-button>
   </template>
   <script>
     Polymer({
+      usersdata:[["120050053","bhargav",[1,2],"connected","time"],["120050048","sundeep",[2,3],"done","time2"]],
+      ready: function(){
+      },
+      addRow: function(){
+        this.usersdata.push(["120050069","sumanth",[1,3],"disconnected","time3"]);
+      }
     })
   </script>
 </polymer-element>
