@@ -75,16 +75,16 @@
           <th id="4" on-click="{{changeSort}}" style="{{sortColumn == '4' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Last-Update</th>
         </tr>
         <tr>
-          <th class="thinput"><input id="s0" on-keyup="{{changeSearchString}}"/></th>
-          <th class="thinput"><input id="s1" on-keyup="{{changeSearchString}}"/></th>
-          <th class="thinput"><input id="s2" on-keyup="{{changeSearchString}}"/></th>
-          <th class="thinput"><input id="s3" on-keyup="{{changeSearchString}}"/></th>
-          <th class="thinput"><input id="s4" on-keyup="{{changeSearchString}}"/></th>
+          <th class="thinput"><input type="search" value="{{value0}}"/></th>
+          <th class="thinput"><input type="search" value="{{value1}}"/></th>
+          <th class="thinput"><input type="search" value="{{value2}}"/></th>
+          <th class="thinput"><input type="search" value="{{value3}}"/></th>
+          <th class="thinput"><input type="search" value="{{value4}}"/></th>
         </tr>
       </thead>
       <tbody>
-        <template id="usersinfotemplete" repeat="{{userinfo in usersdata | searchByKey(searchColumn,searchString) | sortByKey(sortColumn, sortDescending)}}">
-          <tr class="border_top">
+        <template id="usersinfotemplete" repeat="{{userinfo in usersdata | sortByKey(sortColumn, sortDescending)}}">
+          <tr class="border_top" hidden?="{{hiddenornot(userinfo[0],userinfo[1],userinfo[2],userinfo[3],userinfo[4], value0, value1, value2, value3, value4)}}">
             <td>{{userinfo[0]}}</td>
             <td>{{userinfo[1]}}</td>
             <td><span class="color-success">{{userinfo[2]}}</span></td>
@@ -101,12 +101,16 @@
       usersdata:[["120050053","bhargav",[1,2],"connected","time"],["120050048","sundeep",[2,3],"done","time2"]],
       sortColumn:'0',
       sortDescending: true,
-      searchString:'',
-      searchColumn:'0',
+      value0:'',
+      value1:'',
+      value2:'',
+      value3:'',
+      value4:'',
       ready: function(){
       },
       addRow: function(){
-        this.usersdata.push(["120050069","sumanth",[1,3],"disconnected","time3"]);
+        //this.usersdata.push(["120050069","sumanth",[1,3],"disconnected","time3"]);
+        this.usersdata[1][1]="yo";
         //this.$.usersinfotemplete.iterator_.updateIteratedValue(); // Force Polymer to refresh template
       },
       changeSort: function(e,p,o){
@@ -134,19 +138,15 @@
           }
         });
       },
-      changeSearchString : function(e,p,o){
-        //console.log(o.id[1]+" "+o.value);
-        var searchedColumn = o.id[1];
-        this.searchColumn = searchedColumn;
-        this.searchString = o.value;
-      },
-      searchByKey : function(array, key, str) {
-        return array.filter(function(a) {
-          var x = a[key];
-          //console.log(x+" "+str);
-          if(x.indexOf(str) > -1) return 1;
-          else return 0;
-        });
+      hiddenornot: function(userinfo0,userinfo1,userinfo2,userinfo3,userinfo4,value0,value1,value2,value3,value4){
+        var b0 = value0=='' || JSON.stringify(userinfo0).indexOf(value0) > -1;
+        var b1 = value1=='' || JSON.stringify(userinfo1).indexOf(value1) > -1;
+        var b2 = value2=='' || JSON.stringify(userinfo2).indexOf(value2) > -1;
+        var b3 = value3=='' || JSON.stringify(userinfo3).indexOf(value3) > -1;
+        var b4 = value4=='' || JSON.stringify(userinfo4).indexOf(value4) > -1;
+        console.log(b0,b1,b2,b3,b4);
+        if(b0 && b1 && b2 && b3 && b4) return false;
+        else return true;
       }
     })
   </script>
