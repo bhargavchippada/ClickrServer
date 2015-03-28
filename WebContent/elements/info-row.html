@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<polymer-element name="info-row">
+  <template>
+  	<style>
+    :host {
+      padding:0 0 0 0;
+      margin:16px 0 8px 0;
+      font-weight: inherit;
+    }
+    .lineseperator {
+      height: 1px;
+      background-color: #CCC;
+    }
+    #inforow {
+      margin:8px 0 8px 0;
+    }
+    span {
+      margin: 0 auto 0 auto;
+    }
+	  </style>
+    <div class="lineseperator"></div>
+    <div layout horizontal justified id="inforow">
+        <span>{{username}}</span>
+        <span>{{name}}</span>
+        <span>{{answer}}</span>
+        <span>{{status}}</span>
+        <span>{{lastupdate}}</span>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      publish:{
+        username:{
+          value:'username',
+          reflect:true
+        },
+        name:{
+          value:'name',
+          reflect:true
+        },
+        answer:{
+          value:[1,2],
+          reflect:true
+        },
+        status:{
+          value:0,
+          reflect:true
+        },
+        lastupdate:{
+          value:'17:13 PM',
+          reflect:true
+        }
+      }
+    })
+  </script>
+</polymer-element>

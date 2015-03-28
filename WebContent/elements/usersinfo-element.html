@@ -1,0 +1,26 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="info-row.html">
+<polymer-element name="usersinfo-element">
+  <template>
+  	<style>
+    :host{
+      display: block;
+      margin:16px 0 0 0;
+    }
+    .lineseperator {
+      height: 1px;
+      background-color: #333;
+    }
+    #rowheadings {
+      font-weight: 800;
+    }
+	  </style>
+    <info-row id="rowheadings" username="Roll-number" name="Name" answer="Answer" status="Status" lastupdate="Last-Update"></info-row>
+    <info-row></info-row>
+    <info-row></info-row>
+  </template>
+  <script>
+    Polymer({
+    })
+  </script>
+</polymer-element>
