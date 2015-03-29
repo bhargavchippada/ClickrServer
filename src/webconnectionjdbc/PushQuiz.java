@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import support.ServerSettings;
 import support.Utils;
 
 import com.google.gson.Gson;
@@ -20,6 +19,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import datahandler.Question;
+import datahandler.ServerSettings;
 
 public class PushQuiz extends HttpServlet{
 	private static final long serialVersionUID = 3622456660944045304L;

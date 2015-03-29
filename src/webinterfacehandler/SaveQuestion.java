@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import support.ServerSettings;
 import support.Utils;
 
 import com.google.gson.JsonArray;
@@ -18,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import datahandler.Question;
+import datahandler.ServerSettings;
 
 public class SaveQuestion extends HttpServlet{
 	String classname = "SaveQuestion";

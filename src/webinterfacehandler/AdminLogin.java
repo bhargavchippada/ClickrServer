@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import support.ServerSettings;
 import support.Utils;
 
 import com.google.gson.JsonObject;
+
+import datahandler.AdminProfile;
+import datahandler.ServerSettings;
 
 public class AdminLogin extends HttpServlet{
 
@@ -29,7 +31,7 @@ public class AdminLogin extends HttpServlet{
 		response.setContentType(ServerSettings.JSON_TYPE);
 		response.setHeader("Cache-Control", "nocache");
 
-		if(Utils.adminAuthentication(username, password)){
+		if(AdminProfile.adminAuthentication(username, password)){
 			Utils.logv(classname, "Admin log in success!");
 			HttpSession mySession = request.getSession(true);
 			mySession.setMaxInactiveInterval(-1);
