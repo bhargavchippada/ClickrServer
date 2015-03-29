@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/core-label/core-label.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="form-input.html">
 <link rel="import" href="form-expanding-input.html">
 <link rel="import" href="question-option.html">
@@ -34,20 +35,9 @@
 				background-color: #F7F7F9;
         margin: 8px 0 0 0;
 			}
-      paper-toast {
-        position: absolute;
-        text-align: center;
-        background-color: #D9534F;
-        bottom: 0 ;
-        left: 0;
-      }
       paper-button {
         text-transform: inherit;
         background-color: #F7F7F9;
-      }
-      paper-button.bluecls {
-        background-color: #337ab7;
-        color: #fff;
       }
       #truefalsediv {
         margin: 16px 0 16px 0;
@@ -99,19 +89,45 @@
         right:0;
         margin: -46px 0 0 0;
       }
-      #toast {
+      paper-toast {
         position: absolute;
+        text-align: center;
         bottom: 54px;
+        left: 0;
+      }
+      #toast {
+        background-color: #D9534F;
+      }
+      #greentoast {
+        background-color: #5CB85C;
       }
       paper-button.bluecls {
         text-transform: inherit;
         background-color: #337ab7;
         color: #fff;
       }
+      paper-button.greencls {
+        text-transform: inherit;
+        background-color: #5CB85C;
+        color: #fff;
+        width: 128px;
+        border-radius: 6px;
+        font-size: 18px;
+      }
       .filenamecls {
         width: 196px;
       }
     </style>
+    <core-ajax
+        url="../SaveQuestion"
+        params="{{params}}"
+        handleAs="json"
+        response="{{response}}"
+        contentType="application/json"
+        id="coreajax"
+        on-core-response="{{handleResponse}}"
+        error="{{errorresp}}"
+        on-core-error="{{handleError}}"></core-ajax>
     <div layout vertical>
       <div>
         <div horizontal layout flex>
@@ -177,9 +193,10 @@
           <h3>Timed Quiz</h3>
           <form-input label="Time in sec" error="Invalid time!" value="{{qtime}}" pattern='return event.charCode >= 48 && event.charCode <= 57' disabled="{{!qtimedquiz}}"></form-input>
         </core-label>
-        <custom-button id="savequiz" togglehtml0="Save Quiz" togglestate='0' on-click="{{savequizclick}}"></custom-button>
-        <custom-button id="startquiz" togglehtml0="Start Quiz" togglehtml1="Stop Quiz" togglestate='0'  on-click="{{startquizclick}}"></custom-button>
+        <paper-button id="savequiz" class="greencls" on-click="{{savequizclick}}">Save Quiz</paper-button>
+        <custom-button id="startquiz" togglehtmlf="Start Quiz" togglehtmlt="Stop Quiz" togglestate='{{startquiztoggle}}'  on-click="{{startquizclick}}"></custom-button>
         <span><paper-toast id="toast" text=""></paper-toast></span>
+        <span><paper-toast id="greentoast" text=""></paper-toast></span>
       </div>
     </div>
   </template>
@@ -216,6 +233,9 @@
       savedqtimedquiz: false,
       savedqtime: 0,
       fresp:'hello',
+      startquiztoggle: false,
+      fetch: true,
+      params:{},
   		addoption: function(){
   			console.log("add option clicked");
         var qoption = document.createElement('question-option');
@@ -275,6 +295,20 @@
         console.log("Immediate feedback: "+this.savedqimmfeedback);
         console.log("Timed Quiz: "+this.savedqtimedquiz);
         console.log("Time: "+this.savedqtime);
+
+        this.fetch = false;
+        this.params["fetch"] = this.fetch;
+        this.params["action"] = 0; // 0: save question, 1: start quiz
+        this.params["startquiztoggle"] = this.startquiztoggle;
+        this.params["type"] = this.savedquiztype;
+        this.params["title"] = this.savedqtitle;
+        this.params["question"] = this.savedqcontent;
+        this.params["options"] = JSON.stringify(this.savedOptionsList);
+        this.params["answers"] = JSON.stringify(this.savedAnswersList);
+        this.params["feedback"] = this.savedqimmfeedback;
+        this.params["timed"] = this.savedqtimedquiz;
+        this.params["time"] = this.savedqtime;
+        this.$.coreajax.go();
       },
   		validateMultipleChoice: function(){
         console.log("Multiple validation called");
@@ -574,6 +608,14 @@
                     '"time": '+this.qtime+"\n}";
 
         return qstr;
+      },
+      handleResponse: function(event, response) {
+      },
+      handleError: function(event, response) {
+        if(this.errorresp!=null){
+          this.$.toast.text="Connection with server failed!";
+          this.$.toast.show();
+        }
       }
   	})
   </script>

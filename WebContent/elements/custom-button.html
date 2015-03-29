@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<polymer-element name="custom-button" extends="paper-button" attributes="togglestate">
+<polymer-element name="custom-button" extends="paper-button">
   <template>
   	<style>
 	  	:host {
@@ -20,8 +20,13 @@
 	    	togglecolorf: "#5CB85C",
 	    	togglecolort: "#D9534F",
 	    	togglehtmlf: "Toggle 0",
-	    	togglehtmlt: "Toggle 1"
+	    	togglehtmlt: "Toggle 1",
+        togglestate: false
 	    },
+      ready: function(){
+        this.style.background=this.togglecolorf;
+        this.innerHTML=this.togglehtmlf;
+      },
 	    togglestateChanged: function(){
     		if(!this.togglestate){
     			this.style.background=this.togglecolorf;
