@@ -9,10 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import support.ServerSettings;
 import support.Utils;
 
 import com.google.gson.JsonObject;
+
+import datahandler.ServerSettings;
 
 public class QuizState extends HttpServlet{
 	String classname = "QuizState";

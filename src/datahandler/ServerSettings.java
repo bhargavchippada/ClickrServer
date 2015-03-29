@@ -1,4 +1,4 @@
-package support;
+package datahandler;
 
 public class ServerSettings {
 	public static final String clsnm = "RnD Class";

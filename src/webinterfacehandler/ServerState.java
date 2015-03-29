@@ -11,10 +11,10 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.JsonObject;
 
-import support.ServerSettings;
 import support.Utils;
 import datahandler.AdminProfile;
 import datahandler.ClassRoom;
+import datahandler.ServerSettings;
 
 public class ServerState extends HttpServlet{
 	String classname = "ServerState";
