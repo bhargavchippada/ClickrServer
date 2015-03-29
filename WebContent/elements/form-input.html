@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-input/core-input.html">
 <link rel="import" href="../bower_components/paper-input/paper-input-decorator.html">
-<polymer-element name="form-input" attributes="label error value autofocus pattern disabled">
+<polymer-element name="form-input" attributes="label error value autofocus pattern disabled type">
   <template>
 	  <style>
 	  	:host {
@@ -15,7 +15,7 @@
 	    }
 	  </style>
   	<paper-input-decorator id="decorator" label="{{label}}" floatingLabel error="{{error}}" disabled="{{disabled}}">
-      <input id="input" is="core-input" value="{{value}}" onkeypress='{{pattern}}' required>
+      <input id="input" is="core-input" value="{{value}}" onkeypress='{{pattern}}' type="{{type}}"required>
     </paper-input-decorator>
   </template>
   <<script>
