@@ -11,21 +11,23 @@ import javax.servlet.http.HttpSession;
 
 import support.Utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import datahandler.AdminProfile;
 import datahandler.ClassRoom;
 import datahandler.ServerSettings;
 
 public class UsersSettings extends HttpServlet{
+
+	private static final long serialVersionUID = -6171763349016698953L;
 	String classname = "UsersSettings";
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		Utils.logv(classname, "servlet task - start");
+		long startTime = System.currentTimeMillis();
+
 		JsonObject responseJson = new JsonObject();
 		response.setContentType(ServerSettings.JSON_TYPE);
 		response.setHeader("Cache-Control", "nocache");
@@ -48,11 +50,16 @@ public class UsersSettings extends HttpServlet{
 				}else{
 					ClassRoom.serveronline = Boolean.valueOf(request.getParameter("togglestate"));
 					ClassRoom.userslist = Integer.parseInt(request.getParameter("radioselected"));
-					if(ClassRoom.userslist == 0){
+					if(!ClassRoom.serveronline){
+						// clear up everything here, server is stopped
+						ClassRoom.clear();
+						Utils.logv(classname, "Cleaned");
+					}else if(ClassRoom.userslist == 0 && ClassRoom.serveronline){
 						Utils.logv(classname, "userslist: "+request.getParameter("userfile"));
 						AdminProfile.createClassroom("test class", request.getParameter("userfile"));
 						ClassRoom.printClass();
 					}
+					Utils.logv(classname, "request: "+ClassRoom.serveronline+" "+ClassRoom.userslist);
 					responseJson.addProperty("togglestate",ClassRoom.serveronline);
 					responseJson.addProperty("radioselected",ClassRoom.userslist);
 					responseJson.addProperty("status",1); // success
@@ -68,5 +75,10 @@ public class UsersSettings extends HttpServlet{
 		Utils.logv(classname, "response: "+responseJson.toString());
 		out.flush();
 		out.close();
+
+		Utils.logv(classname,"servlet task - end");
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+		Utils.logv(classname,elapsedTime+"ms");
 	}
 }

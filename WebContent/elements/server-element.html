@@ -49,10 +49,10 @@
       <div layout horizontal center>
         <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
         <paper-input class="filenamecls" id="filename" label="Path" disabled></paper-input>
-        <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}" disabled?="{{radioselected!='0' || radiodisable}}">Upload List</paper-button>
+        <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}" disabled?="{{radioselected!='0' || togglestate}}">Upload List</paper-button>
         <paper-radio-group id="radiogroup" selected="{{radioselected}}">
-          <paper-radio-button name="0" label="User List" disabled?="{{radiodisable}}"></paper-radio-button>
-          <paper-radio-button name="1" label="Anyone" disabled?="{{radiodisable}}"></paper-radio-button>
+          <paper-radio-button name="0" label="User List" disabled?="{{togglestate}}"></paper-radio-button>
+          <paper-radio-button name="1" label="Anyone" disabled?="{{togglestate}}"></paper-radio-button>
         </paper-radio-group>
         <div flex layout end-justified horizontal>
           <custom-button togglehtmlf="Start Server" togglehtmlt="Stop Server" togglestate="{{togglestate}}" on-click="{{clickHandler}}"></custom-button>
@@ -131,7 +131,12 @@
         this.params["fetch"] = this.fetch;
         this.params["radioselected"] = this.radioselected;
         this.params["togglestate"] = !this.togglestate;
-        this.params["userfile"] = this.userfile;
+        this.params["userfile"] = this.userfile.trim();
+        if(this.radioselected == 0 && this.userfile.trim()==''){
+          this.$.toast.text="Please upload a users list file!";
+          this.$.toast.show();
+          return;
+        }
         this.$.coreajax.go();
       }
     })
