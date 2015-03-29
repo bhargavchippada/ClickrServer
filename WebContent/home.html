@@ -11,6 +11,7 @@
     <link rel="import" href="elements/question-element.html">
     <link rel="import" href="elements/toggle-display.html">
     <link rel="import" href="elements/usersinfo-element.html">
+    <link rel="import" href="elements/usersinfo-graph.html">
     <link rel="import" href="bower_components/paper-input/paper-input.html">
     <link rel="import" href="bower_components/paper-button/paper-button.html">
     <title>Clickr Index Page</title>
@@ -63,13 +64,16 @@
           <question-element id="qelement" hidden?="{{showquestionele==0}}"></question-element>
           <toggle-display show="{{showusersinfoele}}" label="Users Info"></toggle-display>
           <usersinfo-element hidden?="{{showusersinfoele==0}}"></usersinfo-element>
+          <toggle-display show="{{showusersinfograph}}" label="Graph Info"></toggle-display>
+          <usersinfo-graph hidden?="{{showusersinfograph==0}}"></usersinfo-graph>
         </div>
       </template>
       <script type="text/javascript">
         Polymer({
           showserverele:0,
           showquestionele:0,
-          showusersinfoele:1
+          showusersinfoele:1,
+          showusersinfograph:1
         })
       </script>
     </polymer-element>
