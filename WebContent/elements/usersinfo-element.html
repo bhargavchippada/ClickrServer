@@ -5,7 +5,7 @@
   	<style>
     :host{
       display: block;
-      margin:16px 0 0 0;
+      margin:32px 0 32px 0;
     }
     #rowheadings {
       font-weight: 800;
@@ -94,7 +94,6 @@
         </template>
       </tbody>
     </table>
-    <paper-button on-click="{{addRow}}" raised>Click</paper-button>
   </template>
   <script>
     var jssortColumn = '0';
@@ -109,11 +108,6 @@
       value3:'',
       value4:'',
       ready: function(){
-      },
-      addRow: function(){
-        //this.usersdata[1][1]="ao";
-        this.usersdata.push(["120050069","sumanth",[1,3],"disconnected","time3"]);
-        this.resort();
       },
       changeSort: function(e,p,o){
         var clickedSortColumn = o.id;
