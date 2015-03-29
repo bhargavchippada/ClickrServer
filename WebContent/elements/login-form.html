@@ -50,13 +50,15 @@
         response="{{response}}"
         contentType="application/json"
         id="loginDataAuth"
-        on-core-response="{{handleResponse}}"></core-ajax>
+        on-core-response="{{handleResponse}}"
+        error="{{errorresp}}"
+        on-core-error="{{handleError}}"></core-ajax>
     <div layout vertical center>
 	    <div layout vertical>
 	    	<p class="form-title">Administrator</p>
         <p class="form-heading">Sign In</p>
         <form-input id="inp_username" label="Username" error="username is required!" value="{{login_username}}" autofocus></form-input>
-        <form-input id="inp_password" label="Password" error="password is required!" value="{{login_password}}"></form-input>
+        <form-input id="inp_password" label="Password" error="password is required!" value="{{login_password}}" type="password"></form-input>
 	    	<div>
 	    		<paper-button on-click={{submitLoginCred}}>Log In</paper-button>
 	    		<p id="error_display"></p>
@@ -83,6 +85,12 @@
 	        }else{
 	          this.$.error_display.innerHTML = this.response.error_msg;
 	        }
+      },
+      handleError: function(event, response) {
+        if(this.errorresp!=null){
+          console.log(this.errorresp.response);
+          this.$.error_display.innerHTML = this.errorresp.response;
+        }
       }
   	});
   </script>
