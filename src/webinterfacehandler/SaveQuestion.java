@@ -50,8 +50,8 @@ public class SaveQuestion extends HttpServlet{
 						responseJson.addProperty("title",Question.title);
 						responseJson.addProperty("question",Question.question);
 						responseJson.addProperty("type",Question.type);
-						responseJson.addProperty("options",Question.options.getAsString());
-						responseJson.addProperty("answers",Question.answers.getAsString());
+						responseJson.addProperty("options",Question.options.toString());
+						responseJson.addProperty("answers",Question.answers.toString());
 						responseJson.addProperty("feedback",Question.feedback);
 						responseJson.addProperty("timed",Question.timed);
 						responseJson.addProperty("time",Question.time);
@@ -59,9 +59,9 @@ public class SaveQuestion extends HttpServlet{
 						responseJson.addProperty("savedquiz",Question.savedquiz);
 						responseJson.addProperty("startquiztoggle",Question.startquiz);
 					}
+					responseJson.addProperty("fetch",true);
 					Utils.logv(classname, "fetch: true"+" "+Question.savedquiz);
 				}else{
-					Utils.logv(classname, "fetch: false"+" "+request.getParameter("options"));
 					int action = Integer.parseInt(request.getParameter("action"));
 					if(action==0){
 						//save question
@@ -75,10 +75,16 @@ public class SaveQuestion extends HttpServlet{
 						Question.feedback = Boolean.valueOf(request.getParameter("feedback"));
 						Question.timed = Boolean.valueOf(request.getParameter("timed"));
 						Question.time = Integer.parseInt(request.getParameter("time"));
-
+						
+						responseJson.addProperty("action",0);
 						Question.print();
+					}else if(action==1){
+						Question.startquiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
+						responseJson.addProperty("startquiztoggle",Question.startquiz);
+						responseJson.addProperty("action",1);
 					}
 					responseJson.addProperty("status",1); // success
+					responseJson.addProperty("fetch",false);
 				}
 			}else{
 				responseJson.addProperty("status",-1); // authentication failure

@@ -49,11 +49,18 @@ public class Question{
 	}
 	
 	public static void print(){
-		Utils.logv(classname, "content: "+question);
+		Utils.logv(classname, "savedquiz: "+savedquiz);
+		Utils.logv(classname, "title: "+title);
+		Utils.logv(classname, "question: "+question);
+		Utils.logv(classname, "type: "+type);
 		Utils.logv(classname, "Options: ");
 		for(int i=0; i<options.size();i++) Utils.logv(classname, options.get(i).toString());
 		Utils.logv(classname, "Answers: ");
 		for(int i=0; i<answers.size();i++) Utils.logv(classname, answers.get(i).toString());
+		Utils.logv(classname, "feedback: "+feedback);
+		Utils.logv(classname, "timed: "+timed);
+		Utils.logv(classname, "time: "+time);
+		Utils.logv(classname, "startquiz: "+startquiz);
 	}
 	
 	public synchronized static void incrementNumAttempts(){

@@ -268,6 +268,8 @@
       ready: function() {
         console.log("ready called");
         this.initializeMCQ();
+        this.params["fetch"] = this.fetch;
+        this.$.coreajax.go();
       },
       savequizclick: function(){
         console.log("save quiz called");
@@ -277,8 +279,6 @@
         }else if(this.type>=3 && this.validateTextual()){
         }else return;
 
-        if(this.savedquiztype!=-1) this.$.tabs.querySelector("#tab"+this.savedquiztype).className="";
-        this.$.tabs.querySelector("#tab"+this.type).setAttribute("class", "savedtab");
         this.savedquiztype = this.type;
         this.savedqcontent = this.qcontent;
         this.savedqtitle = this.qtitle.trim();
@@ -297,6 +297,7 @@
         console.log("Time: "+this.savedqtime);
 
         this.fetch = false;
+        this.params={};
         this.params["fetch"] = this.fetch;
         this.params["action"] = 0; // 0: save question, 1: start quiz
         this.params["startquiztoggle"] = this.startquiztoggle;
@@ -468,7 +469,6 @@
       showsaved: function(){
         var newValue=this.savedquiztype
         if(newValue<=1){
-          this.qcontent = this.savedqcontent;
           this.optionsList = JSON.parse(JSON.stringify(this.savedOptionsList));
           this.answersList = JSON.parse(JSON.stringify(this.savedAnswersList));
         }else if(newValue==2){
@@ -479,6 +479,7 @@
 
         if(newValue==0 || newValue==1) this.initializeMCQ();
 
+        this.qcontent = this.savedqcontent;
         this.type = this.savedquiztype;
         this.qtitle = this.savedqtitle;
         this.qimmfeedback = this.savedqimmfeedback;
@@ -609,13 +610,47 @@
 
         return qstr;
       },
+      startquizclick: function(){
+        this.fetch = false;
+        this.params={};
+        this.params["fetch"] = this.fetch;
+        this.params["action"] = 1; // 0: save question, 1: start quiz
+        this.params["startquiztoggle"] = !this.startquiztoggle;
+        this.$.coreajax.go();
+      },
       handleResponse: function(event, response) {
+        if(this.response.status==1){
+            //success
+        if(this.response.fetch){
+          if(this.response.savedquiz){
+              this.savedquiztype = this.response.type;
+              this.savedqtitle = this.response.title;
+              this.savedqcontent = this.response.question;
+              this.savedOptionsList = JSON.parse(this.response.options);
+              this.savedAnswersList = JSON.parse(this.response.answers);
+              this.savedqimmfeedback = this.response.feedback;
+              this.savedqtimedquiz = this.response.timed;
+              this.savedqtime = this.response.time;
+              this.showsaved();
+            }
+            this.startquiztoggle = this.response.startquiztoggle;
+          }else{
+            if(this.response.action==1) this.startquiztoggle = this.response.startquiztoggle;
+          }
+        }else{
+          this.$.toast.text="Connection with server failed!";
+          this.$.toast.show();
+        }
       },
       handleError: function(event, response) {
         if(this.errorresp!=null){
           this.$.toast.text="Connection with server failed!";
           this.$.toast.show();
         }
+      },
+      savedquiztypeChanged: function(oldValue,newValue){
+        if(oldValue!=-1) this.$.tabs.querySelector("#tab"+oldValue).className="";
+        this.$.tabs.querySelector("#tab"+newValue).setAttribute("class", "savedtab");
       }
   	})
   </script>
