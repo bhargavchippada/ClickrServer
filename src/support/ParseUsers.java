@@ -1,6 +1,5 @@
 package support;
 
-import java.io.File;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -11,10 +10,8 @@ import datahandler.UserProfile;
 public class ParseUsers {
 	String classname = "ParseUsers";
 	
-	public void parseFile(String path){
+	public void parseFile(String file){
 		ClassRoom.users_map.clear();
-		Utils.logv(classname, path);
-		File file = new File(path);
 	
 		try {
 			Scanner sc = new Scanner(file);
@@ -25,12 +22,12 @@ public class ParseUsers {
 				user.username = tokens.nextToken();
 				user.password = tokens.nextToken();
 				user.name = tokens.nextToken();
-				ClassRoom.addUser(user);
+				ClassRoom.users_map.put(user.username, user);
 			}
 			sc.close();
-			Utils.logv(classname, "File parsing successful");
+			Utils.logv(classname, "Users File parsing successful");
 		} catch (Exception e) {
-			Utils.logv(classname, "File parsing failed");
+			Utils.logv(classname, "Users File parsing failed");
 			e.printStackTrace();
 		}
 	}

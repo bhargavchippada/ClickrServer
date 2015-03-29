@@ -17,18 +17,18 @@
   <script>
     Polymer({
     	publish: {
-	    	togglecolor0: "#5CB85C",
-	    	togglecolor1: "#D9534F",
-	    	togglehtml0: "Toggle 0",
-	    	togglehtml1: "Toggle 1"
+	    	togglecolorf: "#5CB85C",
+	    	togglecolort: "#D9534F",
+	    	togglehtmlf: "Toggle 0",
+	    	togglehtmlt: "Toggle 1"
 	    },
 	    togglestateChanged: function(){
-    		if(this.togglestate==0){
-    			this.style.background=this.togglecolor0;
-    			this.innerHTML=this.togglehtml0;
+    		if(!this.togglestate){
+    			this.style.background=this.togglecolorf;
+    			this.innerHTML=this.togglehtmlf;
     		}else{
-    			this.style.background=this.togglecolor1;
-    			this.innerHTML=this.togglehtml1;
+    			this.style.background=this.togglecolort;
+    			this.innerHTML=this.togglehtmlt;
     		}
     	}
     })

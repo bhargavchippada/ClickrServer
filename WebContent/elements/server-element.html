@@ -1,6 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="custom-button.html">
 <polymer-element name="server-element">
   <template>
@@ -27,35 +30,58 @@
       padding-top: 0;
       padding-bottom: 0;
     }
+    #toast {
+      background-color: #D9534F;
+      color: #fff;
+    }
 	  </style>
+    <core-ajax
+        url="../UsersSettings"
+        params="{{params}}"
+        handleAs="json"
+        response="{{response}}"
+        contentType="application/json"
+        id="coreajax"
+        on-core-response="{{handleResponse}}"
+        error="{{errorresp}}"
+        on-core-error="{{handleError}}"></core-ajax>
     <div layout vertical>
       <div layout horizontal center>
         <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
+        <paper-input class="filenamecls" id="filename" label="Path" disabled></paper-input>
+        <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}" disabled?="{{radioselected!='0' || radiodisable}}">Upload List</paper-button>
         <paper-radio-group id="radiogroup" selected="{{radioselected}}">
-          <paper-radio-button name="userlist" label="User List" disabled?="{{radiodisable}}"></paper-radio-button>
-          <paper-input class="filenamecls" id="filename" label="Path" disabled></paper-input>
-          <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}" disabled?="{{radioselected!='userlist' || radiodisable}}">Upload List</paper-button>
-          <paper-radio-button name="anyone" label="Anyone" disabled?="{{radiodisable}}"></paper-radio-button>
+          <paper-radio-button name="0" label="User List" disabled?="{{radiodisable}}"></paper-radio-button>
+          <paper-radio-button name="1" label="Anyone" disabled?="{{radiodisable}}"></paper-radio-button>
         </paper-radio-group>
         <div flex layout end-justified horizontal>
-          <custom-button togglehtml0="Start Server" togglehtml1="Stop Server" togglestate='0'></custom-button>
+          <custom-button togglehtmlf="Start Server" togglehtmlt="Stop Server" togglestate="{{togglestate}}" on-click="{{clickHandler}}"></custom-button>
         </div>
       </div>
+      <span><paper-toast id="toast" text=""></paper-toast></span>
     </div>
   </template>
   <script>
-    var fcont = 'hello';
+    var fcont = "hello";
     var fready = false;
     Polymer({
       radiodisable:false,
-      radioselected:'userlist',
+      radioselected:'0',
+      fetch:true,
+      userfile:"",
+      togglestate:false,
+      params:{},
+      ready: function(){
+        this.params["fetch"] = this.fetch;
+        this.$.coreajax.go();
+      },
       HandleBrowseClick: function(){
         console.log("browse click");
         this.$.browse.click();
       },
-      frespChanged: function(oldValue,newValue){
+      userfileChanged: function(oldValue,newValue){
         console.log("user list uploaded");
-        console.log(fcont);
+        console.log(this.userfile);
         this.$.filename.value = this.$.browse.value.replace("C:\\fakepath\\", "");
         this.$.browse.value=null;
       },
@@ -78,12 +104,35 @@
           this.async(function() {
             if(fready==true){
               //console.log(fcont);
-              this.fresp = fcont;
+              this.userfile = fcont;
             }
           }, null, 1000);
         } else {
           alert('The File APIs are not fully supported in this browser.');
         }
+      },
+      handleResponse: function(event, response) {
+        if(this.response.status == 1){
+          this.radioselected = this.response.radioselected;
+          this.togglestate = this.response.togglestate;
+        }else {
+          this.$.toast.text="Authentication failed";
+          this.$.toast.show();
+        }
+      },
+      handleError: function(event, response) {
+        if(this.errorresp!=null){
+          this.$.toast.text="Connection with server failed!";
+          this.$.toast.show();
+        }
+      },
+      clickHandler: function(){
+        this.fetch = false;
+        this.params["fetch"] = this.fetch;
+        this.params["radioselected"] = this.radioselected;
+        this.params["togglestate"] = !this.togglestate;
+        this.params["userfile"] = this.userfile;
+        this.$.coreajax.go();
       }
     })
   </script>
