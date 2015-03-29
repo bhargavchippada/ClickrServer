@@ -82,7 +82,7 @@ public class Authentication extends HttpServlet{
 		JsonObject output = new JsonObject();
 		String uid = input.get("uid").getAsString();
 		String pwd = input.get("pwd").getAsString();
-		if(ServerSettings.serveronline == 1){
+		if(ClassRoom.serveronline){
 			UserProfile user = ClassRoom.users_map.get(uid);
 			if(user!=null && user.getPassword().equals(pwd)){
 		    	output.addProperty("status",2); // authentication success

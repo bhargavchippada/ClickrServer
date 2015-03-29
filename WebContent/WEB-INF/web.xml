@@ -30,9 +30,9 @@
   </servlet>
   <servlet>
     <description></description>
-    <display-name>ServerState</display-name>
-    <servlet-name>ServerState</servlet-name>
-    <servlet-class>webinterfacehandler.ServerState</servlet-class>
+    <display-name>UsersSettings</display-name>
+    <servlet-name>UsersSettings</servlet-name>
+    <servlet-class>webinterfacehandler.UsersSettings</servlet-class>
   </servlet>
   <servlet>
     <description></description>
@@ -61,8 +61,8 @@
     <url-pattern>/AdminLogin</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>ServerState</servlet-name>
-    <url-pattern>/ServerState</url-pattern>
+    <servlet-name>UsersSettings</servlet-name>
+    <url-pattern>/UsersSettings</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>QuizState</servlet-name>

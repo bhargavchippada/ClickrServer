@@ -13,8 +13,8 @@ public class AdminProfile {
 		return AdminProfile.username.equals(username) && AdminProfile.password.equals(password);
 	}
 	
-	public static void createClassroom(String clsnm, String filepath){
-		new ParseUsers().parseFile(ServerSettings.globalpath+filepath);
+	public static void createClassroom(String clsnm, String file){
+		new ParseUsers().parseFile(file);
 		if(ClassRoom.users_map.size()!=0) ClassRoom.clsnm = clsnm;
 	}
 }
