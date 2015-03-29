@@ -80,8 +80,8 @@ public class PushQuiz extends HttpServlet{
 	private JsonObject _processInput(JsonObject input, HttpServletRequest request, HttpServletResponse response) {
 		JsonObject output = new JsonObject();
 		output.addProperty("status",1);
-		output.addProperty("questionContent",Question.questionContent);
-		output.addProperty("quesType",Question.quesType);
+		output.addProperty("questionContent",Question.question);
+		output.addProperty("quesType",Question.type);
 		JsonElement joptions = (new Gson()).toJsonTree(Question.options);
 		output.add("options",joptions.getAsJsonArray());
 		return output;
