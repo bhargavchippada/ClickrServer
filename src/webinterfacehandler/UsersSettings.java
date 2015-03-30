@@ -15,7 +15,6 @@ import com.google.gson.JsonObject;
 
 import datahandler.AdminProfile;
 import datahandler.ClassRoom;
-import datahandler.ServerSettings;
 
 public class UsersSettings extends HttpServlet{
 
@@ -29,7 +28,7 @@ public class UsersSettings extends HttpServlet{
 		long startTime = System.currentTimeMillis();
 
 		JsonObject responseJson = new JsonObject();
-		response.setContentType(ServerSettings.JSON_TYPE);
+		response.setContentType(Utils.JSON_TYPE);
 		response.setHeader("Cache-Control", "nocache");
 
 		HttpSession mySession = request.getSession(false);
@@ -57,7 +56,7 @@ public class UsersSettings extends HttpServlet{
 					}else if(ClassRoom.userslist == 0 && ClassRoom.serveronline){
 						Utils.logv(classname, "userslist: "+request.getParameter("userfile"));
 						AdminProfile.createClassroom("test class", request.getParameter("userfile"));
-						ClassRoom.printClass();
+						ClassRoom.printUsers();
 					}
 					Utils.logv(classname, "request: "+ClassRoom.serveronline+" "+ClassRoom.userslist);
 					responseJson.addProperty("togglestate",ClassRoom.serveronline);

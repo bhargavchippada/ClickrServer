@@ -24,7 +24,6 @@ import com.google.gson.reflect.TypeToken;
 
 import datahandler.ClassRoom;
 import datahandler.Question;
-import datahandler.ServerSettings;
 
 public class ReceiveAnswer extends HttpServlet{
 	private static final long serialVersionUID = 5627352069489872384L;
@@ -65,14 +64,14 @@ public class ReceiveAnswer extends HttpServlet{
 		PrintWriter out = response.getWriter();
 
 		if (output != null) {
-			response.setContentType(ServerSettings.JSON_TYPE);
+			response.setContentType(Utils.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());
 		}else {
 			output = new JsonObject();
 			output.addProperty("status",3); // error processing request
-			response.setContentType(ServerSettings.JSON_TYPE);
+			response.setContentType(Utils.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());

@@ -18,7 +18,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import datahandler.ClassRoom;
-import datahandler.ServerSettings;
 import datahandler.UserProfile;
 
 // Tells whether the 
@@ -61,14 +60,14 @@ public class Authentication extends HttpServlet{
 		PrintWriter out = response.getWriter();
 		
 		if (output != null) {
-			response.setContentType(ServerSettings.JSON_TYPE);
+			response.setContentType(Utils.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());
 		}else {
 			output = new JsonObject();
 			output.addProperty("status",3); // error processing request
-			response.setContentType(ServerSettings.JSON_TYPE);
+			response.setContentType(Utils.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());

@@ -14,7 +14,6 @@ import support.Utils;
 import com.google.gson.JsonObject;
 
 import datahandler.AdminProfile;
-import datahandler.ServerSettings;
 
 public class AdminLogin extends HttpServlet{
 
@@ -28,7 +27,7 @@ public class AdminLogin extends HttpServlet{
 		String password = request.getParameter("user_password");
 
 		JsonObject responseJson = new JsonObject();
-		response.setContentType(ServerSettings.JSON_TYPE);
+		response.setContentType(Utils.JSON_TYPE);
 		response.setHeader("Cache-Control", "nocache");
 
 		if(AdminProfile.adminAuthentication(username, password)){

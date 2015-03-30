@@ -1,6 +1,7 @@
 package support;
 
 public class Utils {
+	public static String JSON_TYPE = "application/json";
 	
 	public static void logv(String classname, String msg){
 		System.out.println(classname+" : "+msg);

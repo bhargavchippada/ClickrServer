@@ -16,7 +16,6 @@ import com.google.gson.JsonParser;
 
 import datahandler.AdminProfile;
 import datahandler.Question;
-import datahandler.ServerSettings;
 
 public class SaveQuestion extends HttpServlet{
 	private static final long serialVersionUID = -1171321495906154882L;
@@ -29,7 +28,7 @@ public class SaveQuestion extends HttpServlet{
 		long startTime = System.currentTimeMillis();
 
 		JsonObject responseJson = new JsonObject();
-		response.setContentType(ServerSettings.JSON_TYPE);
+		response.setContentType(Utils.JSON_TYPE);
 		response.setHeader("Cache-Control", "nocache");
 
 		HttpSession mySession = request.getSession(false);
