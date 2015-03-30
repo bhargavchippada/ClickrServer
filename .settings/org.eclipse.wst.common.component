@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="ClickerServer">
+    <wb-module deploy-name="ClickrServer">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="context-root" value="ClickerServer"/>
-        <property name="java-output-path" value="/ClickerServer/build/classes"/>
+        <property name="java-output-path" value="/ClickrServer/build/classes"/>
+        <property name="context-root" value="ClickrServer"/>
     </wb-module>
 </project-modules>

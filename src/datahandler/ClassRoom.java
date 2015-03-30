@@ -10,11 +10,11 @@ import support.Utils;
 
 public class ClassRoom {
 	static String classname = "ClassRoom";
-	
+
 	public static String clsnm="RnD Class";
 	public static int userslist = 0; //0 means users file, 1 means anyone can join, -1 means none
 	public static boolean serveronline = false;
-	
+
 	//<username, userprofile> pair
 	public static ConcurrentHashMap<String, UserProfile> users_map = new ConcurrentHashMap<String, UserProfile>();
 	//<username, userresponse> pair
@@ -40,7 +40,7 @@ public class ClassRoom {
 			users_responsemap.put(uid, ur);
 		}
 	}
-	
+
 	public static void printUsers(){
 		synchronized (users_map) {
 			Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
@@ -75,10 +75,10 @@ public class ClassRoom {
 			}
 		}
 	}
-	
+
 	public synchronized static void clear(){
 		Utils.logv(classname, "ClassRoom is cleared");
-		
+
 		userslist = 0;
 		serveronline = false;
 		users_map.clear();
