@@ -83,7 +83,7 @@ public class Authentication extends HttpServlet{
 		String pwd = input.get("pwd").getAsString();
 		if(ClassRoom.serveronline){
 			UserProfile user = ClassRoom.users_map.get(uid);
-			if(user!=null && user.getPassword().equals(pwd)){
+			if(user!=null && user.password.equals(pwd)){
 		    	output.addProperty("status",2); // authentication success
 		    	Cookie cookie = new Cookie("uid", uid);
 		    	response.addCookie(cookie);

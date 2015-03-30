@@ -64,6 +64,7 @@ public class SaveQuestion extends HttpServlet{
 					int action = Integer.parseInt(request.getParameter("action"));
 					if(action==0){
 						//save question
+						Question.ID = Utils.nextSessionId();
 						Question.savedquiz = true;
 						Question.startquiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
 						Question.title = request.getParameter("title");

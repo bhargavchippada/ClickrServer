@@ -9,16 +9,12 @@ public class UserProfile {
 	public String username;
 	public String password;
 	public String name;
-	public String ipaddress;
-	public String SESSIONID;
-	int status = 0; //0 means hasn't logged in yet, 1 means connected, 2 means logged in
-	// 3 means started quiz, 4 means finished quiz, 5 means disconnected after logged in
+	public String ipaddress="-1";
+	public String SESSIONID="-1";
+	int status = 0; //0 means hasn't logged in (disconnected), 1 means logged in (connected)
+	// 2 means started quiz (attempting), 3 means finished quiz (completed)
 	
-	void print(){
-		Utils.logv(classname, username+","+password+","+name);
-	}
-	
-	public String getPassword(){
-		return password;
+	public void print(){
+		Utils.logv(classname, username+","+password+","+name+","+ipaddress+","+status);
 	}
 }

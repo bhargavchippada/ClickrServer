@@ -10,8 +10,10 @@ public class Question{
 	
 	public static String classname = "Question";
 	
-	public static boolean savedquiz=false; // whether or not a quiz is saved
+	public static String ID;
 	
+	public static boolean savedquiz=false; // whether or not a quiz is saved
+
 	public static String title;
 	public static String question;
 	public static int type;
@@ -29,6 +31,8 @@ public class Question{
 	public static int num_wrong=0;
 	
 	public synchronized static void clear(){
+		ID=null;
+		
 		savedquiz = false;
 		
 		title=null;
@@ -49,6 +53,7 @@ public class Question{
 	}
 	
 	public static void print(){
+		Utils.logv(classname, "Question ID: "+ID);
 		Utils.logv(classname, "savedquiz: "+savedquiz);
 		Utils.logv(classname, "title: "+title);
 		Utils.logv(classname, "question: "+question);

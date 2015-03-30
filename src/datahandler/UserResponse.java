@@ -3,7 +3,7 @@ package datahandler;
 import java.util.ArrayList;
 
 public class UserResponse {
-	public int correct;
+	public int correct=-1; // hasn't checked yet, 0 means wrong, 1 means correct
 	public ArrayList<String> answers = new ArrayList<String>();
 	
 	public String responseString(){
