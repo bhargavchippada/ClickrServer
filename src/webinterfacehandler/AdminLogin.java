@@ -40,7 +40,7 @@ public class AdminLogin extends HttpServlet{
 			Utils.logv(username, "SESSIONID: "+mySession.getId());
 			Utils.logv(username, "Username: "+mySession.getAttribute("username"));
 
-			responseJson.addProperty("url","/ClickerServer/home.html");
+			responseJson.addProperty("url","/ClickrServer/home.html");
 			responseJson.addProperty("redirectURL",true);
 		}else{
 			Utils.logv(classname, "Admin log in failed! "+username+" "+password);

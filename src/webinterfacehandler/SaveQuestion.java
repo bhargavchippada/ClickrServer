@@ -102,6 +102,5 @@ public class SaveQuestion extends HttpServlet{
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
 		Utils.logv(classname,elapsedTime+"ms");
-
 	}
 }

@@ -11,7 +11,7 @@ public class UserProfile {
 	public String name;
 	public String ipaddress="-1";
 	public String SESSIONID="-1";
-	int status = 0; //0 means hasn't logged in (disconnected), 1 means logged in (connected)
+	public int status = 0; //0 means hasn't logged in (disconnected), 1 means logged in (connected)
 	// 2 means started quiz (attempting), 3 means finished quiz (completed)
 	
 	public void print(){
