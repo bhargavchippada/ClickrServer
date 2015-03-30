@@ -3,6 +3,7 @@ package datahandler;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import support.Utils;
@@ -39,26 +40,13 @@ public class ClassRoom {
 			users_responsemap.put(uid, ur);
 		}
 	}
-
-	public static void print(){
-		synchronized (users_responsemap) {
-			Iterator it = users_responsemap.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry)it.next();
-				String key = (String)pairs.getKey();
-				UserProfile user = (UserProfile)pairs.getValue();
-				user.print();
-			}
-		}
-	}
 	
-	public static void printClass(){
+	public static void printUsers(){
 		synchronized (users_map) {
-			Iterator it = users_map.entrySet().iterator();
+			Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
 			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry)it.next();
-				String key = (String)pairs.getKey();
-				UserProfile user = (UserProfile)pairs.getValue();
+				Entry<String, UserProfile> pairs = it.next();
+				UserProfile user = pairs.getValue();
 				user.print();
 			}
 		}
@@ -90,6 +78,9 @@ public class ClassRoom {
 	
 	public synchronized static void clear(){
 		Utils.logv(classname, "ClassRoom is cleared");
+		
+		userslist = 0;
+		serveronline = false;
 		users_map.clear();
 		users_responsemap.clear();
 	}

@@ -36,12 +36,6 @@
   </servlet>
   <servlet>
     <description></description>
-    <display-name>QuizState</display-name>
-    <servlet-name>QuizState</servlet-name>
-    <servlet-class>webinterfacehandler.QuizState</servlet-class>
-  </servlet>
-  <servlet>
-    <description></description>
     <display-name>SaveQuestion</display-name>
     <servlet-name>SaveQuestion</servlet-name>
     <servlet-class>webinterfacehandler.SaveQuestion</servlet-class>
@@ -63,10 +57,6 @@
   <servlet-mapping>
     <servlet-name>UsersSettings</servlet-name>
     <url-pattern>/UsersSettings</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>QuizState</servlet-name>
-    <url-pattern>/QuizState</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>SaveQuestion</servlet-name>

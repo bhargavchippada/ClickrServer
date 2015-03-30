@@ -19,7 +19,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import datahandler.Question;
-import datahandler.ServerSettings;
 
 public class PushQuiz extends HttpServlet{
 	private static final long serialVersionUID = 3622456660944045304L;
@@ -60,14 +59,14 @@ public class PushQuiz extends HttpServlet{
 		PrintWriter out = response.getWriter();
 
 		if (output != null) {
-			response.setContentType(ServerSettings.JSON_TYPE);
+			response.setContentType(Utils.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());
 		}else {
 			output = new JsonObject();
 			output.addProperty("status",3); // error processing request
-			response.setContentType(ServerSettings.JSON_TYPE);
+			response.setContentType(Utils.JSON_TYPE);
 			response.setContentLength(output.toString().getBytes().length);
 			out.print(output);
 			Utils.logv(classname, "response: "+output.toString());
