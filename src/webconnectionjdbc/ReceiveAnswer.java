@@ -20,7 +20,9 @@ public class ReceiveAnswer extends JSONHttpServlet{
 
 	@Override
 	protected JsonObject _processInput(JsonObject input, HttpServletRequest request, HttpServletResponse response) {
+		
 		JsonObject output = new JsonObject();
+		/*
 		if(ClassRoom.users_responsemap.containsKey(input.get("uid").getAsString())){
 			output.addProperty("status",2);
 			return output;
@@ -40,6 +42,8 @@ public class ReceiveAnswer extends JSONHttpServlet{
 		Type ArrayListType = new TypeToken<ArrayList<String>>() {
 		}.getType();
 		ClassRoom.addResponse(input.get("uid").getAsString(), correct, (ArrayList<String>)gson.fromJson(answer_array,ArrayListType));
+		*/
+		
 		return output;
 	}
 	
