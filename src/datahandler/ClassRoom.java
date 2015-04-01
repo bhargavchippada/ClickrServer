@@ -1,12 +1,13 @@
 package datahandler;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import support.Utils;
+
+import com.google.gson.JsonArray;
 
 public class ClassRoom {
 	static String classname = "ClassRoom";
@@ -20,19 +21,15 @@ public class ClassRoom {
 	//<username, userresponse> pair
 	public static ConcurrentHashMap<String, UserResponse> users_responsemap = new ConcurrentHashMap<String, UserResponse>();
 
-	public static void addResponse(String uid, int correct, ArrayList<String> answers){
+	public static void addResponse(String uid, JsonArray myanswers){
 		UserResponse ur = users_responsemap.get(uid);
 		if(ur==null){
 			ur = new UserResponse();
-			ur.correct = correct;
-			ur.answers = answers;
-			int pos;
-			for(int i=0; i<answers.size(); i++){
-				pos=Integer.parseInt(answers.get(i))-1;
-				Question.updateOptionStats(pos);
-			}
+			ur.answers = myanswers;
+			ur.correct = Question.verify(myanswers);
+
 			Question.incrementNumAttempts();
-			if(correct==1){
+			if(ur.correct){
 				Question.incrementNumCorrects();
 			}else{
 				Question.incrementNumWrongs();

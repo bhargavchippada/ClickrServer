@@ -1,18 +1,19 @@
 package datahandler;
 
-import java.util.ArrayList;
+import com.google.gson.JsonArray;
 
 public class UserResponse {
-	public int correct=-1; // hasn't checked yet, 0 means wrong, 1 means correct
-	public ArrayList<String> answers = new ArrayList<String>();
-	
+	public String username;
+	public String QID;
+	public Boolean correct;
+	public int timeTook=-1; // in secs
+	public int submitTime=-1;
+	public JsonArray answers = new JsonArray();
+
 	public String responseString(){
 		String output;
-		if(correct==1) output="correct: ";
-		else output="wrong: ";
-		for(int i=0; i<answers.size();i++){
-			output+=answers.get(i)+",";
-		}
+		if(correct) output="correct\n";
+		else output="wrong\n";
 		return output;
 	}
 }
