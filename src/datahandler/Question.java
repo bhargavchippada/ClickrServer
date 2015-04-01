@@ -83,4 +83,21 @@ public class Question{
 	public synchronized static void updateOptionStats(int pos){
 		option_stat.set(pos,option_stat.get(pos)+1);
 	}
+	
+	public static boolean verify(JsonArray myanswers){
+		if(type==0){
+			int ind = myanswers.getAsInt();
+			return myanswers.get(ind).getAsBoolean();
+		}else if(type==1){
+			return myanswers.equals(answers);
+		}else if(type==2){
+			return (answers.getAsInt() == myanswers.getAsInt());
+		}else if(type==3){
+			return answers.getAsString().toLowerCase().equals(myanswers.getAsString().toLowerCase());
+		}else if(type==4){
+			return true;
+		}
+		
+		return false;
+	}
 }
