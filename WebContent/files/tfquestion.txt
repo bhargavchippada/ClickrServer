@@ -1,0 +1,12 @@
+{	
+	"type": 2,
+	"title": "Feedback",
+	"question": "Are you a boy?",
+	"options": [],
+	"answers": [true],
+	"feedback": false,
+	"timed": true,
+	"time": 60
+}
+
+
