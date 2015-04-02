@@ -102,30 +102,31 @@ public class Question{
 	}
 	
 	public static String getAnswer(){
-		String answer = "NULL";
+		String answer = "Answer:\n";
 		if(type==0){
 			for(int i=0;i<answers.size();i++){
 				if(answers.get(i).getAsBoolean()){
-					answer = (i+1)+") "+options.get(i).toString();
+					answer += (i+1)+") "+options.get(i).toString();
 				}
 			}
 		}else if(type==1){
 			for(int i=0;i<answers.size();i++){
 				if(answers.get(i).getAsBoolean()){
-					answer = (i+1)+") "+options.get(i).toString()+"\n";
+					answer += (i+1)+") "+options.get(i).toString()+"\n";
 				}
-				
 			}
 		}else if(type==2){
 			if(answers.getAsInt()==0){
-				answer="false";
+				answer+="false";
 			}else if(answers.getAsInt()==1){
-				answer="true";
+				answer+="true";
 			}
 		}else if(type==3){
-			answer = answers.getAsString();
+			answer += answers.getAsString();
 		}else if(type==4){
 			answer = answers.getAsString();
+		}else {
+			answer += "NULL";
 		}
 		
 		Utils.logv(classname, answer);

@@ -50,6 +50,8 @@ public class ReceiveAnswer extends JSONHttpServlet{
 
 						output.addProperty("status",3); //response added
 						output.addProperty("feedback", userresp.responseString()+Question.getAnswer());
+						
+						userresp.print();
 					}
 				}else{
 					output.addProperty("status",0); //not authorized
