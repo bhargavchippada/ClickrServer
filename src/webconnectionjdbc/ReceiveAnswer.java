@@ -1,18 +1,15 @@
 package webconnectionjdbc;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import datahandler.ClassRoom;
 import datahandler.Question;
+import datahandler.UserProfile;
+import datahandler.UserResponse;
 
 public class ReceiveAnswer extends JSONHttpServlet{
 	private static final long serialVersionUID = 5627352069489872384L;
@@ -20,33 +17,49 @@ public class ReceiveAnswer extends JSONHttpServlet{
 
 	@Override
 	protected JsonObject _processInput(JsonObject input, HttpServletRequest request, HttpServletResponse response) {
-		
+
+		HttpSession mySession = request.getSession(false);
+
+		String uid = input.get("uid").getAsString();
+
 		JsonObject output = new JsonObject();
-		/*
-		if(ClassRoom.users_responsemap.containsKey(input.get("uid").getAsString())){
-			output.addProperty("status",2);
-			return output;
+		if(mySession==null){
+			output.addProperty("status",0); //not authorized
+		}else if(!Question.startquiz || !Question.savedquiz || !(ClassRoom.serveronline)){
+			output.addProperty("status",1); //something happened to quiz
+		}else{
+			Object username = mySession.getAttribute("username");
+			Object password = mySession.getAttribute("password");
+
+			if(username!=null && password!=null){
+				UserProfile user = ClassRoom.users_map.get((String)username);
+				if(user!=null && user.password.equals((String) password) && uid.equals((String) username)){
+
+					UserResponse userresp = ClassRoom.users_responsemap.get((String)username);
+
+					if(userresp!=null){
+						output.addProperty("status",2); // already attempted the quiz
+						return output;
+					}else{
+						userresp = new UserResponse();
+						userresp.username = (String) username;
+						userresp.answers = input.get("myanswer").getAsJsonArray();
+						userresp.correct = Question.verify(userresp.answers);
+						ClassRoom.users_responsemap.put(userresp.username, userresp);
+						user.status = 3; //finished quiz
+
+						output.addProperty("status",3); //response added
+						output.addProperty("feedback", userresp.responseString()+Question.getAnswer());
+					}
+				}else{
+					output.addProperty("status",0); //not authorized
+				}
+			}
 		}
 
-		output.addProperty("status",1);
-		int correct;
-		JsonArray answer_array = input.get("answer").getAsJsonArray();
-		if(Question.answers.get(0).equals(answer_array.get(0).getAsString())){
-			correct=1;
-		}else{
-			correct=0;
-		}
-		output.addProperty("correct", correct);
-		Gson gson = new Gson();
-		output.add("answer", gson.toJsonTree(Question.answers).getAsJsonArray());
-		Type ArrayListType = new TypeToken<ArrayList<String>>() {
-		}.getType();
-		ClassRoom.addResponse(input.get("uid").getAsString(), correct, (ArrayList<String>)gson.fromJson(answer_array,ArrayListType));
-		*/
-		
 		return output;
 	}
-	
+
 	@Override
 	public String getClassname() {
 		return classname;
