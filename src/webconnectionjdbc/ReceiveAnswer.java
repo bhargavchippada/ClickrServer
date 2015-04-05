@@ -26,7 +26,7 @@ public class ReceiveAnswer extends JSONHttpServlet{
 		if(mySession==null || !(ClassRoom.serveronline)){
 			output.addProperty("status",0); //not authorized
 		}else if(!Question.startquiz || !Question.savedquiz){
-			output.addProperty("status",1); //something happened to quiz
+			output.addProperty("status",1); //something happened to quiz, its over
 		}else{
 			Object username = mySession.getAttribute("username");
 			Object password = mySession.getAttribute("password");
@@ -44,7 +44,7 @@ public class ReceiveAnswer extends JSONHttpServlet{
 						String qid = input.get("qid").getAsString();
 						
 						if(!qid.equals(Question.ID)){
-							output.addProperty("status",4); //the question ids are not matching
+							output.addProperty("status",1); //the question ids are not matching
 						}else{
 							userresp = new UserResponse();
 							userresp.username = (String) username;
