@@ -115,7 +115,7 @@
         font-size: 18px;
       }
       .filenamecls {
-        width: 196px;
+        width: 128px;
       }
     </style>
     <core-ajax
@@ -133,15 +133,12 @@
         <div horizontal layout flex>
           <div>
             <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
-            <paper-input class="filenamecls" id="filename" label="Path" disabled></paper-input>
+            <paper-input class="filenamecls" id="filename" label="question file" disabled></paper-input>
             <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}">Upload Question</paper-button>
           </div>
-          <div flex>
-            <div horizontal end-justified layout>
-              <div>
-                <paper-input class="filenamecls" id="downfilename" label="Filename"></paper-input>
-                <paper-button id="downqfilebtn" raised class="bluecls" on-click="{{HandleDownloadClick}}">Download Question</paper-button>
-              </div>
+          <div flex horizontal end-justified layout center>
+            <div>
+              <paper-button id="downqfilebtn" raised class="bluecls" on-click="{{HandleDownloadClick}}">Download</paper-button>
             </div>
           </div>
         </div>
@@ -547,7 +544,7 @@
         //https://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
         var textToWrite = this.getQuestionAsJson();
         var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-        var fileNameToSaveAs = this.$.downfilename.value.trim();
+        var fileNameToSaveAs = this.qtitle.trim();
         if(fileNameToSaveAs==''){
           fileNameToSaveAs="question.json";
         }
