@@ -91,7 +91,7 @@ public class Question{
 		}else if(type==1){
 			return myanswers.equals(answers);
 		}else if(type==2){
-			return (answers.getAsInt() == myanswers.getAsInt());
+			return (answers.getAsBoolean() == myanswers.getAsBoolean());
 		}else if(type==3){
 			return answers.getAsString().toLowerCase().equals(myanswers.getAsString().toLowerCase());
 		}else if(type==4){
@@ -116,9 +116,9 @@ public class Question{
 				}
 			}
 		}else if(type==2){
-			if(answers.getAsInt()==0){
+			if(!answers.getAsBoolean()){
 				answer+="false";
-			}else if(answers.getAsInt()==1){
+			}else if(answers.getAsBoolean()){
 				answer+="true";
 			}
 		}else if(type==3){
