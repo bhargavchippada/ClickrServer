@@ -79,8 +79,15 @@ public class SaveQuestion extends HttpServlet{
 						responseJson.addProperty("action",0);
 						Question.print();
 					}else if(action==1){
-						Question.startquiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
-						responseJson.addProperty("startquiztoggle",Question.startquiz);
+						boolean squiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
+						if(!Question.savedquiz && squiz){
+							responseJson.addProperty("startquiztoggle",false);
+							responseJson.addProperty("error",1); // failed since there is not saved quiz
+						}else{
+							Question.startquiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
+							responseJson.addProperty("startquiztoggle",Question.startquiz);
+							responseJson.addProperty("error",0); //no error
+						}
 						responseJson.addProperty("action",1);
 					}
 					responseJson.addProperty("status",1); // success

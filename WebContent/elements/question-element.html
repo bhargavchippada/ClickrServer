@@ -92,7 +92,7 @@
       paper-toast {
         position: absolute;
         text-align: center;
-        bottom: 54px;
+        bottom: 72px;
         left: 0;
       }
       #toast {
@@ -632,7 +632,17 @@
             }
             this.startquiztoggle = this.response.startquiztoggle;
           }else{
-            if(this.response.action==1) this.startquiztoggle = this.response.startquiztoggle;
+            if(this.response.action==1) {
+              if(this.response.error==0){
+                this.startquiztoggle = this.response.startquiztoggle;
+              }else{
+                this.$.toast.text="Please save a question first!";
+                this.$.toast.show();
+              }
+            }else if(this.response.action==0){
+              this.$.greentoast.text="Quiz saved successfully!";
+              this.$.greentoast.show();
+            }
           }
         }else{
           this.$.toast.text="Connection with server failed!";
