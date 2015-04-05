@@ -48,7 +48,7 @@
     <div layout vertical>
       <div layout horizontal center>
         <input type="file" id="browse" name="fileupload" style="display: none" on-change="{{Handlechange}}"/>
-        <paper-input class="filenamecls" id="filename" label="Path" disabled></paper-input>
+        <paper-input class="filenamecls" id="filename" label="user file" disabled></paper-input>
         <paper-button id="fakeBrowse" raised class="bluecls" on-click="{{HandleBrowseClick}}" disabled?="{{radioselected!='0' || togglestate}}">Upload List</paper-button>
         <paper-radio-group id="radiogroup" selected="{{radioselected}}">
           <paper-radio-button name="0" label="User List" disabled?="{{togglestate}}"></paper-radio-button>
