@@ -44,6 +44,7 @@ public class UsersSettings extends HttpServlet{
 				boolean fetch = (boolean) Boolean.valueOf(request.getParameter("fetch"));
 				if(fetch){
 					responseJson.addProperty("status",1); // success
+					responseJson.addProperty("error",0); //no error
 					responseJson.addProperty("togglestate",ClassRoom.serveronline);
 					responseJson.addProperty("radioselected",ClassRoom.userslist);
 					Utils.logv(classname, "fetch: true");
@@ -59,7 +60,9 @@ public class UsersSettings extends HttpServlet{
 						if(!ClassRoom.serveronline){
 							// clear up everything here, server is stopped
 							ClassRoom.clear();
-							Utils.logv(classname, "Cleaned");
+							Question.clear();
+							Utils.logv(classname, "Classroom Cleaned");
+							Utils.logv(classname, "Question Cleaned");
 						}else if(ClassRoom.userslist == 0 && ClassRoom.serveronline){
 							Utils.logv(classname, "userslist: "+request.getParameter("userfile"));
 							AdminProfile.createClassroom("test class", request.getParameter("userfile"));

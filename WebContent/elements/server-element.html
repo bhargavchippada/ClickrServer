@@ -137,7 +137,7 @@
         this.params["radioselected"] = this.radioselected;
         this.params["togglestate"] = !this.togglestate;
         this.params["userfile"] = this.userfile.trim();
-        if(this.radioselected == 0 && this.userfile.trim()==''){
+        if(!this.togglestate && this.radioselected == 0 && this.userfile.trim()==''){
           this.$.toast.text="Please upload a users list file!";
           this.$.toast.show();
           return;

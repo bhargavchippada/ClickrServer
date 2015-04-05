@@ -5,8 +5,8 @@
 	"options": [],
 	"answers": [true],
 	"feedback": false,
-	"timed": true,
-	"time": 60
+	"timed": false,
+	"time": 0
 }
 
 
