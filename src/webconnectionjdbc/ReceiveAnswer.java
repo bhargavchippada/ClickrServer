@@ -41,22 +41,28 @@ public class ReceiveAnswer extends JSONHttpServlet{
 						output.addProperty("status",2); // already attempted the quiz
 						return output;
 					}else{
-						userresp = new UserResponse();
-						userresp.username = (String) username;
-						userresp.answers = input.get("myanswer").getAsJsonArray();
-						userresp.correct = Question.verify(userresp.answers);
-						userresp.QID = input.get("qid").getAsString();
-						userresp.startTime = input.get("starttime").getAsLong();
-						userresp.submitTime = input.get("submittime").getAsLong();
-						userresp.timeTook = input.get("timetook").getAsLong();
+						String qid = input.get("qid").getAsString();
 						
-						ClassRoom.users_responsemap.put(userresp.username, userresp);
-						user.status = 3; //finished quiz
-
-						output.addProperty("status",3); //response added
-						output.addProperty("feedback", userresp.responseString()+Question.getAnswer());
-						
-						userresp.print();
+						if(!qid.equals(Question.ID)){
+							output.addProperty("status",4); //the question ids are not matching
+						}else{
+							userresp = new UserResponse();
+							userresp.username = (String) username;
+							userresp.answers = input.get("myanswer").getAsJsonArray();
+							userresp.correct = Question.verify(userresp.answers);
+							userresp.QID = input.get("qid").getAsString();
+							userresp.startTime = input.get("starttime").getAsLong();
+							userresp.submitTime = input.get("submittime").getAsLong();
+							userresp.timeTook = input.get("timetook").getAsLong();
+							
+							ClassRoom.addResponse(userresp);
+							user.status = 3; //finished quiz
+	
+							output.addProperty("status",3); //response added
+							output.addProperty("feedback", userresp.responseString()+Question.getAnswer());
+							
+							userresp.print();
+						}
 					}
 				}else{
 					output.addProperty("status",0); //not authorized

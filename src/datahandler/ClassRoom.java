@@ -7,8 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import support.Utils;
 
-import com.google.gson.JsonArray;
-
 public class ClassRoom {
 	static String classname = "ClassRoom";
 
@@ -21,21 +19,14 @@ public class ClassRoom {
 	//<username, userresponse> pair
 	public static ConcurrentHashMap<String, UserResponse> users_responsemap = new ConcurrentHashMap<String, UserResponse>();
 
-	public static void addResponse(String uid, JsonArray myanswers){
-		UserResponse ur = users_responsemap.get(uid);
-		if(ur==null){
-			ur = new UserResponse();
-			ur.answers = myanswers;
-			ur.correct = Question.verify(myanswers);
-
-			Question.incrementNumAttempts();
-			if(ur.correct){
-				Question.incrementNumCorrects();
-			}else{
-				Question.incrementNumWrongs();
-			}
-			users_responsemap.put(uid, ur);
+	public static void addResponse(UserResponse ur){
+		Question.incrementNumAttempts();
+		if(ur.correct){
+			Question.incrementNumCorrects();
+		}else{
+			Question.incrementNumWrongs();
 		}
+		users_responsemap.put(ur.username, ur);
 	}
 
 	public static void printUsers(){
@@ -68,7 +59,7 @@ public class ClassRoom {
 				Map.Entry pairs = (Map.Entry)it.next();
 				String key = (String)pairs.getKey();
 				UserResponse user = (UserResponse)pairs.getValue();
-				System.out.println(key+" "+user.responseString());
+				System.out.println(key+" "+user.answers.toString());
 			}
 		}
 	}
@@ -79,6 +70,19 @@ public class ClassRoom {
 		userslist = 0;
 		serveronline = false;
 		users_map.clear();
+		users_responsemap.clear();
+	}
+	
+	public synchronized static void reset(){
+		synchronized (users_map) {
+			Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<String, UserProfile> pairs = it.next();
+				UserProfile user = pairs.getValue();
+				user.reset();
+			}
+		}
+		
 		users_responsemap.clear();
 	}
 }
