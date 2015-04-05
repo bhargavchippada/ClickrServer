@@ -1,0 +1,10 @@
+{	
+	"type": 3,
+	"title": "word answer question",
+	"question": "The process of conversion of solid to gas directly is called?",
+	"options": [],
+	"answers": ["sublimation"],
+	"feedback": true,
+	"timed": true,
+	"time": 60
+}

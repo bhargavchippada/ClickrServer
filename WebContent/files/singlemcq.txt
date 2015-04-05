@@ -1,6 +1,6 @@
 {	
 	"type": 0,
-	"title": "Feedback",
+	"title": "Single answer MCQ",
 	"question": "who is the president of USA?",
 	"options": ["George Bush","Bill Clinton","Barack Obama"],
 	"answers": [false,false,true],
@@ -8,5 +8,3 @@
 	"timed": true,
 	"time": 60
 }
-
-
