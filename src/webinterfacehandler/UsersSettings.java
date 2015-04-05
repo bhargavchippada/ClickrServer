@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 
 import datahandler.AdminProfile;
 import datahandler.ClassRoom;
+import datahandler.Question;
 
 public class UsersSettings extends HttpServlet{
 
@@ -47,21 +48,29 @@ public class UsersSettings extends HttpServlet{
 					responseJson.addProperty("radioselected",ClassRoom.userslist);
 					Utils.logv(classname, "fetch: true");
 				}else{
-					ClassRoom.serveronline = Boolean.valueOf(request.getParameter("togglestate"));
-					ClassRoom.userslist = Integer.parseInt(request.getParameter("radioselected"));
-					if(!ClassRoom.serveronline){
-						// clear up everything here, server is stopped
-						ClassRoom.clear();
-						Utils.logv(classname, "Cleaned");
-					}else if(ClassRoom.userslist == 0 && ClassRoom.serveronline){
-						Utils.logv(classname, "userslist: "+request.getParameter("userfile"));
-						AdminProfile.createClassroom("test class", request.getParameter("userfile"));
-						ClassRoom.printUsers();
+					boolean serverstate = Boolean.valueOf(request.getParameter("togglestate"));
+					
+					if(!serverstate && Question.startquiz){
+						responseJson.addProperty("error",1); // cannot stop because quiz is running
+						responseJson.addProperty("status",1); // success
+					}else{
+						ClassRoom.serveronline = Boolean.valueOf(request.getParameter("togglestate"));
+						ClassRoom.userslist = Integer.parseInt(request.getParameter("radioselected"));
+						if(!ClassRoom.serveronline){
+							// clear up everything here, server is stopped
+							ClassRoom.clear();
+							Utils.logv(classname, "Cleaned");
+						}else if(ClassRoom.userslist == 0 && ClassRoom.serveronline){
+							Utils.logv(classname, "userslist: "+request.getParameter("userfile"));
+							AdminProfile.createClassroom("test class", request.getParameter("userfile"));
+							ClassRoom.printUsers();
+						}
+						Utils.logv(classname, "request: "+ClassRoom.serveronline+" "+ClassRoom.userslist);
+						responseJson.addProperty("togglestate",ClassRoom.serveronline);
+						responseJson.addProperty("radioselected",ClassRoom.userslist);
+						responseJson.addProperty("status",1); // success
+						responseJson.addProperty("error",0); //no error
 					}
-					Utils.logv(classname, "request: "+ClassRoom.serveronline+" "+ClassRoom.userslist);
-					responseJson.addProperty("togglestate",ClassRoom.serveronline);
-					responseJson.addProperty("radioselected",ClassRoom.userslist);
-					responseJson.addProperty("status",1); // success
 				}
 			}else{
 				responseJson.addProperty("status",-1); // authentication failure

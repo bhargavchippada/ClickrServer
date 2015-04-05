@@ -5,7 +5,7 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="custom-button.html">
-<polymer-element name="server-element">
+<polymer-element name="server-element" attributes="startquiztoggle">
   <template>
   	<style>
     .user-heading {
@@ -113,8 +113,13 @@
       },
       handleResponse: function(event, response) {
         if(this.response.status == 1){
-          this.radioselected = this.response.radioselected;
-          this.togglestate = this.response.togglestate;
+          if(this.response.error==0){
+            this.radioselected = this.response.radioselected;
+            this.togglestate = this.response.togglestate;
+          }else if(this.response.error==1){
+            this.$.toast.text="Cannot stop server while quiz is running!!";
+            this.$.toast.show();
+          }
         }else {
           this.$.toast.text="Authentication failed";
           this.$.toast.show();

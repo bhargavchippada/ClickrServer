@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import datahandler.AdminProfile;
+import datahandler.ClassRoom;
 import datahandler.Question;
 
 public class SaveQuestion extends HttpServlet{
@@ -80,7 +81,10 @@ public class SaveQuestion extends HttpServlet{
 						Question.print();
 					}else if(action==1){
 						boolean squiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
-						if(!Question.savedquiz && squiz){
+						if(!ClassRoom.serveronline){
+							responseJson.addProperty("startquiztoggle",false);
+							responseJson.addProperty("error",2); // failed since server was not started
+						}else if(!Question.savedquiz && squiz){
 							responseJson.addProperty("startquiztoggle",false);
 							responseJson.addProperty("error",1); // failed since there is not saved quiz
 						}else{

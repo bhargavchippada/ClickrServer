@@ -229,8 +229,8 @@
       savedqimmfeedback: false,
       savedqtimedquiz: false,
       savedqtime: 0,
-      fresp:'hello',
       startquiztoggle: false,
+      fresp:'hello',
       fetch: true,
       params:{},
   		addoption: function(){
@@ -271,10 +271,23 @@
       savequizclick: function(){
         console.log("save quiz called");
 
+        if(this.startquiztoggle){
+          this.$.toast.text="Cannot save question while quiz is running!";
+          this.$.toast.show();
+          return;
+        }
+
         if(this.type<=1 && this.validateMultipleChoice()){
         }else if(this.type==2 && this.validateTrueFalse()){
         }else if(this.type>=3 && this.validateTextual()){
         }else return;
+
+
+        if(this.qtimedquiz && this.qtime<=0){
+          this.$.toast.text="Please give valid quiz time!";
+          this.$.toast.show();
+          return;
+        }
 
         this.savedquiztype = this.type;
         this.savedqcontent = this.qcontent;
@@ -635,8 +648,11 @@
             if(this.response.action==1) {
               if(this.response.error==0){
                 this.startquiztoggle = this.response.startquiztoggle;
-              }else{
+              }else if(this.response.error==1){
                 this.$.toast.text="Please save a question first!";
+                this.$.toast.show();
+              }else if(this.response.error==2){
+                this.$.toast.text="Please start server first!";
                 this.$.toast.show();
               }
             }else if(this.response.action==0){
