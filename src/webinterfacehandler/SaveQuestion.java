@@ -86,9 +86,14 @@ public class SaveQuestion extends HttpServlet{
 							responseJson.addProperty("error",2); // failed since server was not started
 						}else if(!Question.savedquiz && squiz){
 							responseJson.addProperty("startquiztoggle",false);
-							responseJson.addProperty("error",1); // failed since there is not saved quiz
+							responseJson.addProperty("error",1); // failed since there is no saved quiz
 						}else{
 							Question.startquiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
+							if(Question.startquiz){
+								//started quiz, classroom has to be reset
+								ClassRoom.reset();
+								Utils.logv(classname, "Classroom reset!");								
+							}
 							responseJson.addProperty("startquiztoggle",Question.startquiz);
 							responseJson.addProperty("error",0); //no error
 						}

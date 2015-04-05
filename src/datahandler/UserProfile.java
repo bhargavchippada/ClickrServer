@@ -17,4 +17,10 @@ public class UserProfile {
 	public void print(){
 		Utils.logv(classname, username+","+password+","+name+","+ipaddress+","+status);
 	}
+	
+	public void reset(){
+		ipaddress="-1";
+		SESSIONID="-1";
+		status=0;
+	}
 }
