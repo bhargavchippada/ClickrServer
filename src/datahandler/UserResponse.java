@@ -11,8 +11,9 @@ public class UserResponse {
 	public String username="NULL";
 	public String QID="NULL";
 	public Boolean correct=false;
-	public int timeTook=-1; // in secs
-	public int submitTime=-1;
+	public long startTime=-1;
+	public long timeTook=-1; // in secs
+	public long submitTime=-1;
 	public JsonArray answers = new JsonArray();
 
 	public String responseString(){
@@ -26,8 +27,9 @@ public class UserResponse {
 		Utils.logv(classname, "username: "+username);
 		Utils.logv(classname, "QID: "+QID);
 		Utils.logv(classname, "correct: "+correct);
-		Utils.logv(classname, "timeTook: "+timeTook);
+		Utils.logv(classname, "startTime: "+startTime);
 		Utils.logv(classname, "submitTime: "+submitTime);
+		Utils.logv(classname, "timeTook: "+timeTook);
 		Utils.logv(classname, "answers: "+answers);
 	}
 }

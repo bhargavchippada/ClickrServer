@@ -23,9 +23,9 @@ public class ReceiveAnswer extends JSONHttpServlet{
 		String uid = input.get("uid").getAsString();
 
 		JsonObject output = new JsonObject();
-		if(mySession==null){
+		if(mySession==null || !(ClassRoom.serveronline)){
 			output.addProperty("status",0); //not authorized
-		}else if(!Question.startquiz || !Question.savedquiz || !(ClassRoom.serveronline)){
+		}else if(!Question.startquiz || !Question.savedquiz){
 			output.addProperty("status",1); //something happened to quiz
 		}else{
 			Object username = mySession.getAttribute("username");
@@ -37,7 +37,7 @@ public class ReceiveAnswer extends JSONHttpServlet{
 
 					UserResponse userresp = ClassRoom.users_responsemap.get((String)username);
 
-					if(userresp!=null){
+					if(userresp!=null && Question.savedquiz && userresp.QID.equals(Question.ID)){
 						output.addProperty("status",2); // already attempted the quiz
 						return output;
 					}else{
@@ -45,6 +45,11 @@ public class ReceiveAnswer extends JSONHttpServlet{
 						userresp.username = (String) username;
 						userresp.answers = input.get("myanswer").getAsJsonArray();
 						userresp.correct = Question.verify(userresp.answers);
+						userresp.QID = input.get("qid").getAsString();
+						userresp.startTime = input.get("starttime").getAsLong();
+						userresp.submitTime = input.get("submittime").getAsLong();
+						userresp.timeTook = input.get("timetook").getAsLong();
+						
 						ClassRoom.users_responsemap.put(userresp.username, userresp);
 						user.status = 3; //finished quiz
 

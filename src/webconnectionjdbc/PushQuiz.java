@@ -35,8 +35,10 @@ public class PushQuiz extends JSONHttpServlet{
 				if(user!=null && user.password.equals((String) password) && uid.equals((String) username)){
 
 					UserResponse userresp = ClassRoom.users_responsemap.get((String)username);
-					
-					if(userresp==null || (Question.savedquiz && userresp.QID!=Question.ID)){
+					if(userresp==null || (Question.savedquiz && !userresp.QID.equals(Question.ID))){
+						
+						if(userresp!=null) userresp.print();
+						
 						output.addProperty("status",2); //user quiz can start
 						user.status = 2;
 						output.addProperty("qid", Question.ID);
