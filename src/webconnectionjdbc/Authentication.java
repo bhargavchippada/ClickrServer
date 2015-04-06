@@ -39,7 +39,7 @@ public class Authentication extends JSONHttpServlet {
 
 				output.addProperty("status",2); // authentication success
 				output.addProperty("name", user.name);
-				output.addProperty("clsnm", ClassRoom.clsnm);
+				output.addProperty("clsnm", ClassRoom.clsname);
 				output.addProperty("ip", user.ipaddress);
 			}else{
 				output.addProperty("status", 1); // authentication failed

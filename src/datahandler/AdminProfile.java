@@ -15,6 +15,6 @@ public class AdminProfile {
 	
 	public static void createClassroom(String clsnm, String file){
 		new ParseUsers().parseFile(file);
-		ClassRoom.clsnm = clsnm;
+		ClassRoom.clsname = clsnm;
 	}
 }

@@ -47,6 +47,7 @@ public class UsersSettings extends HttpServlet{
 					responseJson.addProperty("error",0); //no error
 					responseJson.addProperty("togglestate",ClassRoom.serveronline);
 					responseJson.addProperty("radioselected",ClassRoom.userslist);
+					responseJson.addProperty("clsname",ClassRoom.clsname);
 					Utils.logv(classname, "fetch: true");
 				}else{
 					boolean serverstate = Boolean.valueOf(request.getParameter("togglestate"));
@@ -57,6 +58,7 @@ public class UsersSettings extends HttpServlet{
 					}else{
 						ClassRoom.serveronline = Boolean.valueOf(request.getParameter("togglestate"));
 						ClassRoom.userslist = Integer.parseInt(request.getParameter("radioselected"));
+						ClassRoom.clsname = request.getParameter("clsname");
 						if(!ClassRoom.serveronline){
 							// clear up everything here, server is stopped
 							ClassRoom.clear();
@@ -65,12 +67,13 @@ public class UsersSettings extends HttpServlet{
 							Utils.logv(classname, "Question Cleaned");
 						}else if(ClassRoom.userslist == 0 && ClassRoom.serveronline){
 							Utils.logv(classname, "userslist: "+request.getParameter("userfile"));
-							AdminProfile.createClassroom("test class", request.getParameter("userfile"));
+							AdminProfile.createClassroom(ClassRoom.clsname, request.getParameter("userfile"));
 							ClassRoom.printUsers();
 						}
 						Utils.logv(classname, "request: "+ClassRoom.serveronline+" "+ClassRoom.userslist);
 						responseJson.addProperty("togglestate",ClassRoom.serveronline);
 						responseJson.addProperty("radioselected",ClassRoom.userslist);
+						responseJson.addProperty("clsname",ClassRoom.clsname);
 						responseJson.addProperty("status",1); // success
 						responseJson.addProperty("error",0); //no error
 					}
