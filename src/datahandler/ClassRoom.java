@@ -5,10 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import support.Utils;
+
+import com.google.gson.JsonArray;
 
 public class ClassRoom {
 	static String classname = "ClassRoom";
@@ -30,6 +29,7 @@ public class ClassRoom {
 			Question.incrementNumWrongs();
 		}
 		users_responsemap.put(ur.username, ur);
+		Question.incrementOptionStats(ur.answers);
 	}
 
 	public static void printUsers(){
