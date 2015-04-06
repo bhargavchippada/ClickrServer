@@ -94,7 +94,8 @@
           <th id="1" on-click="{{changeSort}}" style="{{sortColumn == '1' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Name</th>
           <th id="5" on-click="{{changeSort}}" style="{{sortColumn == '5' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Answer</th>
           <th id="2" on-click="{{changeSort}}" style="{{sortColumn == '2' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Status</th>
-          <th id="3" on-click="{{changeSort}}" style="{{sortColumn == '3' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Last-Update</th>
+          <th id="3" on-click="{{changeSort}}" style="{{sortColumn == '3' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">LastUpdate</th>
+          <th id="6" hidden?="{{!timed}}" on-click="{{changeSort}}" style="{{sortColumn == '6' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">TimeTook</th>
         </tr>
         <tr>
           <th class="thinput"><input type="search" value="{{value0}}"/></th>
@@ -102,16 +103,18 @@
           <th class="thinput"><input type="search" value="{{value2}}"/></th>
           <th class="thinput"><input type="search" value="{{value3}}"/></th>
           <th class="thinput"><input type="search" value="{{value4}}"/></th>
+          <th class="thinput" hidden?="{{!timed}}"><input type="search" value="{{value5}}"/></th>
         </tr>
       </thead>
       <tbody>
         <template id="usersinfotemplete" repeat="{{userinfo in usersdata | sortByKey(sortColumn, sortDescending)}}">
-          <tr class="border_top" hidden?="{{hiddenornot(userinfo[0],userinfo[1],userinfo[5],getstatus(userinfo[2],userinfo[4]),userinfo[3], value0, value1, value2, value3, value4)}}">
+          <tr class="border_top" hidden?="{{hiddenornot(userinfo[0],userinfo[1],userinfo[5],getstatus(userinfo[2],userinfo[4]),userinfo[3],userinfo[6], value0, value1, value2, value3, value4, value5)}}">
             <td>{{userinfo[0]}}</td>
             <td>{{userinfo[1]}}</td>
             <td><span class="{{userinfo[4]? 'color-success' : 'color-danger'}}">{{userinfo[5]}}</span></td>
             <td><span class="label {{getstatuscolor(userinfo[2],userinfo[4])}}">{{getstatus(userinfo[2],userinfo[4])}}</span></td>
             <td>{{userinfo[3]}}</td>
+            <td hidden?="{{!timed}}">{{userinfo[6]}}</td>
           </tr>
         </template>
       </tbody>
@@ -130,8 +133,10 @@
       value2:'',
       value3:'',
       value4:'',
+      value5:'',
       fetch:true,
       params:{},
+      timed: true,
       ready: function(){
         this.params["fetch"] = this.fetch;
         this.$.coreajax.go();
@@ -151,7 +156,7 @@
           var y = b[key];
           //console.log(key+" "+x+" "+y);
        
-          if (typeof x == "string"){
+          if (typeof x == "string" && typeof y == "string"){
             x = x.toLowerCase(); 
             y = y.toLowerCase();
           }
@@ -162,15 +167,16 @@
           }
         });
       },
-      hiddenornot: function(userinfo0,userinfo1,userinfo2,userinfo3,userinfo4,value0,value1,value2,value3,value4){
+      hiddenornot: function(userinfo0,userinfo1,userinfo2,userinfo3,userinfo4,userinfo5,value0,value1,value2,value3,value4,value5){
         console.log(JSON.stringify(userinfo3));
         var b0 = value0=='' || JSON.stringify(userinfo0).toLowerCase().indexOf(value0.toLowerCase()) > -1;
         var b1 = value1=='' || JSON.stringify(userinfo1).toLowerCase().indexOf(value1.toLowerCase()) > -1;
         var b2 = value2=='' || JSON.stringify(userinfo2).toLowerCase().indexOf(value2.toLowerCase()) > -1;
         var b3 = value3=='' || JSON.stringify(userinfo3).toLowerCase().indexOf(value3.toLowerCase()) > -1;
         var b4 = value4=='' || JSON.stringify(userinfo4).toLowerCase().indexOf(value4.toLowerCase()) > -1;
+        var b5 = value5=='' || JSON.stringify(userinfo5).toLowerCase() >= value5.toLowerCase();
         //console.log(b0,b1,b2,b3,b4);
-        if(b0 && b1 && b2 && b3 && b4) return false;
+        if(b0 && b1 && b2 && b3 && b4 && b5) return false;
         else return true;
       },
       resort: function(){
@@ -217,6 +223,7 @@
       handleResponse: function(event, response) {
         if(this.response.status == 1){
           //console.log(this.response.usersdata);
+          this.timed = this.response.timed;
           this.usersdata = JSON.parse(this.response.usersdata);
         }else {
           this.$.toast.text="Authentication failed";

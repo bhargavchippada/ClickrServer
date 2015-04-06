@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 
 import datahandler.AdminProfile;
 import datahandler.ClassRoom;
+import datahandler.Question;
 
 public class UsersInfo extends HttpServlet{
 
@@ -43,6 +44,7 @@ public class UsersInfo extends HttpServlet{
 				boolean fetch = (boolean) Boolean.valueOf(request.getParameter("fetch"));
 				if(fetch){
 					responseJson.addProperty("status",1); // success
+					responseJson.addProperty("timed",Question.timed);
 					responseJson.addProperty("usersdata",ClassRoom.getClassroomJson().toString());
 					Utils.logv(classname, "fetch: true");
 				}else{
