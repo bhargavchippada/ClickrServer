@@ -10,7 +10,7 @@ import support.Utils;
 public class ClassRoom {
 	static String classname = "ClassRoom";
 
-	public static String clsnm="RnD Class";
+	public static String clsname="Class Quiz";
 	public static int userslist = 0; //0 means users file, 1 means anyone can join, -1 means none
 	public static boolean serveronline = false;
 

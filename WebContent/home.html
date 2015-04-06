@@ -52,14 +52,18 @@
           #clickrdiv {
             margin: 0 0 16px 0;
           }
+          #clsname {
+            margin: 0 0 0 8px;
+          }
         </style>
         <div id="quizcontainer" layout vertical>
-          <div layout horizontal id="clickrdiv">
+          <div layout horizontal id="clickrdiv" center>
             <img src="media/inverted_launcher.png" class="logoimage">
             <p class="form-heading">Clickr</p>
+            <paper-input id="clsname" label="Class Name" floatingLabel value="{{clsname}}"></paper-input>
           </div>
           <toggle-display show="{{showserverele}}" label="User Settings"></toggle-display>
-          <server-element hidden?="{{showserverele==0}}"></server-element>
+          <server-element hidden?="{{showserverele==0}}" clsname="{{clsname}}"></server-element>
           <toggle-display show="{{showquestionele}}" label="Question"></toggle-display>
           <question-element id="qelement" hidden?="{{showquestionele==0}}"></question-element>
           <toggle-display show="{{showusersinfoele}}" label="Users Info"></toggle-display>
@@ -73,7 +77,8 @@
           showserverele:1,
           showquestionele:1,
           showusersinfoele:0,
-          showusersinfograph:0
+          showusersinfograph:0,
+          clsname: 'Classroom'
         })
       </script>
     </polymer-element>

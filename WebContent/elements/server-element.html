@@ -5,7 +5,7 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="custom-button.html">
-<polymer-element name="server-element" attributes="startquiztoggle">
+<polymer-element name="server-element" attributes="clsname">
   <template>
   	<style>
     .user-heading {
@@ -116,6 +116,7 @@
           if(this.response.error==0){
             this.radioselected = this.response.radioselected;
             this.togglestate = this.response.togglestate;
+            this.clsname = this.response.clsname;
           }else if(this.response.error==1){
             this.$.toast.text="Cannot stop server while quiz is running!!";
             this.$.toast.show();
@@ -137,6 +138,7 @@
         this.params["radioselected"] = this.radioselected;
         this.params["togglestate"] = !this.togglestate;
         this.params["userfile"] = this.userfile.trim();
+        this.params["clsname"] = this.clsname.trim();
         if(!this.togglestate && this.radioselected == 0 && this.userfile.trim()==''){
           this.$.toast.text="Please upload a users list file!";
           this.$.toast.show();
