@@ -25,7 +25,7 @@ public class UsersInfo extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Utils.logv(classname, "servlet task - start");
+		//Utils.logv(classname, "servlet task - start");
 		long startTime = System.currentTimeMillis();
 
 		JsonObject responseJson = new JsonObject();
@@ -46,25 +46,25 @@ public class UsersInfo extends HttpServlet{
 					responseJson.addProperty("status",1); // success
 					responseJson.addProperty("timed",Question.timed);
 					responseJson.addProperty("usersdata",ClassRoom.getClassroomJson().toString());
-					Utils.logv(classname, "fetch: true");
+					//Utils.logv(classname, "fetch: true");
 				}else{
 					// no actions
 				}
 			}else{
 				responseJson.addProperty("status",-1); // authentication failure
-				Utils.logv(classname, "authentication failure");
+				//Utils.logv(classname, "authentication failure");
 			}
 		}
 
 		PrintWriter out = response.getWriter();
 		out.print(responseJson.toString());
-		Utils.logv(classname, "response: "+responseJson.toString());
+		//Utils.logv(classname, "response: "+responseJson.toString());
 		out.flush();
 		out.close();
 
-		Utils.logv(classname,"servlet task - end");
+		//Utils.logv(classname,"servlet task - end");
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
-		Utils.logv(classname,elapsedTime+"ms");
+		//Utils.logv(classname,elapsedTime+"ms");
 	}
 }
