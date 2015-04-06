@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import support.Utils;
 
 public class ClassRoom {
@@ -74,15 +77,25 @@ public class ClassRoom {
 	}
 	
 	public synchronized static void reset(){
-		synchronized (users_map) {
-			Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
-			while (it.hasNext()) {
-				Entry<String, UserProfile> pairs = it.next();
-				UserProfile user = pairs.getValue();
-				user.reset();
-			}
+		Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, UserProfile> pairs = it.next();
+			UserProfile user = pairs.getValue();
+			user.reset();
 		}
 		
 		users_responsemap.clear();
+	}
+	
+	public synchronized static JsonArray getClassroomJson(){
+		JsonArray jsonclass = new JsonArray();
+		Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, UserProfile> pairs = it.next();
+			UserProfile user = pairs.getValue();
+			jsonclass.add(user.getJson());
+		}
+		
+		return jsonclass;
 	}
 }

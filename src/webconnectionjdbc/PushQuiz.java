@@ -1,8 +1,12 @@
 package webconnectionjdbc;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import support.Utils;
 
 import com.google.gson.JsonObject;
 
@@ -39,12 +43,16 @@ public class PushQuiz extends JSONHttpServlet{
 					if(user.status==2 || user.status==4){
 						output.addProperty("status",3); //user already got the quiz (but no user response)
 						user.status = 4;
+						user.updateTime = Utils.timeformat.format(new Date());
 					}else if(user.status==1){
 						
 						if(userresp!=null) userresp.print();
 						
 						output.addProperty("status",2); //user quiz can start
-						if(user.status==1) user.status = 2;
+						if(user.status==1) {
+							user.status = 2;
+							user.updateTime = Utils.timeformat.format(new Date());
+						}
 						output.addProperty("qid", Question.ID);
 						output.addProperty("title", Question.title);
 						output.addProperty("question", Question.question);
