@@ -30,6 +30,9 @@
       padding: 4px;
       border-radius: 4px;
     }
+    .bgcolor-grey {
+      background-color: #333;
+    }
     .bgcolor-success {
       background-color: #5CB85C;
     }
@@ -44,6 +47,9 @@
     }
     .bgcolor-primary {
       background-color: #337ab7;
+    }
+    .color-grey {
+      color: #333;
     }
     .color-success {
       color: #5CB85C;
@@ -86,9 +92,9 @@
         <tr class="border_top">
           <th id="0" on-click="{{changeSort}}" style="{{sortColumn == '0' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Roll-number</th>
           <th id="1" on-click="{{changeSort}}" style="{{sortColumn == '1' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Name</th>
-          <th id="2" on-click="{{changeSort}}" style="{{sortColumn == '2' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Answer</th>
-          <th id="3" on-click="{{changeSort}}" style="{{sortColumn == '3' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Status</th>
-          <th id="4" on-click="{{changeSort}}" style="{{sortColumn == '4' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Last-Update</th>
+          <th id="5" on-click="{{changeSort}}" style="{{sortColumn == '5' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Answer</th>
+          <th id="2" on-click="{{changeSort}}" style="{{sortColumn == '2' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Status</th>
+          <th id="3" on-click="{{changeSort}}" style="{{sortColumn == '3' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Last-Update</th>
         </tr>
         <tr>
           <th class="thinput"><input type="search" value="{{value0}}"/></th>
@@ -100,12 +106,12 @@
       </thead>
       <tbody>
         <template id="usersinfotemplete" repeat="{{userinfo in usersdata | sortByKey(sortColumn, sortDescending)}}">
-          <tr class="border_top" hidden?="{{hiddenornot(userinfo[0],userinfo[1],userinfo[2],userinfo[3],userinfo[4], value0, value1, value2, value3, value4)}}">
+          <tr class="border_top" hidden?="{{hiddenornot(userinfo[0],userinfo[1],userinfo[5],getstatus(userinfo[2],userinfo[4]),userinfo[3], value0, value1, value2, value3, value4)}}">
             <td>{{userinfo[0]}}</td>
             <td>{{userinfo[1]}}</td>
-            <td><span class="color-success">{{userinfo[2]}}</span></td>
-            <td><span class="label bgcolor-success">{{userinfo[3]}}</span></td>
-            <td>{{userinfo[4]}}</td>
+            <td><span class="{{userinfo[4]? 'color-success' : 'color-danger'}}">{{userinfo[5]}}</span></td>
+            <td><span class="label {{getstatuscolor(userinfo[2],userinfo[4])}}">{{getstatus(userinfo[2],userinfo[4])}}</span></td>
+            <td>{{userinfo[3]}}</td>
           </tr>
         </template>
       </tbody>
@@ -116,8 +122,8 @@
     var jssortColumn = '0';
     var jssortDescending = true;
     Polymer({
-      usersdata:[["120050053","bhargav",[1,2],"connected","time"],["120050048","sundeep",[2,3],"done","time2"]],
-      sortColumn:'0',
+      usersdata:[["120050053","bhargav",0,"10:53:34","","",""],["120050048","sundeep",3,"10:53:39",false,"2",1],["120050069","sumanth",0,"10:53:34","","",""],["120050064","nishanth",0,"10:53:34","","",""]],
+      sortColumn:'3',
       sortDescending: true,
       value0:'',
       value1:'',
@@ -143,6 +149,7 @@
         return array.sort(function(a, b) {
           var x = a[key];
           var y = b[key];
+          //console.log(key+" "+x+" "+y);
        
           if (typeof x == "string"){
             x = x.toLowerCase(); 
@@ -156,11 +163,12 @@
         });
       },
       hiddenornot: function(userinfo0,userinfo1,userinfo2,userinfo3,userinfo4,value0,value1,value2,value3,value4){
-        var b0 = value0=='' || JSON.stringify(userinfo0).indexOf(value0) > -1;
-        var b1 = value1=='' || JSON.stringify(userinfo1).indexOf(value1) > -1;
-        var b2 = value2=='' || JSON.stringify(userinfo2).indexOf(value2) > -1;
-        var b3 = value3=='' || JSON.stringify(userinfo3).indexOf(value3) > -1;
-        var b4 = value4=='' || JSON.stringify(userinfo4).indexOf(value4) > -1;
+        console.log(JSON.stringify(userinfo3));
+        var b0 = value0=='' || JSON.stringify(userinfo0).toLowerCase().indexOf(value0.toLowerCase()) > -1;
+        var b1 = value1=='' || JSON.stringify(userinfo1).toLowerCase().indexOf(value1.toLowerCase()) > -1;
+        var b2 = value2=='' || JSON.stringify(userinfo2).toLowerCase().indexOf(value2.toLowerCase()) > -1;
+        var b3 = value3=='' || JSON.stringify(userinfo3).toLowerCase().indexOf(value3.toLowerCase()) > -1;
+        var b4 = value4=='' || JSON.stringify(userinfo4).toLowerCase().indexOf(value4.toLowerCase()) > -1;
         //console.log(b0,b1,b2,b3,b4);
         if(b0 && b1 && b2 && b3 && b4) return false;
         else return true;
@@ -168,10 +176,13 @@
       resort: function(){
         jssortColumn = this.sortColumn;
         jssortDescending = this.sortDescending;
+        console.log(this.usersdata);
         this.usersdata = this.usersdata.sort(function(a, b) {
           var x = a[jssortColumn];
           var y = b[jssortColumn];
        
+          console.log(key+" "+x+" "+y);
+
           if (typeof x == "string"){
             x = x.toLowerCase(); 
             y = y.toLowerCase();
@@ -183,9 +194,30 @@
           }
         });
       },
+      getstatus : function(statuscode,correct){
+        if(statuscode==0) return "Disconnected";
+        else if(statuscode==1) return "Connected";
+        else if(statuscode==2) return "Attempting";
+        else if(statuscode==3) {
+          if(correct) return "Correct";
+          else return "Wrong";
+        }else if(statuscode==4) return "Stopped";
+        else return "Invalid";
+      },
+      getstatuscolor : function(statuscode,correct){
+        if(statuscode==0) return "bgcolor-grey";
+        else if(statuscode==1) return "bgcolor-info";
+        else if(statuscode==2) return "bgcolor-warning";
+        else if(statuscode==3) {
+          if(correct) return "bgcolor-success";
+          else return "bgcolor-danger";
+        }else if(statuscode==4) return "bgcolor-primary";
+        else return "bgcolor-danger";
+      },
       handleResponse: function(event, response) {
         if(this.response.status == 1){
-          console.log(this.response.usersdata);
+          //console.log(this.response.usersdata);
+          this.usersdata = JSON.parse(this.response.usersdata);
         }else {
           this.$.toast.text="Authentication failed";
           this.$.toast.show();
