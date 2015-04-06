@@ -1,5 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <polymer-element name="usersinfo-element">
   <template>
   	<style>
@@ -64,7 +66,21 @@
     .thinput {
       padding: 0 0 8px 0;
     }
+    #toast {
+      background-color: #D9534F;
+      color: #fff;
+    }
 	  </style>
+    <core-ajax
+        url="../UsersInfo"
+        params="{{params}}"
+        handleAs="json"
+        response="{{response}}"
+        contentType="application/json"
+        id="coreajax"
+        on-core-response="{{handleResponse}}"
+        error="{{errorresp}}"
+        on-core-error="{{handleError}}"></core-ajax>
     <table>
       <thead>
         <tr class="border_top">
@@ -94,6 +110,7 @@
         </template>
       </tbody>
     </table>
+    <span><paper-toast id="toast" text=""></paper-toast></span>
   </template>
   <script>
     var jssortColumn = '0';
@@ -107,7 +124,11 @@
       value2:'',
       value3:'',
       value4:'',
+      fetch:true,
+      params:{},
       ready: function(){
+        this.params["fetch"] = this.fetch;
+        this.$.coreajax.go();
       },
       changeSort: function(e,p,o){
         var clickedSortColumn = o.id;
@@ -161,6 +182,20 @@
             return ((x < y) ? -1 : ((x > y) ? 1 : 0));
           }
         });
+      },
+      handleResponse: function(event, response) {
+        if(this.response.status == 1){
+          console.log(this.response.usersdata);
+        }else {
+          this.$.toast.text="Authentication failed";
+          this.$.toast.show();
+        }
+      },
+      handleError: function(event, response) {
+        if(this.errorresp!=null){
+          this.$.toast.text="Connection with server failed!";
+          this.$.toast.show();
+        }
       }
     })
   </script>
