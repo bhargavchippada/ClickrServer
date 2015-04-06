@@ -37,4 +37,38 @@ public class UserResponse {
 		Utils.logv(classname, "timeTook: "+timeTook);
 		Utils.logv(classname, "answers: "+answers);
 	}
+	
+	public String getAnswer(){
+		String answer = "";
+		int type = Question.type;
+		if(type==0){
+			for(int i=0;i<answers.size();i++){
+				if(answers.get(i).getAsBoolean()){
+					answer += (i+1)+",";
+				}
+			}
+			if(answer.length()!=0) answer = answer.substring(0, answer.length()-1);
+		}else if(type==1){
+			for(int i=0;i<answers.size();i++){
+				if(answers.get(i).getAsBoolean()){
+					answer += (i+1)+",";
+				}
+			}
+			if(answer.length()!=0) answer = answer.substring(0, answer.length()-1);
+		}else if(type==2){
+			if(!answers.getAsBoolean()){
+				answer+="false";
+			}else if(answers.getAsBoolean()){
+				answer+="true";
+			}
+		}else if(type==3){
+			answer += answers.getAsString();
+		}else if(type==4){
+			answer = answers.getAsString();
+		}else {
+			answer += "NULL";
+		}
+
+		return answer;
+	}
 }

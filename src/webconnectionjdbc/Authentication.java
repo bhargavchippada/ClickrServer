@@ -1,5 +1,7 @@
 package webconnectionjdbc;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -35,7 +37,10 @@ public class Authentication extends JSONHttpServlet {
 
 				user.ipaddress = request.getRemoteHost();
 				user.SESSIONID = mySession.getId();
-				if(user.status==0) user.status = 1; // logged in
+				if(user.status==0) {
+					user.status = 1; // logged in
+					user.updateTime = Utils.timeformat.format(new Date());
+				}
 
 				output.addProperty("status",2); // authentication success
 				output.addProperty("name", user.name);

@@ -1,8 +1,12 @@
 package webconnectionjdbc;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import support.Utils;
 
 import com.google.gson.JsonObject;
 
@@ -55,12 +59,17 @@ public class ReceiveAnswer extends JSONHttpServlet{
 							userresp.timeTook = input.get("timetook").getAsLong();
 							
 							ClassRoom.addResponse(userresp);
-							if(user.status==2) user.status = 3; //finished quiz
+							if(user.status==2) {
+								user.status = 3; //finished quiz
+								user.updateTime = Utils.timeformat.format(new Date());
+							}
 	
 							output.addProperty("status",3); //response added
 							output.addProperty("feedback", userresp.responseString());
 							
 							userresp.print();
+							
+							Utils.logv(classname, "Table: "+ClassRoom.getClassroomJson().toString());
 						}
 					}
 				}else{
