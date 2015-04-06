@@ -42,12 +42,7 @@ public class UserResponse {
 		String answer = "";
 		int type = Question.type;
 		if(type==0){
-			for(int i=0;i<answers.size();i++){
-				if(answers.get(i).getAsBoolean()){
-					answer += (i+1)+",";
-				}
-			}
-			if(answer.length()!=0) answer = answer.substring(0, answer.length()-1);
+			answer += answers.getAsInt()+1;
 		}else if(type==1){
 			for(int i=0;i<answers.size();i++){
 				if(answers.get(i).getAsBoolean()){

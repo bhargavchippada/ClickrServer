@@ -2,9 +2,10 @@ package datahandler;
 
 import java.util.Date;
 
-import com.google.gson.JsonObject;
-
 import support.Utils;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 
 public class UserProfile {
@@ -31,17 +32,22 @@ public class UserProfile {
 		updateTime = Utils.timeformat.format(new Date());
 	}
 	
-	public JsonObject getJson(){
-		JsonObject jobj = new JsonObject();
-		jobj.addProperty("username", username);
-		jobj.addProperty("name", name);
-		jobj.addProperty("status", status);
-		jobj.addProperty("updateTime", updateTime);
+	public JsonArray getJson(){
+		JsonArray jobj = new JsonArray();
+		Gson gson = new Gson();
+		jobj.add(gson.toJsonTree(username));
+		jobj.add(gson.toJsonTree(name));
+		jobj.add(gson.toJsonTree(status));
+		jobj.add(gson.toJsonTree(updateTime));
 		UserResponse userresp = ClassRoom.users_responsemap.get(username);
 		if(userresp!=null){
-			jobj.addProperty("correct", userresp.correct);
-			jobj.addProperty("answer", userresp.getAnswer());
-			jobj.addProperty("timeTook", userresp.timeTook);
+			jobj.add(gson.toJsonTree(userresp.correct));
+			jobj.add(gson.toJsonTree(userresp.getAnswer()));
+			jobj.add(gson.toJsonTree(userresp.timeTook));
+		}else{
+			jobj.add(gson.toJsonTree(""));
+			jobj.add(gson.toJsonTree(""));
+			jobj.add(gson.toJsonTree(""));
 		}
 		return jobj;
 	}

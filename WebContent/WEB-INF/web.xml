@@ -42,9 +42,9 @@
   </servlet>
   <servlet>
     <description></description>
-    <display-name>PrintStats</display-name>
-    <servlet-name>PrintStats</servlet-name>
-    <servlet-class>webinterfacehandler.PrintStats</servlet-class>
+    <display-name>UsersInfo</display-name>
+    <servlet-name>UsersInfo</servlet-name>
+    <servlet-class>webinterfacehandler.UsersInfo</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Authentication</servlet-name>
@@ -63,8 +63,8 @@
     <url-pattern>/SaveQuestion</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>PrintStats</servlet-name>
-    <url-pattern>/PrintStats</url-pattern>
+    <servlet-name>UsersInfo</servlet-name>
+    <url-pattern>/UsersInfo</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>PushQuiz</servlet-name>
