@@ -1,11 +1,9 @@
 package datahandler;
 
-import java.util.ArrayList;
+import support.Utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import support.Utils;
 
 public class Question{
 	
@@ -26,7 +24,7 @@ public class Question{
 	
 	public static boolean startquiz = false; // whether or not started quiz
 	
-	public static ArrayList<Integer> option_stat = new ArrayList<Integer>();
+	public static JsonArray option_stat = new JsonArray();
 	public static int num_attempts=0;
 	public static int num_correct=0;
 	public static int num_wrong=0;
@@ -47,17 +45,26 @@ public class Question{
 		
 		startquiz = false;
 		
-		option_stat.clear();
+		option_stat=new JsonArray();
 		num_attempts=0;
 		num_correct=0;
 		num_wrong=0;
 	}
 	
 	public synchronized static void quizreset(){
-		option_stat.clear();
+		option_stat=new JsonArray();
 		num_attempts=0;
 		num_correct=0;
 		num_wrong=0;
+		
+		if(type==0 || type==1){
+			for(int i=0;i<answers.size();i++){
+				option_stat.add(Utils.gson.toJsonTree(0));
+			}
+		}else if(type==2){
+			option_stat.add(Utils.gson.toJsonTree(0));
+			option_stat.add(Utils.gson.toJsonTree(0));
+		}
 	}
 	
 	public static void print(){
@@ -89,7 +96,34 @@ public class Question{
 	}
 	
 	public synchronized static void updateOptionStats(int pos){
-		option_stat.set(pos,option_stat.get(pos)+1);
+		option_stat.set(pos,Utils.gson.toJsonTree(option_stat.get(pos).getAsInt()+1));
+	}
+	
+	public synchronized static void incrementOptionStats(JsonArray myanswers){
+		if(myanswers.size()==0) return;
+		
+		if(type==0){
+			int ind = myanswers.getAsInt();
+			option_stat.set(ind, Utils.gson.toJsonTree(option_stat.get(ind).getAsInt()+1));
+		}else if(type==1){
+			for(int i=0;i<myanswers.size();i++){
+				if(myanswers.get(i).getAsBoolean()){
+					option_stat.set(i, Utils.gson.toJsonTree(option_stat.get(i).getAsInt()+1));
+				}
+			}
+		}else if(type==2){
+			if(!myanswers.getAsBoolean()){
+				option_stat.set(0, Utils.gson.toJsonTree(option_stat.get(0).getAsInt()+1));
+			}else if(myanswers.getAsBoolean()){
+				option_stat.set(1, Utils.gson.toJsonTree(option_stat.get(1).getAsInt()+1));
+			}
+		}else if(type==3){
+			return;
+		}else if(type==4){
+			return;
+		}else {
+			return;
+		}
 	}
 	
 	public static boolean verify(JsonArray myanswers){
@@ -157,21 +191,68 @@ public class Question{
 		jgraph.addProperty("value", value);
 		jarray.add(jgraph);
 		
+		int totalresponses = ClassRoom.users_responsemap.size();
 		jgraph = new JsonObject();
 		value=0;
 		jgraph.addProperty("color", "#5CB85C");
-		if(totalusers!=0) value = (100*num_correct/totalusers);
-		jgraph.addProperty("title", "Corrects "+num_correct+"/"+totalusers+" ");
+		if(totalresponses!=0) value = (100*num_correct/totalresponses);
+		jgraph.addProperty("title", "Corrects "+num_correct+"/"+totalresponses+" ");
 		jgraph.addProperty("value", value);
 		jarray.add(jgraph);
 		
 		jgraph = new JsonObject();
 		value=0;
 		jgraph.addProperty("color", "#D9534F");
-		if(totalusers!=0) value = (100*num_wrong/totalusers);
-		jgraph.addProperty("title", "Wrongs "+num_wrong+"/"+totalusers+" ");
+		if(totalresponses!=0) value = (100*num_wrong/totalresponses);
+		jgraph.addProperty("title", "Wrongs "+num_wrong+"/"+totalresponses+" ");
 		jgraph.addProperty("value", value);
 		jarray.add(jgraph);
+		
+		jarray.addAll(getOptionStatsJson());
+		
+		return jarray;
+	}
+	
+	public synchronized static JsonArray getOptionStatsJson(){
+		
+		JsonArray jarray = new JsonArray();
+		int totalresponses = ClassRoom.users_responsemap.size();
+		int value = 0;
+		int count = 0;
+		JsonObject jgraph;
+		if(type==0 || type==1){
+			for(int i=0;i<option_stat.size();i++){
+				value = 0;
+				jgraph  = new JsonObject();
+				count = option_stat.get(i).getAsInt();
+				if(totalresponses!=0) value = (100*count/totalresponses);
+				jgraph.addProperty("color", "#f0ad4e");
+				jgraph.addProperty("title", (i+1)+") "+options.get(i).getAsString()+" "+count+"/"+totalresponses+" ");
+				jgraph.addProperty("value", value);
+				jarray.add(jgraph);
+			}
+		}else if(type==2){
+			//true
+			value = 0;
+			jgraph  = new JsonObject();
+			count = option_stat.get(1).getAsInt();
+			if(totalresponses!=0) value = (100*count/totalresponses);
+			jgraph.addProperty("color", "#f0ad4e");
+			jgraph.addProperty("title", "True "+count+"/"+totalresponses+" ");
+			jgraph.addProperty("value", value);
+			jarray.add(jgraph);
+			
+			
+			//false
+			value = 0;
+			jgraph  = new JsonObject();
+			count = option_stat.get(0).getAsInt();
+			if(totalresponses!=0) value = (100*count/totalresponses);
+			jgraph.addProperty("color", "#f0ad4e");
+			jgraph.addProperty("title", "False "+count+"/"+totalresponses+" ");
+			jgraph.addProperty("value", value);
+			jarray.add(jgraph);
+		}
 		
 		return jarray;
 	}

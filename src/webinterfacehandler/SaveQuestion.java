@@ -78,6 +78,7 @@ public class SaveQuestion extends HttpServlet{
 						Question.time = Integer.parseInt(request.getParameter("time"));
 						
 						responseJson.addProperty("action",0);
+						Question.quizreset();
 						Question.print();
 					}else if(action==1){
 						boolean squiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
