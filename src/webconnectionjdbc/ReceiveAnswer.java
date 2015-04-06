@@ -69,7 +69,7 @@ public class ReceiveAnswer extends JSONHttpServlet{
 							
 							userresp.print();
 							
-							Utils.logv(classname, "Table: "+ClassRoom.getClassroomJson().toString());
+							//Utils.logv(classname, "Table: "+ClassRoom.getClassroomJson().toString());
 						}
 					}
 				}else{

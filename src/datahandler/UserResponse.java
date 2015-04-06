@@ -40,6 +40,8 @@ public class UserResponse {
 	
 	public String getAnswer(){
 		String answer = "";
+		if(answers.size()==0) return "";
+		
 		int type = Question.type;
 		if(type==0){
 			answer += answers.getAsInt()+1;
