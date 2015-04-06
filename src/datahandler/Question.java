@@ -52,6 +52,13 @@ public class Question{
 		num_wrong=0;
 	}
 	
+	public synchronized static void quizreset(){
+		option_stat.clear();
+		num_attempts=0;
+		num_correct=0;
+		num_wrong=0;
+	}
+	
 	public static void print(){
 		Utils.logv(classname, "Question ID: "+ID);
 		Utils.logv(classname, "savedquiz: "+savedquiz);

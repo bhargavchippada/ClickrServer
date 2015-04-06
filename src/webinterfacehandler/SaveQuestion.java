@@ -91,7 +91,8 @@ public class SaveQuestion extends HttpServlet{
 							Question.startquiz = Boolean.valueOf(request.getParameter("startquiztoggle"));
 							if(Question.startquiz){
 								//started quiz, classroom has to be reset
-								ClassRoom.reset();
+								ClassRoom.quizreset();
+								Question.quizreset();
 								Utils.logv(classname, "Classroom reset!");								
 							}
 							responseJson.addProperty("startquiztoggle",Question.startquiz);

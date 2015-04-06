@@ -32,6 +32,13 @@ public class UserProfile {
 		updateTime = Utils.timeformat.format(new Date());
 	}
 	
+	public void quizreset(){
+		if(status>1) {
+			status=0;
+			updateTime = Utils.timeformat.format(new Date());
+		}
+	}
+	
 	public JsonArray getJson(){
 		JsonArray jobj = new JsonArray();
 		Gson gson = new Gson();
