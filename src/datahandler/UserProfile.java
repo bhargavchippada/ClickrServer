@@ -19,7 +19,7 @@ public class UserProfile {
 	public int status = 0; //0 means hasn't logged in (disconnected), 1 means logged in (connected)
 	// 2 means started quiz (attempting), 3 means finished quiz (completed)
 	// 4 means didn't finish the quiz
-	public String updateTime;
+	public String updateTime = Utils.timeformat.format(new Date());
 	
 	public void print(){
 		Utils.logv(classname, username+","+password+","+name+","+ipaddress+","+status+","+updateTime);
@@ -47,7 +47,7 @@ public class UserProfile {
 		}else{
 			jobj.add(gson.toJsonTree(""));
 			jobj.add(gson.toJsonTree(""));
-			jobj.add(gson.toJsonTree(""));
+			jobj.add(gson.toJsonTree(0));
 		}
 		return jobj;
 	}

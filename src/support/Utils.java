@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 public class Utils {
 	public static String JSON_TYPE = "application/json";
 	private static SecureRandom random = new SecureRandom();
-	public static SimpleDateFormat timeformat = new SimpleDateFormat("HH.mm.ss");
+	public static SimpleDateFormat timeformat = new SimpleDateFormat("HH:mm:ss");
 
 	public static String nextSessionId() {
 		return new BigInteger(130, random).toString(32);
