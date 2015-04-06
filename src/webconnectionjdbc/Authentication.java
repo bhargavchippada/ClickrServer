@@ -28,13 +28,14 @@ public class Authentication extends JSONHttpServlet {
 		String pwd = input.get("pwd").getAsString();
 		if(ClassRoom.serveronline){
 			UserProfile user = ClassRoom.users_map.get(uid);
+			user.print();
 			if(user!=null && user.password.equals(pwd)){
 				mySession.setAttribute("username", uid);
 				mySession.setAttribute("password", pwd);
 
 				user.ipaddress = request.getRemoteHost();
 				user.SESSIONID = mySession.getId();
-				user.status = 1; // logged in
+				if(user.status==0) user.status = 1; // logged in
 
 				output.addProperty("status",2); // authentication success
 				output.addProperty("name", user.name);

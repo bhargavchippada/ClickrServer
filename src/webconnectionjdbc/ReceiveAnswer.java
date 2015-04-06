@@ -33,11 +33,10 @@ public class ReceiveAnswer extends JSONHttpServlet{
 
 			if(username!=null && password!=null){
 				UserProfile user = ClassRoom.users_map.get((String)username);
+				user.print();
 				if(user!=null && user.password.equals((String) password) && uid.equals((String) username)){
 
-					UserResponse userresp = ClassRoom.users_responsemap.get((String)username);
-
-					if(userresp!=null && Question.savedquiz && userresp.QID.equals(Question.ID)){
+					if(user.status==3 || user.status==4){
 						output.addProperty("status",2); // already attempted the quiz
 						return output;
 					}else{
@@ -46,7 +45,7 @@ public class ReceiveAnswer extends JSONHttpServlet{
 						if(!qid.equals(Question.ID)){
 							output.addProperty("status",1); //the question ids are not matching
 						}else{
-							userresp = new UserResponse();
+							UserResponse userresp = new UserResponse();
 							userresp.username = (String) username;
 							userresp.answers = input.get("myanswer").getAsJsonArray();
 							userresp.correct = Question.verify(userresp.answers);
@@ -56,7 +55,7 @@ public class ReceiveAnswer extends JSONHttpServlet{
 							userresp.timeTook = input.get("timetook").getAsLong();
 							
 							ClassRoom.addResponse(userresp);
-							user.status = 3; //finished quiz
+							if(user.status==2) user.status = 3; //finished quiz
 	
 							output.addProperty("status",3); //response added
 							output.addProperty("feedback", userresp.responseString());
