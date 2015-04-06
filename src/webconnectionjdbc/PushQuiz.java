@@ -32,15 +32,19 @@ public class PushQuiz extends JSONHttpServlet{
 
 			if(username!=null && password!=null){
 				UserProfile user = ClassRoom.users_map.get((String)username);
+				user.print();
 				if(user!=null && user.password.equals((String) password) && uid.equals((String) username)){
 
 					UserResponse userresp = ClassRoom.users_responsemap.get((String)username);
-					if(userresp==null || (Question.savedquiz && !userresp.QID.equals(Question.ID))){
+					if(user.status==2 || user.status==4){
+						output.addProperty("status",3); //user already got the quiz (but no user response)
+						user.status = 4;
+					}else if(user.status==1){
 						
 						if(userresp!=null) userresp.print();
 						
 						output.addProperty("status",2); //user quiz can start
-						user.status = 2;
+						if(user.status==1) user.status = 2;
 						output.addProperty("qid", Question.ID);
 						output.addProperty("title", Question.title);
 						output.addProperty("question", Question.question);
@@ -49,9 +53,13 @@ public class PushQuiz extends JSONHttpServlet{
 						output.addProperty("feedback", Question.feedback);
 						output.addProperty("timed", Question.timed);
 						output.addProperty("time", Question.time);
-					}else{
+					}else if(user.status==3){
 						// this user has already attempted the quiz
-						output.addProperty("status",3); //user already attempted
+						output.addProperty("status",3); //user already attempted (user response)
+					}else if(user.status==0){
+						output.addProperty("status",0); //not authorized
+					}else{
+						output.addProperty("status",404); //un defined status
 					}
 				}else{
 					output.addProperty("status",0); //not authorized
