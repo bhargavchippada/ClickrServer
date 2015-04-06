@@ -97,9 +97,9 @@
       <paper-button id="downqfilebtn" raised class="bluecls" on-click="{{HandleDownloadClick}}">Download</paper-button>
     </div>
     <table>
-      <thead>
+      <thead id="tablehead">
         <tr class="border_top">
-          <th id="0" on-click="{{changeSort}}" style="{{sortColumn == '0' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Roll-number</th>
+          <th id="0" on-click="{{changeSort}}" style="{{sortColumn == '0' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Rollnumber</th>
           <th id="1" on-click="{{changeSort}}" style="{{sortColumn == '1' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Name</th>
           <th id="5" on-click="{{changeSort}}" style="{{sortColumn == '5' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Answer</th>
           <th id="2" on-click="{{changeSort}}" style="{{sortColumn == '2' ? (sortDescending ? 'text-decoration:overline' : 'text-decoration:underline') : ''}}">Status</th>
@@ -256,9 +256,18 @@
       HandleDownloadClick: function(){
         //https://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
         var textToWrite="";
+
+        var ths = this.$.tablehead.querySelectorAll('tr')[0].querySelectorAll('th');
+        var temp=""
+        for (var i=0; i<ths.length; i++) {
+          temp+=ths[i].innerHTML;
+          if(i!=ths.length-1) temp+=",";
+        }
+        textToWrite+=temp+"\n";
+
         var children = this.$.tabletobdy.querySelectorAll('tr');
         for (var i=0; i<children.length; i++) {
-          var temp="";
+          temp="";
           if(!children[i].hidden) {
             var tds = children[i].querySelectorAll('td');
             for(var j=0; j<tds.length; j++){
