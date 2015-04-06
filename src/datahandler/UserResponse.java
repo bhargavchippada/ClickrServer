@@ -18,8 +18,13 @@ public class UserResponse {
 
 	public String responseString(){
 		String output;
-		if(correct) output="correct answer!\n";
-		else output="wrong answer!\n";
+		if(Question.feedback && Question.type!=4){
+			if(correct) output="correct answer!";
+			else output="wrong answer!";
+		}else{
+			output="Answer submitted!";
+		}
+		
 		return output;
 	}
 	
