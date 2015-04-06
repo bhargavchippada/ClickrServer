@@ -87,6 +87,17 @@ public class ClassRoom {
 		users_responsemap.clear();
 	}
 	
+	public synchronized static void quizreset(){
+		Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, UserProfile> pairs = it.next();
+			UserProfile user = pairs.getValue();
+			user.quizreset();
+		}
+		
+		users_responsemap.clear();
+	}
+	
 	public synchronized static JsonArray getClassroomJson(){
 		JsonArray jsonclass = new JsonArray();
 		Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
