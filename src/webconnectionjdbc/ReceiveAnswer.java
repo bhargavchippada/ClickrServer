@@ -59,7 +59,7 @@ public class ReceiveAnswer extends JSONHttpServlet{
 							user.status = 3; //finished quiz
 	
 							output.addProperty("status",3); //response added
-							output.addProperty("feedback", userresp.responseString()+Question.getAnswer());
+							output.addProperty("feedback", userresp.responseString());
 							
 							userresp.print();
 						}

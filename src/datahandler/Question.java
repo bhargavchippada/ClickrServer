@@ -85,6 +85,9 @@ public class Question{
 	}
 	
 	public static boolean verify(JsonArray myanswers){
+		
+		if(myanswers.size()==0) return false;
+		
 		if(type==0){
 			int ind = myanswers.getAsInt();
 			return answers.get(ind).getAsBoolean();
