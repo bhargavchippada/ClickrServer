@@ -1,16 +1,71 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="custom-barstat.html">
 <polymer-element name="usersinfo-graph">
 	<template>
 		<style>
+		#toast {
+	      background-color: #D9534F;
+	      color: #fff;
+	    }
+	    paper-button.bluecls {
+	      text-transform: inherit;
+	      background-color: #337ab7;
+	      color: #fff;
+	      margin: 0 0 8px 0;
+	    }
 		</style>
-		<custom-barstat title="1) paris" value="10" color="#5CB85C"></custom-barstat>
-		<custom-barstat title="2) russia" value="20" color="#D9534F"></custom-barstat>
-		<custom-barstat title="3) india" value="65" color="#5bc0de"></custom-barstat>
-		<custom-barstat title="4) amazon" value="5" color="#f0ad4e"></custom-barstat>
+		<core-ajax
+	        url="../QuizStats"
+	        params="{{params}}"
+	        handleAs="json"
+	        response="{{response}}"
+	        contentType="application/json"
+	        id="coreajax"
+	        on-core-response="{{handleResponse}}"
+	        error="{{errorresp}}"
+	        on-core-error="{{handleError}}"></core-ajax>
+	    <div id="statsdiv">
+	    <template repeat="{{qstat in quizstats}}">
+				<custom-barstat title="{{qstat['title']}}" value="{{qstat['value']}}" color="{{qstat['color']}}"></custom-barstat>
+			</template>
+		</div>
+		<span><paper-toast id="toast" text=""></paper-toast></span>
 	</template>
 	<script>
 	Polymer({
+		quizstats:[{"color":"#5bc0de","title":"Test Attempts 1/4 ","value":0},{"color":"#5CB85C","title":"Test Corrects 1/4 ","value":0},{"color":"#D9534F","title":"Test Wrongs 0/4 ","value":0}],
+	  fetch:true,
+    params:{},
+    ready: function(){
+      this.fetchdata();
+    },
+    fetchdata: function(){
+      this.params = {};
+      this.params["fetch"] = this.fetch;
+      this.$.coreajax.go();
+
+      this.async(this.fetchdata, null, 3000); 
+    },
+    handleResponse: function(event, response) {
+      if(this.response.status == 1){
+        //console.log(this.response.quizstats);
+        this.quizstats = JSON.parse(this.response.quizstats);
+      }else {
+        this.$.toast.text="Authentication failed";
+        this.$.toast.show();
+      }
+    },
+    handleError: function(event, response) {
+      /*
+      if(this.errorresp!=null){
+        this.$.toast.text="Connection with server failed!";
+        this.$.toast.show();
+      }
+      */
+    }
   })
 	</script>
 </polymer-element>

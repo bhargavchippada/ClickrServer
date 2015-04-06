@@ -3,6 +3,7 @@ package datahandler;
 import java.util.ArrayList;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import support.Utils;
 
@@ -142,5 +143,36 @@ public class Question{
 		Utils.logv(classname, answer);
 		
 		return answer;
+	}
+	
+	public synchronized static JsonArray getStatsJson(){
+		JsonArray jarray = new JsonArray();
+		
+		JsonObject jgraph = new JsonObject();
+		jgraph.addProperty("color", "#5bc0de");
+		int totalusers = ClassRoom.users_map.size();
+		int value=0;
+		if(totalusers!=0) value = (100*num_attempts/totalusers);
+		jgraph.addProperty("title", "Attempts "+num_attempts+"/"+totalusers+" ");
+		jgraph.addProperty("value", value);
+		jarray.add(jgraph);
+		
+		jgraph = new JsonObject();
+		value=0;
+		jgraph.addProperty("color", "#5CB85C");
+		if(totalusers!=0) value = (100*num_correct/totalusers);
+		jgraph.addProperty("title", "Corrects "+num_correct+"/"+totalusers+" ");
+		jgraph.addProperty("value", value);
+		jarray.add(jgraph);
+		
+		jgraph = new JsonObject();
+		value=0;
+		jgraph.addProperty("color", "#D9534F");
+		if(totalusers!=0) value = (100*num_wrong/totalusers);
+		jgraph.addProperty("title", "Wrongs "+num_wrong+"/"+totalusers+" ");
+		jgraph.addProperty("value", value);
+		jarray.add(jgraph);
+		
+		return jarray;
 	}
 }
