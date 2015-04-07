@@ -29,7 +29,7 @@
 	        on-core-error="{{handleError}}"></core-ajax>
 	    <div id="statsdiv">
 	    <template repeat="{{qstat in quizstats}}">
-				<custom-barstat title="{{qstat['title']}}" value="{{qstat['value']}}" color="{{qstat['color']}}"></custom-barstat>
+				<custom-barstat heading="{{qstat['title']}}" value="{{qstat['value']}}" color="{{qstat['color']}}"></custom-barstat>
 			</template>
 		</div>
 		<span><paper-toast id="toast" text=""></paper-toast></span>

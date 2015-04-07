@@ -82,6 +82,11 @@
       color: #fff;
       margin: 0 0 8px 0;
     }
+    h3{
+      margin:0 0 0 0;
+      padding: 0 0 0 0;
+      text-align: center;
+    }
 	  </style>
     <core-ajax
         url="../UsersInfo"
@@ -93,8 +98,11 @@
         on-core-response="{{handleResponse}}"
         error="{{errorresp}}"
         on-core-error="{{handleError}}"></core-ajax>
-    <div horizontal end-justified layout>
-      <paper-button id="downqfilebtn" raised class="bluecls" on-click="{{HandleDownloadClick}}">Download</paper-button>
+    <div horizontal layout center>
+      <h4>{{visiblecount}}/{{usersdata.length}} matches</h4>
+      <div horizontal end-justified layout flex>
+        <paper-button id="downqfilebtn" raised class="bluecls" on-click="{{HandleDownloadClick}}">Download</paper-button>
+      </div>
     </div>
     <table>
       <thead id="tablehead">
@@ -115,7 +123,7 @@
           <th class="thinput" hidden?="{{!timed}}"><input type="search" value="{{value5}}"/></th>
         </tr>
       </thead>
-      <tbody id="tabletobdy">
+      <tbody id="tablebody">
         <template id="usersinfotemplete" repeat="{{userinfo in usersdata | sortByKey(sortColumn, sortDescending)}}">
           <tr class="border_top" hidden?="{{hiddenornot(userinfo[0],userinfo[1],userinfo[5],getstatus(userinfo[2],userinfo[4]),userinfo[3],userinfo[6], value0, value1, value2, value3, value4, value5)}}">
             <td>{{userinfo[0]}}</td>
@@ -128,7 +136,7 @@
         </template>
       </tbody>
     </table>
-    <span><paper-toast id="toast" text=""></paper-toast></span>
+    <span><paper-toast id="toast" text="Toast"></paper-toast></span>
   </template>
   <script>
     var jssortColumn = '0';
@@ -146,8 +154,31 @@
       fetch:true,
       params:{},
       timed: true,
+      evalVisibleCount: function(){
+        var children = this.$.tablebody.querySelectorAll('tr');
+        this.visiblecount = 0;
+        for(var i=0;i<children.length;i++){
+          if(!children[i].hidden) this.visiblecount++;
+        }
+      },
+      value0Changed: function(){
+        this.async(this.evalVisibleCount);
+      },
+      value1Changed: function(){
+        this.async(this.evalVisibleCount);
+      },
+      value2Changed: function(){
+        this.async(this.evalVisibleCount);
+      },
+      value3Changed: function(){
+        this.async(this.evalVisibleCount);
+      },
+      value4Changed: function(){
+        this.async(this.evalVisibleCount);
+      },
       ready: function(){
         this.fetchdata();
+        this.async(this.evalVisibleCount);
       },
       fetchdata: function(){
         this.params = {};
@@ -191,8 +222,11 @@
         var b4 = value4=='' || JSON.stringify(userinfo4).toLowerCase().indexOf(value4.toLowerCase()) > -1;
         var b5 = value5=='' || JSON.stringify(userinfo5).toLowerCase() >= value5.toLowerCase();
         //console.log(b0,b1,b2,b3,b4);
-        if(b0 && b1 && b2 && b3 && b4 && b5) return false;
-        else return true;
+        if(b0 && b1 && b2 && b3 && b4 && b5) {
+          return false;
+        }else {
+          return true;
+        }
       },
       resort: function(){
         jssortColumn = this.sortColumn;
@@ -265,7 +299,7 @@
         }
         textToWrite+=temp+"\n";
 
-        var children = this.$.tabletobdy.querySelectorAll('tr');
+        var children = this.$.tablebody.querySelectorAll('tr');
         for (var i=0; i<children.length; i++) {
           temp="";
           if(!children[i].hidden) {
