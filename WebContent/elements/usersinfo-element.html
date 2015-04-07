@@ -161,19 +161,24 @@
           if(!children[i].hidden) this.visiblecount++;
         }
       },
-      value0Changed: function(){
+      value0Changed: function(oldValue, newValue){
+        this.value0 = newValue;
         this.async(this.evalVisibleCount);
       },
-      value1Changed: function(){
+      value1Changed: function(oldValue, newValue){
+        this.value1 = newValue;
         this.async(this.evalVisibleCount);
       },
-      value2Changed: function(){
+      value2Changed: function(oldValue, newValue){
+        this.value2 = newValue;
         this.async(this.evalVisibleCount);
       },
-      value3Changed: function(){
+      value3Changed: function(oldValue, newValue){
+        this.value3 = newValue;
         this.async(this.evalVisibleCount);
       },
-      value4Changed: function(){
+      value4Changed: function(oldValue, newValue){
+        this.value4 = newValue;
         this.async(this.evalVisibleCount);
       },
       ready: function(){
@@ -274,6 +279,7 @@
           //console.log(this.response.usersdata);
           this.timed = this.response.timed;
           this.usersdata = JSON.parse(this.response.usersdata);
+          this.async(this.evalVisibleCount);
         }else {
           this.$.toast.text="Authentication failed";
           this.$.toast.show();
