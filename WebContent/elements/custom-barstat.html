@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
-<polymer-element name="custom-barstat" attributes="title value color">
+<polymer-element name="custom-barstat" attributes="heading value color">
 	<template>
 	<style>
 		#titlediv {
@@ -17,7 +17,7 @@
 		}
 		</style>
 		<div layout horizontal id="titlediv">
-			<h3>{{title}}:</h3>
+			<h3>{{heading}}:</h3>
 			<h3 style="color:{{color}};">{{value}}%</h3>
 		</div>
 		<paper-progress id="percentbar" value="{{value}}" class="pinlcls"></paper-progress>
