@@ -24,7 +24,7 @@ public class QuizStats extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		//Utils.logv(classname, "servlet task - start");
+		Utils.logv(classname, "servlet task - start");
 		long startTime = System.currentTimeMillis();
 
 		JsonObject responseJson = new JsonObject();
@@ -60,10 +60,10 @@ public class QuizStats extends HttpServlet{
 		out.flush();
 		out.close();
 
-		//Utils.logv(classname,"servlet task - end");
+		Utils.logv(classname,"servlet task - end");
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
-		//Utils.logv(classname,elapsedTime+"ms");
+		Utils.logv(classname,elapsedTime+"ms");
 	}
 }
 
