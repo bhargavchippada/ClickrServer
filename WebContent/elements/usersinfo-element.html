@@ -181,6 +181,10 @@
         this.value4 = newValue;
         this.async(this.evalVisibleCount);
       },
+      value5Changed: function(oldValue, newValue){
+        this.value4 = newValue;
+        this.async(this.evalVisibleCount);
+      },
       ready: function(){
         this.fetchdata();
         this.async(this.evalVisibleCount);
@@ -218,13 +222,22 @@
           }
         });
       },
+      evalMatch: function(str,val){
+        str = JSON.stringify(str).toLowerCase();
+        val = val.toLowerCase();
+        console.log(val.charAt(0));
+        if(val.charAt(0)=='!'){
+          var temp = val.substring(1)
+          return temp=='' || !(str.indexOf(val.substring(1)) > -1);
+        }else return str.indexOf(val) > -1;
+      },
       hiddenornot: function(userinfo0,userinfo1,userinfo2,userinfo3,userinfo4,userinfo5,value0,value1,value2,value3,value4,value5){
         //console.log(JSON.stringify(userinfo3));
-        var b0 = value0=='' || JSON.stringify(userinfo0).toLowerCase().indexOf(value0.toLowerCase()) > -1;
-        var b1 = value1=='' || JSON.stringify(userinfo1).toLowerCase().indexOf(value1.toLowerCase()) > -1;
-        var b2 = value2=='' || JSON.stringify(userinfo2).toLowerCase().indexOf(value2.toLowerCase()) > -1;
-        var b3 = value3=='' || JSON.stringify(userinfo3).toLowerCase().indexOf(value3.toLowerCase()) > -1;
-        var b4 = value4=='' || JSON.stringify(userinfo4).toLowerCase().indexOf(value4.toLowerCase()) > -1;
+        var b0 = value0=='' || this.evalMatch(userinfo0,value0);
+        var b1 = value1=='' || this.evalMatch(userinfo1,value1);
+        var b2 = value2=='' || this.evalMatch(userinfo2,value2);
+        var b3 = value3=='' || this.evalMatch(userinfo3,value3);
+        var b4 = value4=='' || this.evalMatch(userinfo4,value4);
         var b5 = value5=='' || JSON.stringify(userinfo5).toLowerCase() >= value5.toLowerCase();
         //console.log(b0,b1,b2,b3,b4);
         if(b0 && b1 && b2 && b3 && b4 && b5) {

@@ -226,7 +226,7 @@ public class Question{
 				jgraph  = new JsonObject();
 				count = option_stat.get(i).getAsInt();
 				if(totalresponses!=0) value = (100*count/totalresponses);
-				jgraph.addProperty("color", "#f0ad4e");
+				jgraph.addProperty("color", "#337ab7");
 				jgraph.addProperty("title", (i+1)+") "+options.get(i).getAsString()+" "+count+"/"+totalresponses+" ");
 				jgraph.addProperty("value", value);
 				jarray.add(jgraph);
@@ -237,7 +237,7 @@ public class Question{
 			jgraph  = new JsonObject();
 			count = option_stat.get(1).getAsInt();
 			if(totalresponses!=0) value = (100*count/totalresponses);
-			jgraph.addProperty("color", "#f0ad4e");
+			jgraph.addProperty("color", "#337ab7");
 			jgraph.addProperty("title", "True "+count+"/"+totalresponses+" ");
 			jgraph.addProperty("value", value);
 			jarray.add(jgraph);
@@ -248,7 +248,7 @@ public class Question{
 			jgraph  = new JsonObject();
 			count = option_stat.get(0).getAsInt();
 			if(totalresponses!=0) value = (100*count/totalresponses);
-			jgraph.addProperty("color", "#f0ad4e");
+			jgraph.addProperty("color", "#337ab7");
 			jgraph.addProperty("title", "False "+count+"/"+totalresponses+" ");
 			jgraph.addProperty("value", value);
 			jarray.add(jgraph);
