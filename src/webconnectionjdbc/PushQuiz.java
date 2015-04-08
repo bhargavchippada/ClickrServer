@@ -36,7 +36,6 @@ public class PushQuiz extends JSONHttpServlet{
 
 			if(username!=null && password!=null){
 				UserProfile user = ClassRoom.users_map.get((String)username);
-				user.print();
 				if(user!=null && user.password.equals((String) password) && uid.equals((String) username)){
 
 					UserResponse userresp = ClassRoom.users_responsemap.get((String)username);

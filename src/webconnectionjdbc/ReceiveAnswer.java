@@ -37,7 +37,6 @@ public class ReceiveAnswer extends JSONHttpServlet{
 
 			if(username!=null && password!=null){
 				UserProfile user = ClassRoom.users_map.get((String)username);
-				user.print();
 				if(user!=null && user.password.equals((String) password) && uid.equals((String) username)){
 
 					if(user.status==3 || user.status==4){
