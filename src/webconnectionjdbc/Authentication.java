@@ -30,7 +30,6 @@ public class Authentication extends JSONHttpServlet {
 		String pwd = input.get("pwd").getAsString();
 		if(ClassRoom.serveronline){
 			UserProfile user = ClassRoom.users_map.get(uid);
-			user.print();
 			if(user!=null && user.password.equals(pwd)){
 				mySession.setAttribute("username", uid);
 				mySession.setAttribute("password", pwd);
