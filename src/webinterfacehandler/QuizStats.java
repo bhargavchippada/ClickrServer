@@ -33,7 +33,19 @@ public class QuizStats extends HttpServlet{
 
 		HttpSession mySession = request.getSession(false);
 		if(mySession == null){
-			responseJson.addProperty("status",-1); // no session
+			if(Question.startquiz) responseJson.addProperty("status",-1); // no session
+			else{
+				//so the user is authenticated
+				//fetch true means send data from server else update server information
+				boolean fetch = (boolean) Boolean.valueOf(request.getParameter("fetch"));
+				if(fetch){
+					responseJson.addProperty("status",1); // success
+					responseJson.addProperty("quizstats",Question.getStatsJson().toString());
+					//Utils.logv(classname, "fetch: true");
+				}else{
+					// no actions
+				}
+			}
 		}else{
 			Object username = mySession.getAttribute("username");
 			Object password = mySession.getAttribute("password");
