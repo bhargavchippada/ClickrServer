@@ -142,7 +142,7 @@
     var jssortColumn = '0';
     var jssortDescending = true;
     Polymer({
-      usersdata:[["120050053","bhargav",0,"10:53:34","","",""],["120050048","sundeep",3,"10:53:39",false,"2",1],["120050069","sumanth",0,"10:53:34","","",""],["120050064","nishanth",0,"10:53:34","","",""]],
+      usersdata:[],
       sortColumn:'3',
       sortDescending: true,
       value0:'',
@@ -155,6 +155,7 @@
       params:{},
       timed: true,
       asyncstop: false,
+      visiblecount: 0,
       evalVisibleCount: function(){
         var children = this.$.tablebody.querySelectorAll('tr');
         this.visiblecount = 0;
