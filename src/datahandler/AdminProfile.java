@@ -6,8 +6,8 @@ import support.ParseUsers;
 public class AdminProfile {
 	public static String classname = "AdminProfile";
 	
-	public final static String username="bhargav";
-	public final static String password="chippada";
+	public final static String username="clickrdemo";
+	public final static String password="clickr@iitb";
 	
 	public static boolean adminAuthentication(String username, String password){
 		return AdminProfile.username.equals(username) && AdminProfile.password.equals(password);

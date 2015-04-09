@@ -3,7 +3,7 @@
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="custom-barstat.html">
-<polymer-element name="usersinfo-graph">
+<polymer-element name="usersinfo-graph" attributes="asyncstop">
 	<template>
 		<style>
 		#toast {
@@ -44,8 +44,13 @@
 		quizstats:[{"color":"#5bc0de","title":"Test Attempts 1/4 ","value":0},{"color":"#5CB85C","title":"Test Corrects 1/4 ","value":0},{"color":"#D9534F","title":"Test Wrongs 0/4 ","value":0}],
 	  fetch:true,
     params:{},
+    asyncstop: false,
     ready: function(){
-      this.fetchdata();
+    	if(this.asyncstop){
+    		this.params = {};
+	      this.params["fetch"] = this.fetch;
+	      this.$.coreajax.go();
+    	}else this.fetchdata();
     },
     fetchdata: function(){
       this.params = {};
