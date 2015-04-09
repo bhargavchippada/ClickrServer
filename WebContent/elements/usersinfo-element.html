@@ -2,7 +2,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<polymer-element name="usersinfo-element">
+<polymer-element name="usersinfo-element" attributes="asyncstop">
   <template>
   	<style>
     :host{
@@ -154,6 +154,7 @@
       fetch:true,
       params:{},
       timed: true,
+      asyncstop: false,
       evalVisibleCount: function(){
         var children = this.$.tablebody.querySelectorAll('tr');
         this.visiblecount = 0;
@@ -186,8 +187,14 @@
         this.async(this.evalVisibleCount);
       },
       ready: function(){
-        this.fetchdata();
-        this.async(this.evalVisibleCount);
+        if(this.asyncstop){
+          this.params = {};
+          this.params["fetch"] = this.fetch;
+          this.$.coreajax.go();
+        }else{
+          this.fetchdata();
+          this.async(this.evalVisibleCount);
+        }
       },
       fetchdata: function(){
         this.params = {};
@@ -238,7 +245,7 @@
         var b2 = value2=='' || this.evalMatch(userinfo2,value2);
         var b3 = value3=='' || this.evalMatch(userinfo3,value3);
         var b4 = value4=='' || this.evalMatch(userinfo4,value4);
-        var b5 = value5=='' || JSON.stringify(userinfo5).toLowerCase() >= value5.toLowerCase();
+        var b5 = value5=='' || parseInt(userinfo5) >= parseInt(value5);
         //console.log(b0,b1,b2,b3,b4);
         if(b0 && b1 && b2 && b3 && b4 && b5) {
           return false;
