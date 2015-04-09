@@ -8,6 +8,6 @@ the quiz.
 Dependencies for the project: [gson](https://code.google.com/p/google-gson/downloads/list?can=1&q=)
 
 #####I have drafted a new release, check releases page of this project.
-It's a simple war file which can be deployed on apache tomcat server. There are numerous resources online which will tell you how to deploy a war file. Username and password combination for the Clickr admin page is clickrdemo and clickr@iitb respectively.
+It's a simple war file which can be deployed on apache tomcat server. There are numerous resources online which will tell you how to deploy a war file.
 
 For any doubts and clarifications contact me: bhargav.chippada@gmail.com
