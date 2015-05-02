@@ -18,6 +18,11 @@ import datahandler.AdminProfile;
 import datahandler.ClassRoom;
 import datahandler.Question;
 
+/**Servlet to update question information, also to start/stop quiz if everything is ok.
+ * Of course authorization of the administrator is checked using HttpSession. 
+ * @author bhargav
+ *
+ */
 public class SaveQuestion extends HttpServlet{
 	private static final long serialVersionUID = -1171321495906154882L;
 	String classname = "SaveQuestion";

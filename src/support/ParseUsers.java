@@ -7,6 +7,10 @@ import datahandler.ClassRoom;
 import datahandler.UserProfile;
 
 
+/**Helper class to parse the userlist file and populate Singleton ClassRoom class 
+ * @author bhargav
+ *
+ */
 public class ParseUsers {
 	String classname = "ParseUsers";
 	

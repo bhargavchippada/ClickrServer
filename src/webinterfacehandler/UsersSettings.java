@@ -17,6 +17,10 @@ import datahandler.AdminProfile;
 import datahandler.ClassRoom;
 import datahandler.Question;
 
+/**Servlet to update users of ClassRoom and server status
+ * @author bhargav
+ *
+ */
 public class UsersSettings extends HttpServlet{
 
 	private static final long serialVersionUID = -6171763349016698953L;

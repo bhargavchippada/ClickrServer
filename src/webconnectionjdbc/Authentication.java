@@ -13,6 +13,12 @@ import com.google.gson.JsonObject;
 import datahandler.ClassRoom;
 import datahandler.UserProfile;
 
+/**Servlet for authenticating user login credentials, send an appropriate response 
+ *  according to the state of the server and whether or not authorization was successful<br>
+ *  A HttpSession is created for successful authentications 
+ * @author bhargav
+ *
+ */
 public class Authentication extends JSONHttpServlet {
 	private static final long serialVersionUID = 8842827877500138557L;
 	private static String classname = "Authentication";

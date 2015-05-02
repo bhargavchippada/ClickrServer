@@ -4,18 +4,25 @@ import support.Utils;
 
 import com.google.gson.JsonArray;
 
+/**Class storing a user's response
+ * @author bhargav
+ *
+ */
 public class UserResponse {
 	
 	private static String classname = "UserResponse";
 	
 	public String username="NULL";
-	public String QID="NULL";
+	public String QID="NULL"; //unique question id
 	public Boolean correct=false;
 	public long startTime=-1;
 	public long timeTook=-1; // in secs
 	public long submitTime=-1;
-	public JsonArray answers = new JsonArray();
+	public JsonArray answers = new JsonArray(); //user's answer
 
+	/**When feedback is enabled this method returns the feedback message
+	 * @return String response
+	 */
 	public String responseString(){
 		String output;
 		if(Question.feedback && Question.type!=4){
@@ -28,6 +35,9 @@ public class UserResponse {
 		return output;
 	}
 	
+	/**Print the user response details
+	 * 
+	 */
 	public void print(){
 		Utils.logv(classname, "username: "+username);
 		Utils.logv(classname, "QID: "+QID);
@@ -38,6 +48,9 @@ public class UserResponse {
 		Utils.logv(classname, "answers: "+answers);
 	}
 	
+	/**
+	 * @return String user's answer
+	 */
 	public String getAnswer(){
 		String answer = "";
 		if(answers.size()==0) return "";

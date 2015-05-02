@@ -17,6 +17,11 @@ import datahandler.AdminProfile;
 import datahandler.ClassRoom;
 import datahandler.Question;
 
+/**Servlet to send all user profile information in jsonarray to administrator's webinterface.
+ * Of course authorization of the administrator is checked using HttpSession. 
+ * @author bhargav
+ *
+ */
 public class UsersInfo extends HttpServlet{
 
 	private static final long serialVersionUID = 1056649393784489530L;

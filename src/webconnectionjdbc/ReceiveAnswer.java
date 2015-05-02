@@ -15,6 +15,11 @@ import datahandler.Question;
 import datahandler.UserProfile;
 import datahandler.UserResponse;
 
+/**Process the user response received and send an appropriate response back. Ofcourse
+ * state of the server/quiz and authorization of the user are checked.
+ * @author bhargav
+ *
+ */
 public class ReceiveAnswer extends JSONHttpServlet{
 	private static final long serialVersionUID = 5627352069489872384L;
 	String classname = "ReceiveAnswer";

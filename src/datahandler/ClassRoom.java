@@ -9,18 +9,26 @@ import support.Utils;
 
 import com.google.gson.JsonArray;
 
+/**Singleton class for storing users and their responses in a hashmap
+ * @author bhargav
+ *
+ */
 public class ClassRoom {
 	static String classname = "ClassRoom";
 
 	public static String clsname="Class Quiz";
 	public static int userslist = 0; //0 means users file, 1 means anyone can join, -1 means none
-	public static boolean serveronline = false;
+	public static boolean serveronline = false; //whether or not server is online
 
-	//<username, userprofile> pair
+	//<username, user profile> pair
 	public static ConcurrentHashMap<String, UserProfile> users_map = new ConcurrentHashMap<String, UserProfile>();
-	//<username, userresponse> pair
+	
+	//<username, user response> pair
 	public static ConcurrentHashMap<String, UserResponse> users_responsemap = new ConcurrentHashMap<String, UserResponse>();
 
+	/**Add a user response to the hashmap
+	 * @param ur
+	 */
 	public static void addResponse(UserResponse ur){
 		Question.incrementNumAttempts();
 		if(ur.correct){
@@ -32,6 +40,9 @@ public class ClassRoom {
 		Question.incrementOptionStats(ur.answers);
 	}
 
+	/**Print all the users info
+	 * 
+	 */
 	public static void printUsers(){
 		synchronized (users_map) {
 			Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
@@ -43,6 +54,9 @@ public class ClassRoom {
 		}
 	}
 
+	/**Print the quiz stats
+	 * 
+	 */
 	public static void printStats(){
 		synchronized (Question.class) {
 			System.out.println("General Stats:");
@@ -67,6 +81,9 @@ public class ClassRoom {
 		}
 	}
 
+	/**Clear the ClassRoom, initialize it to it's default values
+	 * 
+	 */
 	public synchronized static void clear(){
 		Utils.logv(classname, "ClassRoom is cleared");
 
@@ -76,6 +93,9 @@ public class ClassRoom {
 		users_responsemap.clear();
 	}
 	
+	/**Clear the user responses and reset user profile details (make them default)
+	 * 
+	 */
 	public synchronized static void reset(){
 		Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
 		while (it.hasNext()) {
@@ -87,6 +107,9 @@ public class ClassRoom {
 		users_responsemap.clear();
 	}
 	
+	/**Clear the user responses and do a milder form of reset on user profiles
+	 * 
+	 */
 	public synchronized static void quizreset(){
 		Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();
 		while (it.hasNext()) {
@@ -98,6 +121,9 @@ public class ClassRoom {
 		users_responsemap.clear();
 	}
 	
+	/**
+	 * @return jsonarray of the details of all the users in the classroom
+	 */
 	public synchronized static JsonArray getClassroomJson(){
 		JsonArray jsonclass = new JsonArray();
 		Iterator<Entry<String, UserProfile>> it = users_map.entrySet().iterator();

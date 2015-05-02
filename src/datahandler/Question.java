@@ -5,30 +5,52 @@ import support.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/**Singleton class to store the quiz question
+ * @author bhargav
+ *
+ */
+/**
+ * @author bhargav
+ *
+ */
+/**
+ * @author bhargav
+ *
+ */
 public class Question{
 	
 	public static String classname = "Question";
 	
-	public static String ID;
+	public static String ID; //unique question id
 	
 	public static boolean savedquiz=false; // whether or not a quiz is saved
 
-	public static String title;
-	public static String question;
+	public static String title; //question title
+	public static String question; //question content
+	/**Type of the quiz<br>
+	 * 0 => single mcq
+	 * 1 => mutiple mcq
+	 * 2 => true or false
+	 * 3 => word answer
+	 * 4 => short answer
+	 */
 	public static int type;
-	public static JsonArray options = new JsonArray();
-	public static JsonArray answers = new JsonArray();
-	public static boolean feedback;
-	public static boolean timed;
-	public static int time;
+	public static JsonArray options = new JsonArray(); //options of the quiz
+	public static JsonArray answers = new JsonArray(); //answer of the quiz
+	public static boolean feedback; //whether or not the quiz gived immediate feedback
+	public static boolean timed; //whether or not the quiz is timed
+	public static int time; // this is the time is the quiz is timed
 	
 	public static boolean startquiz = false; // whether or not started quiz
 	
-	public static JsonArray option_stat = new JsonArray();
-	public static int num_attempts=0;
-	public static int num_correct=0;
-	public static int num_wrong=0;
+	public static JsonArray option_stat = new JsonArray(); //option wise stats
+	public static int num_attempts=0; // number of users who attempted the quiz
+	public static int num_correct=0; // number of correct attempts
+	public static int num_wrong=0; //number of wrong attempts
 	
+	/**Clear the question details
+	 * 
+	 */
 	public synchronized static void clear(){
 		ID=null;
 		
@@ -51,6 +73,9 @@ public class Question{
 		num_wrong=0;
 	}
 	
+	/**Clear the question stats
+	 * 
+	 */
 	public synchronized static void quizreset(){
 		option_stat=new JsonArray();
 		num_attempts=0;
@@ -67,6 +92,9 @@ public class Question{
 		}
 	}
 	
+	/**Print the question
+	 * 
+	 */
 	public static void print(){
 		Utils.logv(classname, "Question ID: "+ID);
 		Utils.logv(classname, "savedquiz: "+savedquiz);
@@ -83,22 +111,37 @@ public class Question{
 		Utils.logv(classname, "startquiz: "+startquiz);
 	}
 	
+	/**Synchronized way of incrementing the number of attempts
+	 * 
+	 */
 	public synchronized static void incrementNumAttempts(){
 		num_attempts++;
 	}
 	
+	/**Synchronized way of incrementing the number of corrects
+	 * 
+	 */
 	public synchronized static void incrementNumCorrects(){
 		num_correct++;
 	}
 	
+	/**Synchronized way of incrementing the number of wrongs
+	 * 
+	 */
 	public synchronized static void incrementNumWrongs(){
 		num_wrong++;
 	}
 	
+	/**Synchronized way updating the options stats (number of people has chosen a particular option)
+	 * 
+	 */
 	public synchronized static void updateOptionStats(int pos){
 		option_stat.set(pos,Utils.gson.toJsonTree(option_stat.get(pos).getAsInt()+1));
 	}
 	
+	/**Synchronized way of incrementing the options stats (number of people has chosen a particular option)
+	 * 
+	 */
 	public synchronized static void incrementOptionStats(JsonArray myanswers){
 		if(myanswers.size()==0) return;
 		
@@ -126,6 +169,11 @@ public class Question{
 		}
 	}
 	
+	/**Verify the provided answer with correct answer according to the type of the 
+	 * question.
+	 * @param myanswers
+	 * @return
+	 */
 	public static boolean verify(JsonArray myanswers){
 		
 		if(myanswers.size()==0) return false;
@@ -146,6 +194,10 @@ public class Question{
 		return false;
 	}
 	
+	
+	/**Answer for the question
+	 * @return String denoting the answer
+	 */
 	public static String getAnswer(){
 		String answer = "Answer:\n";
 		if(type==0){
@@ -179,6 +231,9 @@ public class Question{
 		return answer;
 	}
 	
+	/**Synchronized way of returning the jsonarray object of stats
+	 * @return jsonarray
+	 */
 	public synchronized static JsonArray getStatsJson(){
 		JsonArray jarray = new JsonArray();
 		
@@ -213,6 +268,10 @@ public class Question{
 		return jarray;
 	}
 	
+	/**Synchronized way of returning the jsonarray object of optionstats depending on
+	 * the type of the question
+	 * @return jsonarray
+	 */
 	public synchronized static JsonArray getOptionStatsJson(){
 		
 		JsonArray jarray = new JsonArray();

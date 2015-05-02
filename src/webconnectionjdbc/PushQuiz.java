@@ -15,6 +15,10 @@ import datahandler.Question;
 import datahandler.UserProfile;
 import datahandler.UserResponse;
 
+/**Send question to the user if he was authenticated and quiz has started
+ * @author bhargav
+ *
+ */
 public class PushQuiz extends JSONHttpServlet{
 	private static final long serialVersionUID = 3622456660944045304L;
 	String classname = "PushQuiz";

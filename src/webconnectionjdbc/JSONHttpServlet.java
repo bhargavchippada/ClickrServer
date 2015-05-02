@@ -14,10 +14,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**Abstract class for handling communication with mobile app
+ * @author bhargav
+ *
+ */
 public abstract class JSONHttpServlet extends HttpServlet {
 	private static final long serialVersionUID = 3774283076682999070L;
 	private String classname = "JSONHttpServlet";
 
+	/** This method receives data (json format) and calls _processInput method to process
+	 * it and send response back
+	 *
+	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -63,10 +71,19 @@ public abstract class JSONHttpServlet extends HttpServlet {
 		Utils.logv(getClassname(),elapsedTime+"ms");
 	}
 
+	/**This method will be ovverided by sub-classes
+	 * @return
+	 */
 	public String getClassname(){
 		return classname;
 	}
 	
+	/**This method has to be implemented by sub-classes
+	 * @param input
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	protected abstract JsonObject _processInput(JsonObject input, HttpServletRequest request, HttpServletResponse response);
 
 }

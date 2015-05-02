@@ -16,6 +16,11 @@ import com.google.gson.JsonObject;
 import datahandler.AdminProfile;
 import datahandler.Question;
 
+/**Servlet to send quiz statistics to the administrator's webinterface.
+ * Of course authorization of the administrator is checked using HttpSession. 
+ * @author bhargav
+ *
+ */
 public class QuizStats extends HttpServlet{
 
 	private static final long serialVersionUID = -3553473332196774462L;

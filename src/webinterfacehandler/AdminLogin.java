@@ -15,6 +15,11 @@ import com.google.gson.JsonObject;
 
 import datahandler.AdminProfile;
 
+/**Administrator's authentication servlet, a HttpSession is created upon success.<br>
+ * An appropriate response is sent back
+ * @author bhargav
+ *
+ */
 public class AdminLogin extends HttpServlet{
 
 	private static final long serialVersionUID = 8316579451970438895L;
