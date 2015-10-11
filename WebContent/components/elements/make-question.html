@@ -1,0 +1,73 @@
+<link rel="import" href="question-element.html">
+
+<dom-module name="make-question">
+  <template>
+    <style include="shared-styles">
+    :host{
+      width: 85%;
+    }
+    </style>
+    <div class="layout horizontal flex center-justified center">
+      <p class="form-heading margin0 pad0">Choose:</p>
+      <paper-tabs class="layout horizontal round-teal" selected="{{qkind}}" no-bar self-end>
+        <paper-tab>Question</paper-tab>
+        <paper-tab>Poll</paper-tab>
+      </paper-tabs>
+    </div>
+    <div class="layout flex horizontal center mtop16">
+      <p class="form-heading margin0 pad0">Type:</p>
+      <paper-tabs class="layout flex round-green" selected="{{qtype}}" no-bar self-end>
+        <paper-tab>Single</paper-tab>
+        <paper-tab>Multiple</paper-tab>
+        <paper-tab>True/False</paper-tab>
+        <paper-tab>Integer</paper-tab>
+        <paper-tab>Float</paper-tab>
+        <paper-tab>Word</paper-tab>
+        <paper-tab>Short</paper-tab>
+      </paper-tabs> 
+    </div>
+    <question-element id="questionele" qtype="{{getType(types,qtype)}}" qkind="{{getKind(kinds,qkind)}}" qtext="{{qtext}}" title="{{title}}" options="{{options}}"></question-element>
+  </template>
+  <script>
+    Polymer({
+      is: 'make-question',
+      properties: {
+        disabled: { type: Boolean, value: false },
+        qtype: { type: Number, value: 0 },
+        qkind: { type: Number, value: 0 },
+        types: { type: Array, value: ["single","multiple","truefalse","integer","float","word","short"] },
+        kinds: { type: Array, value: ["question","poll"] },
+        title: { type: String, value: '' },
+        qtext: { type: String, value: '' },
+        options: { type: Array, value: [] }
+      },
+      getType: function(arr, ind){
+        return arr[ind];
+      },
+      getKind: function(arr, ind){
+        return arr[ind];
+      },
+      getQuestion: function(){
+        if(this.$.questionele.isValid()) return this.$.questionele.getQuestion();
+        else return null;
+      },
+      setQuestion: function(question, options){
+        if(question.qkind == 'question') this.qkind = 0;
+        else this.qkind = 1;
+
+        var qtype = question.qtype;
+        if(qtype == 'single') this.qtype = 0;
+        else if (qtype == 'multiple') this.qtype = 1;
+        else if (qtype == 'truefalse') this.qtype = 2;
+        else if (qtype == 'integer') this.qtype = 3;
+        else if (qtype == 'float') this.qtype = 4;
+        else if (qtype == 'word') this.qtype = 5;
+        else if (qtype == 'short') this.qtype = 6;
+
+        this.qtext = question.qtext;
+        this.title = question.title;
+        this.options = options;
+      }
+    });
+  </script>
+</dom-module>

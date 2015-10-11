@@ -1,0 +1,89 @@
+<dom-module name="login-form">
+  <template>
+  	<style>
+  	:host {
+      color: #333;
+      font-family: 'Roboto', sans-serif;
+    }
+    .form-title {
+    	font-size: 42px;
+      text-align: center;
+    }
+    .form-heading {
+      font-size: 34px;
+      text-align: left;
+    }
+    paper-input {
+      text-align: left;
+      height: 56px;
+    }
+    #error_display {
+    	color:#D9534F;
+    	font-size: 22px;
+    }
+  	</style>
+    <iron-ajax
+        id="ironajax"
+        url="../AdminLogin"
+        params='{{params}}'
+        handleAs="json"
+        method='POST'
+        contentType="application/json"
+        on-response="handleResponse"
+        on-error="handleError"></iron-ajax>
+
+    <div class="layout vertical">
+	    	<p class="form-title margin0">Administrator</p>
+        <p class="form-heading margin0">Sign In</p>
+        <paper-input id="inp_username" value="{{login_username}}" label="Username" error-message="Username is required!" required auto-validate></paper-input>
+        <paper-input id="inp_password" value="{{login_password}}" label="Password" type="password" error-message="Password is required!" required auto-validate></paper-input>
+      	<div class="layout horizontal center">
+          <input type="file" id="browse" name="file" style="display: none" on-change="readFilePath"/>
+          <paper-input class="inputlarge" value="{{database_path}}" label="Database path (May be Optional)" error-message="Invalid path!"></paper-input>
+          <paper-icon-button on-click="browseDatabase" icon="search">Log In</paper-icon-button>
+        </div>
+        <div class="mtop32">
+        	<paper-button raised on-click="submitLoginCred" class="mtop8 btn-css blue-bg">Log In</paper-button>
+      		<p id="error_display" class="mtop16"></p>
+        </div>
+	  </div>
+  </template>
+  <script>
+  	Polymer({
+      is: "login-form",
+      properties: {
+        database_path: { type: String, value: '' },
+        login_username: { type: String, value: '' },
+        login_password: { type: String, value: '' },
+        params: { type: Object, value: {} }
+      },
+  		submitLoginCred: function(){
+        this.login_username = this.login_username.trim();
+        this.login_password = this.login_password.trim();
+        if(this.login_username != '' && this.login_password != '') {
+          this.params["login_username"]=this.login_username;
+          this.params["login_password"]=this.login_password;
+          this.params["database_path"]=this.database_path;
+          this.$.ironajax.generateRequest();
+        }
+        if(this.login_username == '') this.$.inp_username.validate();
+        if(this.login_password == '') this.$.inp_password.validate();
+  		},
+  		handleResponse: function(req) {
+          var ajax_response = req.detail.response; 
+          if(ajax_response.redirectURL) window.location = ajax_response.url;
+          else this.$.error_display.innerHTML = ajax_response.error_msg;
+      },
+      handleError: function(resp, err) {
+        this.$.error_display.innerHTML = resp.detail.error;
+      },
+      browseDatabase: function(){
+        this.$.browse.click();
+      },
+      readFilePath: function(e,detail,sender){
+        this.database_path = this.$.browse.value;
+        this.$.error_display.innerHTML="Type the database path manually due to security reasons";
+      }
+  	});
+  </script>
+</dom-module>

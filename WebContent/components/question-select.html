@@ -1,0 +1,140 @@
+<link rel="import" href="elements/make-question.html">
+<link rel="import" href="elements/question-select-info.html">
+<dom-module id="question-select">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        margin: 16px;
+        padding: 4px 8px 16px 24px;
+
+        background: var(--paper-dialog-background-color, --primary-background-color);
+        color: var(--paper-dialog-color, --primary-text-color);
+
+        @apply(--layout-scroll);
+        @apply(--paper-font-body1);
+        @apply(--shadow-elevation-16dp);
+        @apply(--paper-dialog);
+      }
+      #closedialog {
+        color: #D9534F;
+        text-align: right;
+      }
+      paper-fab.blue {
+        --paper-fab-background: var(--paper-light-blue-500);
+        --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+      }
+    </style>
+    <iron-ajax
+      id="ironajax"
+      url="../Questions"
+      params='{{params}}'
+      body='{{bodycontent}}'
+      handle-as="json"
+      content-type="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
+
+    <div class="layout vertical">
+      <div class="layout horizontal end-justified">
+        <paper-icon-button id="closedialog" dialog-dismiss icon="close"></paper-icon-button>
+      </div>
+      <paper-button class$="{{toggleCSS(showthis)}}" on-click="makeQuestionClick">{{makeqbtntxt}}</paper-button>
+      </div>
+      <div class="layout vertical center" hidden="{{!showthis}}">
+        <make-question id="makequestionele" types='["single","multiple","truefalse","integer","float","word","short"]' qtype='0' kinds='["question","poll"]' qkind='0'></make-question>
+        <paper-button class="btn-css green-bg mtop16" on-click="saveQuestionClick">Save Question</paper-button>
+      </div>
+      <div class="layout horizontal center">
+        <h2 class="mright16"><u>Your Questions</u></h2>
+        <paper-fab mini icon="refresh" class="blue" on-click="refreshQuestionClick"></paper-fab>
+      </div>
+      <div id="radiogroup" class="layout vertical">
+        <template is="dom-repeat" items="{{questionslist}}">
+            <question-select-info questionid="{{item.questionid}}" qtype="{{item.qtype}}" qkind="{{item.qkind}}" title="{{item.title}}" qtext="{{item.qtext}}" created_time="{{item.created_time}}" selectedqid="{{selectedqid}}"></question-select-info>
+        </template>
+      </div>
+    </div>
+  </template>
+  <script>
+  var filetext = "";
+  var fileread = false;
+  (function() {
+
+    Polymer({
+
+      is: 'question-select',
+
+      behaviors: [
+        Polymer.PaperDialogBehavior
+      ],
+
+      properties: {
+        showthis: { type: Boolean, value: false },
+        makeqbtntxt: { type: String, value: 'Make Question' },
+        questionslist: { type: Array, value: [] },
+        selectedqid: { type:Number, value:null, reflectToAttribute: true, notify: true },
+        params: { type: Object, value: {} },
+        bodycontent: { type: Object, value: {} }
+      },
+      makeQuestionClick: function(){
+        if(!this.showthis) this.makeqbtntxt = 'Hide Question';
+        else this.makeqbtntxt = 'Make Question';
+        this.showthis = !this.showthis;
+      },
+      toggleCSS: function(showthis){
+        if(showthis) return 'btn-css red-bg';
+        else return 'btn-css blue-bg';
+      },
+      saveQuestionClick: function(){
+        var question = this.$.makequestionele.getQuestion();
+        if(question!=null){
+          this.params = {};
+          this.params["action"] = "newquestion";
+          this.bodycontent = question;
+          this.$.ironajax.generateRequest();
+        }
+      },
+      ready: function() {
+        this.refreshQuestionClick();
+      },
+      refreshQuestionClick: function() {
+        this.params = {};
+        this.params["action"] = "questionslist";
+        this.$.ironajax.generateRequest();
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.domHost.showError(ajax_response.error_msg);
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'questionslist':
+                  this.questionslist = JSON.parse(ajax_response.questionslist);
+                  break;
+              case 'newquestion':
+                  this.refreshQuestionClick();
+                  break;
+              default:
+                  console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.domHost.showError(resp.detail.error);
+      },
+      showError: function(err){
+        this.domHost.showError(err);
+      },
+      setQuestion: function(question, options){
+        this.showthis = true;
+        this.$.makequestionele.setQuestion(question,options);
+        this.scrollTop = 0;
+      }
+    });
+
+  })();
+
+  </script>
+</dom-module>

@@ -1,0 +1,145 @@
+<link rel="import" href="elements/toggle-display.html">
+<link rel="import" href="class-select.html">
+
+<dom-module name="classroom-settings">
+<template>
+  <style include="shared-styles">
+    .logo-image{
+      width: 48px;
+      height: 48px;
+    }
+    .form-heading{
+      font-size: 34px;
+      margin: auto 16px auto 16px;
+    }
+    class-select {
+      position: fixed;
+      width: 80%;
+      height: 90%;
+      top: 16px;
+    }
+  </style>
+  <iron-ajax
+    id="ironajax"
+    url="../Classrooms"
+    params='{{params}}'
+    handleAs="json"
+    contentType="application/json"
+    method='POST'
+    on-response="handleResponse"
+    on-error="handleError"
+    debounceDuration="1500"></iron-ajax>
+
+  <div class="layout horizontal center">
+    <img src="../media/logo.png" class="logo-image">
+    <p class="form-heading">Clickr</p>
+    <paper-input label="Event Name" value="{{eventname}}"></paper-input>
+  </div>
+  <toggle-display show="{{showthis}}" label="Classroom Settings"></toggle-display>
+  <div class="layout horizontal center" hidden="{{!showthis}}">
+    <paper-input class="inputmedium mright16 dark" no-label-float label="{{classname}}" disabled></paper-input>
+    <paper-button id="browsebtn" raised class="btn-css blue-bg" on-click="selectClassClick" disabled$="{{uploadBtnState(classtype,serverstate)}}">Select Class</paper-button>
+    <class-select id="classselect" modal selectedclassname="{{classname}}" selectedclassid="{{classid}}"></class-select>
+    <paper-radio-group id="radiogroup" selected="{{classtype}}">
+      <paper-radio-button name="classonly" disabled$="[[serverstate]]">Class Only</paper-radio-button>
+      <paper-radio-button name="mixedclass" disabled$="[[serverstate]]">Mixed Class</paper-radio-button>
+      <paper-radio-button name="anonymous" disabled$="[[serverstate]]">Anonymous</paper-radio-button>
+    </paper-radio-group>
+    <div class="flex layout end-justified horizontal">
+      <paper-button id="togglebtn" raised class$="{{toggleCSS(serverstate)}}" on-click="sendServerState">{{toggleLabel(serverstate)}}</paper-button>
+    </div>
+    <paper-toast id="toast" text=""></paper-toast>
+    <paper-toast id="notice" text=""></paper-toast>
+  </div>
+</template>
+<script>
+  Polymer({
+    is: 'classroom-settings',
+    properties: {
+      showthis: { type: Boolean, value: true },
+      serverstate: { type: Boolean, value: false, reflectToAttribute: true, notify: true },
+      eventname: { type: String, value: 'Classroom Event' },
+      classname: { type: String, value: 'Class Name' },
+      classid: { type: Number, value: null, observer: 'classidChanged' },
+      classtype: { type: Number, value: 'classonly'},
+      params: { type: Object, value: {} }
+    },
+    uploadBtnState: function(classtype,serverstate){
+      if(serverstate || classtype=='anonymous') return true;
+      else return false;
+    },
+    selectClassClick: function(){
+      this.$.classselect.toggle();
+    },
+    ready: function(){
+      this.params["action"] = "fetch";
+      this.$.ironajax.generateRequest();
+    },
+    handleResponse: function(req) {
+      var ajax_response = req.detail.response;
+      if(ajax_response.status == 'FAIL'){
+        this.$.toast.text=ajax_response.error_msg;
+        this.$.toast.show();
+      }else if(ajax_response.status == 'SUCCESS'){
+        switch(ajax_response.action) {
+          case 'fetch':
+              this.serverstate = ajax_response.serverstate;
+              this.classtype = ajax_response.classtype;
+              this.classid = ajax_response.classid;
+              this.classname = ajax_response.classname;
+              if(this.classname == null ) this.classname = 'Class Name';
+              break;
+          case 'changeserverstate':
+              console.log(ajax_response.serverstate);
+              this.serverstate = ajax_response.serverstate;
+              break;
+          default:
+              console.log("unidentified action request");
+        }
+      }
+    },
+    handleError: function(resp, err) {
+      this.showError(resp.detail.error);
+    },
+    showError: function(err){
+      this.$.toast.text=err;
+      this.$.toast.show();
+    },
+    showNotice: function(msg){
+      this.$.notice.text=msg;
+      this.$.notice.show();
+    },
+    classidChanged: function(){
+      this.showNotice("Class selected: "+this.classname+", ID: "+this.classid);
+    },
+    sendServerState: function(){
+      if(!this.serverstate){
+        this.params["action"] = "changeserverstate";
+        this.params["serverstate"] = !this.serverstate;
+        if(this.classtype != 'anonymous' && this.classid==null){
+          this.showError("Please select a class!!");
+          return;
+        }
+        this.params["classid"] = this.classid;
+        this.params["classname"] = this.classname;
+        this.params["classtype"] = this.classtype;
+        console.log(this.params);
+        this.$.ironajax.generateRequest();
+      }else {
+        this.params["action"] = "changeserverstate";
+        this.params["serverstate"] = !this.serverstate;
+        console.log(this.params);
+        this.$.ironajax.generateRequest();
+      }
+    },
+    toggleCSS: function(btnbool){
+      if(btnbool) return 'btn-css ' + 'red-bg';
+      else return 'btn-css ' + 'green-bg';
+    },
+    toggleLabel: function(btnbool){
+      if(btnbool) return "Stop Server";
+      else return "Start Server";
+    }
+  });
+</script>
+</dom-module>

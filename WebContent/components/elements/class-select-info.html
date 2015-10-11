@@ -1,0 +1,143 @@
+<dom-module name="class-select-info">
+  <template>
+    <style include="shared-styles">
+    #previewdiv {
+      width: 256px;
+      max-height: 128px;
+    }
+    </style>
+    <iron-ajax
+      id="ironajax"
+      url="../../Classrooms"
+      params='{{params}}'
+      handleAs="json"
+      contentType="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"
+      debounceDuration="1500"></iron-ajax>
+
+    <div class="layout horizontal center">
+      <paper-radio-button id="radiobutton" on-click="radioClicked"></paper-radio-button>
+      <h2 class="mright16only">{{classname}}</h2>
+      <h4 class="green-text mright16only"><span>{{student_count}}</span> Students</h4>
+      <h4 class="blue-text mright16only">CreateTime: <span>{{created_time}}</span></h4>
+      <div class="layout horizontal flex end-justified">
+        <paper-icon-button on-click="toggleShowClass" icon="{{visibility}}"></paper-icon-button>
+        <paper-icon-button on-click="deleteClassClick" icon="delete"></paper-icon-button>
+      </div>
+    </div>
+    <div id="preview" class="layout vertical center" hidden='true'>
+      <h3 class="all0"><u>Preview</u></h3>
+      <div id="previewdiv" class="layout scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Rollnumber</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template is="dom-repeat" items="{{classusers}}">
+              <tr>
+                <td>{{item.0}}</td>
+                <td>{{item.1}}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="layout flex line-seperator"></div>
+    <paper-dialog id="alert" class="fixedpos pad8">
+      <h2>Alert</h2>
+      <h4>Do you really want to delete <span>{{classname}}</span>?</h4>
+      <div class="layout horizontal end-justified">
+        <paper-icon-button class="green-color" icon="check" on-click="confirmDeleteClick"></paper-icon-button>
+        <paper-icon-button class="red-color" icon="close" on-click="dismissDialogClick"></paper-icon-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: 'class-select-info',
+      properties: {
+        classid: { type: Number, value: 0, observer: 'classidChanged' },
+        classname: { type: String, value: 'ClassName' },
+        student_count: { type: Number, value: 10},
+        created_time: { type: String, value: '2015-1-10 16:50:00'},
+        visibility: { type: String, value: 'visibility'},
+        classusers: { type: Array, value: [] },
+        params: { type: Object, value: {} },
+        selectedclassid: { type:Number, value:null, observer: 'selectedclassidChanged', reflectToAttribute: true, notify: true }
+      },
+      selectedclassidChanged: function(newValue){
+        if(newValue == this.classid) this.$.radiobutton.checked = true;
+        else this.$.radiobutton.checked = false;
+      },
+      classidChanged: function(newValue){
+        this.classusers = "";
+        this.visibility = 'visibility';
+        this.$.preview.setAttribute("hidden",'true');
+        if(this.selectedclassid == this.classid) this.$.radiobutton.checked = true;
+        else this.$.radiobutton.checked = false;
+      },
+      toggleShowClass: function(){
+        if(this.visibility == 'visibility'){
+          this.visibility = 'visibility-off';
+          this.$.preview.removeAttribute("hidden");
+          if(this.classusers.length == 0){
+            this.params["action"] = "classusers";
+            this.params["classid"] = this.classid;
+            this.$.ironajax.generateRequest();
+          }
+        }else {
+          this.visibility = 'visibility';
+          this.$.preview.setAttribute("hidden",'true');
+        }
+      },
+      deleteClassClick: function(){
+        this.$.alert.open();
+      },
+      dismissDialogClick: function(){
+        this.$.alert.close();
+      },
+      confirmDeleteClick: function(){
+        this.params["action"] = "deleteclass";
+        this.params["classid"] = this.classid;
+        this.$.ironajax.generateRequest();
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.domHost.showError(ajax_response.error_msg);
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'classusers':
+                this.classusers = JSON.parse(ajax_response.classusers);
+                break;
+              case 'deleteclass':
+                this.$.alert.close();
+                if(this.selectedclassid == this.classid) {
+                  this.domHost.setSelectedClassName('');
+                  this.selectedclassid = null;
+                }
+                this.domHost.refreshClassClick();
+                break;
+              default:
+                console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.domHost.showError(resp.detail.error);
+      },
+      radioClicked: function(){
+        this.$.radiobutton.checked = true;
+        this.domHost.setSelectedClassName(this.classname);
+        this.selectedclassid = this.classid;
+        this.domHost.close();
+      }
+    });
+  </script>
+</dom-module>

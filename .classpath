@@ -13,5 +13,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/ClickrServer/WebContent/WEB-INF/lib/doc/gson-2.3.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/sqlite-jdbc-3.8.11.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

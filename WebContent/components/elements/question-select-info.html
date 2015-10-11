@@ -1,0 +1,118 @@
+<dom-module name="question-select-info">
+  <template>
+    <style>
+    h2,h3 {
+      text-transform: capitalize;
+    }
+    p,h4 {
+      padding: 0;
+      margin: 0;
+    }
+    </style>
+    <iron-ajax
+      id="ironajax"
+      url="../../Questions"
+      params='{{params}}'
+      handleAs="json"
+      contentType="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"
+      debounceDuration="1500"></iron-ajax>
+
+    <div class="layout vertical">
+      <div class="layout horizontal center">
+        <paper-radio-button id="radiobutton" on-click="radioClicked"></paper-radio-button>
+        <h2 class="mright16only">{{qkind}}<span>:</span></h2>
+        <h2 class="green-text mright16only">{{qtype}}</h2>
+        <h3 class="blue-text mright16only">CreateTime: <span>{{created_time}}</span></h3>
+        <div class="layout horizontal flex end-justified">
+          <paper-icon-button on-click="toggleShowQuestion" icon="{{visibility}}"></paper-icon-button>
+          <paper-icon-button on-click="copyQuestionClick" icon="content-copy"></paper-icon-button>
+          <paper-icon-button on-click="deleteQuestionClick" icon="delete"></paper-icon-button>
+        </div>
+      </div>
+      <h4>Title: <span>{{title}}</span></h4>
+      <p>Question: <span>{{qtext}}</span></p>
+    </div>
+    <div class="layout flex line-seperator"></div>
+    <paper-dialog id="alert" class="fixedpos pad8">
+      <h2>Alert</h2>
+      <h4>Do you really want to delete this question?</h4>
+      <h4>Title: <span>{{title}}</span></h4>
+      <div class="layout horizontal end-justified">
+        <paper-icon-button class="green-color" icon="check" on-click="confirmDeleteClick"></paper-icon-button>
+        <paper-icon-button class="red-color" icon="close" on-click="dismissDialogClick"></paper-icon-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: 'question-select-info',
+      properties: {
+        questionid: { type: Number, value: 0, observer: 'questionidChanged' },
+        qtype: { type: String, value: 'single' },
+        qkind: { type: String, value: 'question' },
+        title: { type: String, value: 'Question title' },
+        qtext: { type: String, value: 'Question body it is' }, 
+        created_time: { type: String, value: '2015-1-10 16:50:00' },
+        params: { type: Object, value: {} },
+        selectedqid: { type:Number, value:null, observer: 'selectedqidChanged', reflectToAttribute: true, notify: true },
+        visibility: { type: String, value: 'visibility'}
+      },
+      selectedqidChanged: function(newValue){
+        if(newValue == this.questionid) this.$.radiobutton.checked = true;
+        else this.$.radiobutton.checked = false;
+      },
+      questionidChanged: function(newValue){
+        if(this.selectedqid == this.questionid) this.$.radiobutton.checked = true;
+        else this.$.radiobutton.checked = false;
+      },
+      radioClicked: function(){
+        this.$.radiobutton.checked = true;
+        this.selectedqid = this.questionid;
+        this.domHost.close();
+      },
+      deleteQuestionClick: function(){
+        this.$.alert.open();
+      },
+      copyQuestionClick: function(){
+        this.params["action"] = "copyquestion";
+        this.params["questionid"] = this.questionid;
+        this.$.ironajax.generateRequest();
+      },
+      dismissDialogClick: function(){
+        this.$.alert.close();
+      },
+      confirmDeleteClick: function(){
+        this.params["action"] = "deletequestion";
+        this.params["questionid"] = this.questionid;
+        this.$.ironajax.generateRequest();
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.domHost.showError(ajax_response.error_msg);
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'deletequestion':
+                this.$.alert.close();
+                if(this.selectedqid == this.questionid) this.selectedqid = null;
+                this.domHost.refreshQuestionClick();
+                break;
+              case 'copyquestion':
+                var question = JSON.parse(ajax_response.question);
+                var options = JSON.parse(ajax_response.options);
+                this.domHost.setQuestion(question[0], options);
+                break;
+              default:
+                console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.domHost.showError(resp.detail.error);
+      }
+    });
+  </script>
+</dom-module>

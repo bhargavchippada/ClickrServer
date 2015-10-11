@@ -1,0 +1,80 @@
+<dom-module name="truefalse-element">
+  <template>
+    <style include="shared-styles">
+    paper-button {
+      margin: 16px;
+    }
+    paper-button.grey {
+      background-color: #eaeaea;
+      color: #333;
+    }
+    paper-button.green {
+      background: #5CB85C;
+      color: #fff;
+    }
+    paper-button.red {
+      background: #D9534F;
+      color: #fff;
+    }
+    </style>
+    <div class="layout vertical center" hidden="{{!showthis}}">
+      <div class="layout horizontal center">
+        <paper-button class$="{{trueCSS(optext)}}" on-click="trueClick" disabled$="{{disabled}}">True</paper-button>
+        <paper-button class$="{{falseCSS(optext)}}" on-click="falseClick" disabled$="{{disabled}}">False</paper-button>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'truefalse-element',
+      properties: {
+        optext: { type: String, value: '', reflectToAttribute: true, notify: true },
+        qkind: { type: String, value: null, observer: 'qkindChanged' },
+        showthis: { type: Boolean, value: true },
+        options: { type: Array, value: [], observer: 'optionsChanged' },
+        disabled: { type: Boolean, value: false }
+      },
+      trueClick: function(){
+        this.optext = 'true';
+
+      },
+      falseClick: function(){
+        this.optext = 'false';
+      },
+      trueCSS: function(optext){
+        if(optext=='true') return 'btn-css green';
+        else return 'btn-css grey';
+      },
+      falseCSS: function(optext){
+        if(optext=='false') return 'btn-css red';
+        else return 'btn-css grey';
+      },
+      isValid: function(){
+        if(this.qkind == 'question' && this.optext == ''){
+          this.domHost.showError("Select true or false!!");
+          return false;
+        }else return true;
+      },
+      getOptions: function(){
+        var arr = [];
+        if(this.qkind == 'question'){
+          var op = {};
+          op["opindex"] = 0;
+          op["optext"] = this.optext;
+          op["answer"] = 1;
+          arr.push(op);
+        }
+        return arr;
+      },
+      qkindChanged: function(newValue){
+        if(this.qkind == 'question') this.showthis = true;
+        else this.showthis = false;
+      },
+      optionsChanged: function(options){
+        var optext = options[0].optext;
+        if(optext=='true') this.trueClick();
+        else if(optext=='false') this.falseClick();
+      }
+    });
+  </script>
+</dom-module>

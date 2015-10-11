@@ -1,0 +1,53 @@
+<dom-module name="integer-question">
+  <template>
+    <style>
+    </style>
+    <div class="layout vertical center" hidden="{{!showthis}}">
+      <div class="layout horizontal center">
+        <h3 class="mright16">Answer:</h3>
+        <paper-input id="opinput" class="small" label="Type Integer.." value="{{optext}}" no-label-float type="number" prevent-invalid-input required auto-validate disabled$="{{disabled}}"></paper-input>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'integer-question',
+      properties: {
+        optext: { type: String, value: '', reflectToAttribute: true, notify: true },
+        qkind: { type: String, value: null, observer: 'qkindChanged' },
+        showthis: { type: Boolean, value: true },
+        options: { type: Array, value: [], observer: 'optionsChanged' },
+        disabled: { type: Boolean, value: false }
+      },
+      isValid: function(){
+        this.optext = this.optext.trim();
+        if(this.qkind == 'question' && this.optext == ''){
+          this.domHost.showError("Please type an integer answer!!");
+          this.$.opinput.validate();
+          return false;
+        }else if(parseInt(this.optext) == NaN){
+          this.domHost.showError("Invalid integer!!");
+          return false;
+        }else return true;
+      },
+      getOptions: function(){
+        var arr = [];
+        if(this.qkind == 'question'){
+          var op = {};
+          op["opindex"] = 0;
+          op["optext"] = this.optext;
+          op["answer"] = 1;
+          arr.push(op);
+        }
+        return arr;
+      },
+      qkindChanged: function(newValue){
+        if(this.qkind == 'question') this.showthis = true;
+        else this.showthis = false;
+      },
+      optionsChanged: function(options){
+        this.optext = options[0].optext;
+      }
+    });
+  </script>
+</dom-module>

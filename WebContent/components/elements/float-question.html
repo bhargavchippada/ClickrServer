@@ -1,0 +1,69 @@
+<dom-module name="float-question">
+  <template>
+    <style>
+    .smaller {
+      width: 128px;
+    }
+    </style>
+    <div class="layout vertical center" hidden="{{!showthis}}">
+      <div class="layout horizontal center">
+        <h3>[</h3>
+        <paper-input id="opinput0" class="smaller" label="Type Float.." value="{{optext0}}" no-label-float type="number" required auto-validate disabled$="{{disabled}}"></paper-input>
+        <h3 class="mright16 mleft16">&lt;= Answer &lt;=</h3>
+        <paper-input id="opinput1" class="smaller" label="Type Float.." value="{{optext1}}" no-label-float type="number" required auto-validate disabled$="{{disabled}}"></paper-input>
+        <h3>]</h3>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'float-question',
+      properties: {
+        optext0: { type: String, value: '', reflectToAttribute: true, notify: true },
+        optext1: { type: String, value: '', reflectToAttribute: true, notify: true },
+        qkind: { type: String, value: null, observer: 'qkindChanged' },
+        showthis: { type: Boolean, value: true },
+        options: { type: Array, value: [], observer: 'optionsChanged' },
+        disabled: { type: Boolean, value: false }
+      },
+      isValid: function(){
+        this.optext0 = this.optext0.trim();
+        this.optext1 = this.optext1.trim();
+        if(this.qkind == 'question' && (this.optext0 == '' || this.optext1 == '')){
+          this.domHost.showError("Please type a float range!!");
+          this.$.opinput0.validate();
+          this.$.opinput1.validate();
+          return false;
+        }else if(parseFloat(this.optext0) == NaN || parseFloat(this.optext1) == NaN){
+          this.domHost.showError("Invalid Float Range!!");
+          return false;
+        }else return true;
+      },
+      getOptions: function(){
+        var arr = [];
+        if(this.qkind == 'question'){
+          var op0 = {};
+          op0["opindex"] = 0;
+          op0["optext"] = this.optext0;
+          op0["answer"] = 1;
+          arr.push(op0);
+
+          var op1 = {};
+          op1["opindex"] = 1;
+          op1["optext"] = this.optext1;
+          op1["answer"] = 1;
+          arr.push(op1);
+        }
+        return arr;
+      },
+      qkindChanged: function(newValue){
+        if(this.qkind == 'question') this.showthis = true;
+        else this.showthis = false;
+      },
+      optionsChanged: function(options){
+        this.optext0 = options[0].optext;
+        this.optext1 = options[1].optext;
+      }
+    });
+  </script>
+</dom-module>

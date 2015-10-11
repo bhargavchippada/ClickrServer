@@ -1,87 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-  <display-name>ClickrServer</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-  </welcome-file-list>
-  <servlet>
-    <description></description>
-    <display-name>Authentication</display-name>
-    <servlet-name>Authentication</servlet-name>
-    <servlet-class>webconnectionjdbc.Authentication</servlet-class>
-  </servlet>
-  <servlet>
-    <description></description>
-    <display-name>PushQuiz</display-name>
-    <servlet-name>PushQuiz</servlet-name>
-    <servlet-class>webconnectionjdbc.PushQuiz</servlet-class>
-  </servlet>
-  <servlet>
-    <description></description>
-    <display-name>ReceiveAnswer</display-name>
-    <servlet-name>ReceiveAnswer</servlet-name>
-    <servlet-class>webconnectionjdbc.ReceiveAnswer</servlet-class>
-  </servlet>
+	<display-name>ClickrServer</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	<context-param>
+		<param-name>DATABASE</param-name>
+		<param-value>ClickrDB/clickrDB.db</param-value>
+	</context-param>
+	<listener>
+	  <listener-class>webinterface.ServletConfig</listener-class>
+	</listener>
   <servlet>
     <description></description>
     <display-name>AdminLogin</display-name>
     <servlet-name>AdminLogin</servlet-name>
-    <servlet-class>webinterfacehandler.AdminLogin</servlet-class>
+    <servlet-class>webinterface.AdminLogin</servlet-class>
   </servlet>
   <servlet>
     <description></description>
-    <display-name>UsersSettings</display-name>
-    <servlet-name>UsersSettings</servlet-name>
-    <servlet-class>webinterfacehandler.UsersSettings</servlet-class>
+    <display-name>Classrooms</display-name>
+    <servlet-name>Classrooms</servlet-name>
+    <servlet-class>webinterface.Classrooms</servlet-class>
   </servlet>
   <servlet>
     <description></description>
-    <display-name>SaveQuestion</display-name>
-    <servlet-name>SaveQuestion</servlet-name>
-    <servlet-class>webinterfacehandler.SaveQuestion</servlet-class>
+    <display-name>Questions</display-name>
+    <servlet-name>Questions</servlet-name>
+    <servlet-class>webinterface.Questions</servlet-class>
   </servlet>
-  <servlet>
-    <description></description>
-    <display-name>UsersInfo</display-name>
-    <servlet-name>UsersInfo</servlet-name>
-    <servlet-class>webinterfacehandler.UsersInfo</servlet-class>
-  </servlet>
-  <servlet>
-    <description></description>
-    <display-name>QuizStats</display-name>
-    <servlet-name>QuizStats</servlet-name>
-    <servlet-class>webinterfacehandler.QuizStats</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Authentication</servlet-name>
-    <url-pattern>/authentication</url-pattern>
-  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AdminLogin</servlet-name>
     <url-pattern>/AdminLogin</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>UsersSettings</servlet-name>
-    <url-pattern>/UsersSettings</url-pattern>
+    <servlet-name>Classrooms</servlet-name>
+    <url-pattern>/Classrooms</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>SaveQuestion</servlet-name>
-    <url-pattern>/SaveQuestion</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>UsersInfo</servlet-name>
-    <url-pattern>/UsersInfo</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>QuizStats</servlet-name>
-    <url-pattern>/QuizStats</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>PushQuiz</servlet-name>
-    <url-pattern>/pushquiz</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>ReceiveAnswer</servlet-name>
-    <url-pattern>/receiveanswer</url-pattern>
+    <servlet-name>Questions</servlet-name>
+    <url-pattern>/Questions</url-pattern>
   </servlet-mapping>
 </web-app>

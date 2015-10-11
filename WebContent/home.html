@@ -1,87 +1,45 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-    <!-- 1. Load platform support before any code that touches the DOM. -->
-    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="bower_components/polymer/polymer.html">
-    <link rel="import" href="elements/custom-button.html">
-    <link rel="import" href="elements/server-element.html">
-    <link rel="import" href="elements/question-element.html">
-    <link rel="import" href="elements/toggle-display.html">
-    <link rel="import" href="elements/usersinfo-element.html">
-    <link rel="import" href="elements/usersinfo-graph.html">
-    <link rel="import" href="bower_components/paper-input/paper-input.html">
-    <link rel="import" href="bower_components/paper-button/paper-button.html">
-    <title>Clickr Index Page</title>
-    <style>
-      body{
-        background-color: #ffffff;
-        overflow: auto;
-        font-family: sans-serif;
-        color: #333;
-        margin-top: 24px;
-      }
-      @media screen and (max-width: 1020px) {
-        body {
-          margin-top: 8px;
-        }
-      }
-    </style>
+    
+    <link rel="import" href="imports.html">
+    <link rel="import" href="components/classroom-settings.html">
+    <link rel="import" href="components/question-settings.html">
+    <title>Clickr Home Page</title>
   </head>
   <body>
-    <polymer-element name="device-match">
+    <dom-module name="home-page">
       <template>
         <style>
-          .logoimage {
-            width: 48px;
-            height: 48px;
+          :host{
+            color: #333;
+            font-family: 'Roboto', sans-serif;
           }
-          .form-heading {
-            font-size: 36px;
-            padding: 0 0 0 0;
-            margin: auto 8px auto 8px;
+          #home-div{
+            padding-top: 24px;
+            max-width: 64%;
+            margin: 0 auto 0 auto;
           }
-          #quizcontainer {
-            position: relative;
-            background-color: #fff;
-            max-width: 800px;
-            margin: 0 auto 0 auto;          
-          }
-          #clickrdiv {
-            margin: 0 0 16px 0;
-          }
-          #clsname {
-            margin: 0 0 0 8px;
+          @media screen and (max-width: 1020px){
+            #home-div{
+              padding-top: 8px;
+              max-width: 80%;
+              margin: 0 auto 0 auto;
+            }
           }
         </style>
-        <div id="quizcontainer" layout vertical>
-          <div layout horizontal id="clickrdiv" center>
-            <img src="media/inverted_launcher.png" class="logoimage">
-            <p class="form-heading">Clickr</p>
-            <paper-input id="clsname" label="Class Name" floatingLabel value="{{clsname}}"></paper-input>
-          </div>
-          <toggle-display show="{{showserverele}}" label="User Settings"></toggle-display>
-          <server-element hidden?="{{showserverele==0}}" clsname="{{clsname}}"></server-element>
-          <toggle-display show="{{showquestionele}}" label="Question"></toggle-display>
-          <question-element id="qelement" hidden?="{{showquestionele==0}}"></question-element>
-          <toggle-display show="{{showusersinfoele}}" label="Users Info"></toggle-display>
-          <usersinfo-element hidden?="{{showusersinfoele==0}}"></usersinfo-element>
-          <toggle-display show="{{showusersinfograph}}" label="Graph Info"></toggle-display>
-          <usersinfo-graph hidden?="{{showusersinfograph==0}}"></usersinfo-graph>
+        <div id="home-div" class="layout vertical">
+          <classroom-settings></classroom-settings>
+          <question-settings></question-settings>
         </div>
       </template>
-      <script type="text/javascript">
+      <script>
         Polymer({
-          showserverele:1,
-          showquestionele:1,
-          showusersinfoele:1,
-          showusersinfograph:1,
-          clsname: 'Classroom'
-        })
+          is: "home-page"
+        });
       </script>
-    </polymer-element>
-    <device-match></device-match>
+    </dom-module>
+    <home-page></home-page>
   </body>
 </html>

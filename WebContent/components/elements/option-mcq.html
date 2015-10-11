@@ -1,0 +1,100 @@
+<dom-module name="option-mcq">
+  <template>
+    <style>
+      paper-radio-button {
+        --paper-radio-button-checked-color: var(--paper-green-500);
+        --paper-radio-button-checked-ink-color: var(--paper-green-500);
+        --paper-radio-button-unchecked-color: var(--paper-green-900);
+        --paper-radio-button-unchecked-ink-color: var(--paper-green-900);
+      }
+      paper-checkbox {
+        --paper-checkbox-checked-color: var(--paper-green-500);
+        --paper-checkbox-checked-ink-color: var(--paper-green-500);
+        --paper-checkbox-unchecked-color: var(--paper-green-900);
+        --paper-checkbox-unchecked-ink-color: var(--paper-green-900);
+      }
+    </style>
+    <div class="layout horizontal center">
+    <paper-radio-button hidden="{{ischeckbox}}" id="radiobtn" on-click="radioClicked" disabled$="{{isDisabled(disabled,disablethis)}}"></paper-radio-button>
+    <paper-checkbox hidden="{{!ischeckbox}}" checked="{{checked}}" on-click="checkChanged" disabled$="{{isDisabled(disabled,disablethis)}}"></paper-checkbox>
+    <paper-textarea id="opinput" class="layout flex" label="Type..." value="{{optext}}" no-label-float required auto-validate disabled$="{{disabled}}"></paper-textarea>
+    <paper-icon-button suffix icon="cancel" alt="cancel" title="cancel" on-click="deleteOption" hidden$="{{disabled}}"></paper-icon-button>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'option-mcq',
+      properties: {
+        opindex: { type: Number, value:null, reflectToAttribute: true, notify: true },
+        optext: { type: String, value: '', reflectToAttribute: true, notify: true },
+        ischeckbox: { type: Boolean, value: false, reflectToAttribute: true, notify: true, observer: 'ischeckboxChanged' },
+        radioselected: { type: Number, value: null, reflectToAttribute: true, notify: true, observer: 'radioselectedChanged' },
+        checked: { type: Boolean, value: false, reflectToAttribute: true, notify: true },
+        answer: { type: Number, value: null, reflectToAttribute: true, notify:true, observer: 'answerChanged'},
+        qkind: { type: String, value: null, observer: 'qkindChanged' },
+        disablethis: { type: Boolean, value: false },
+        disabled: { type: Boolean, value: false }
+      },
+      radioselectedChanged: function(e){
+        if(this.opindex == e) this.answer = 1;
+        else this.answer = 0;
+      },
+      radioClicked: function(){
+        this.radioselected = this.opindex;
+        this.$.radiobtn.checked = true;
+      },
+      checkChanged: function(){
+        if(this.checked) this.answer = 1;
+        else this.answer = 0;
+      },
+      answerChanged: function(e){
+        if(this.ischeckbox) this.checked = (e == 1);
+        else {
+          this.$.radiobtn.checked = (e == 1);
+          if(e==1) this.radioselected = this.opindex;
+        }
+      },
+      changeBoolToInt: function(bool){
+        if(bool) return 1;
+        else return 0;
+      },
+      ischeckboxChanged: function(e){
+        if(e) {
+          if(this.checked || (this.answer == 1)){
+           this.answer = 1;
+           this.checked = true;
+          } else this.answer = 0;
+        }
+        else this.answer = this.changeBoolToInt(this.radioselected==this.opindex);
+      },
+      deleteOption: function(){
+        if(this.radioselected == this.opindex) this.radioselected = -1;
+        this.domHost.deleteOption(this.opindex);
+      },
+      qkindChanged: function(newValue){
+        if(this.qkind == 'poll') {
+          this.radioselected = -1;
+          this.checked = false;
+          this.disablethis = true;
+        }else this.disablethis = false;
+      },
+      isValid: function() {
+        this.optext = this.optext.trim();
+        if(this.optext == '') {
+          this.$.opinput.validate();
+          return false;
+        } else return true;
+      },
+      getOption: function() {
+        var op = {};
+        op["opindex"] = this.opindex;
+        op["optext"] = this.optext;
+        op["answer"] = this.answer;
+        return op;
+      },
+      isDisabled: function(disabled,disablethis) {
+        return disabled || disablethis;
+      }
+    });
+  </script>
+</dom-module>

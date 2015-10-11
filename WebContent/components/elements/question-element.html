@@ -1,0 +1,118 @@
+<link rel="import" href="mcq-element.html">
+<link rel="import" href="truefalse-element.html">
+<link rel="import" href="integer-question.html">
+<link rel="import" href="float-question.html">
+<link rel="import" href="word-question.html">
+<link rel="import" href="short-question.html">
+
+<dom-module name="question-element">
+  <template>
+    <style>
+    paper-input.title {
+      width: 50%;
+    }
+    </style>
+    <div class="layout horizontal center-justified flex">
+      <p class="small-tab tab-green">{{qtype}}</p>
+      <p class="small-tab tab-teal">{{qkind}}</p>
+    </div>
+    <paper-input id="titleid" class="title" value="{{title}}" label="Question Title" no-label-float required auto-validate disabled$="{{disabled}}"></paper-input>
+    <paper-textarea id="qtextid" label="Type Question..." value="{{qtext}}" rows="1" max-rows="8" no-label-float required auto-validate disabled$="{{disabled}}"></paper-textarea>
+    <div id="qtypediv"> 
+      <template is="dom-if" if="{{isMCQ(qtype)}}">
+      	<mcq-element id="mcqele" ischeckbox="{{whichMCQ(qtype)}}" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></mcq-element>
+      </template>
+      <template is="dom-if" if="{{isTF(qtype)}}">
+      	<truefalse-element id="tfele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></truefalse-element>
+      </template>
+      <template is="dom-if" if="{{isInteger(qtype)}}">
+      	<integer-question id="intele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></integer-question>
+      </template>
+      <template is="dom-if" if="{{isFloat(qtype)}}">
+      	<float-question id="floatele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></float-question>
+      </template>
+      <template is="dom-if" if="{{isWord(qtype)}}">
+      	<word-question id="wordele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></word-question>
+      </template>
+      <template is="dom-if" if="{{isShort(qtype)}}">
+      	<short-question id="shortele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></short-question>
+      </template>
+    </div>
+    <paper-toast id="toaster" text=""></paper-toast>
+  </template>
+  <script>
+    Polymer({
+      is: 'question-element',
+      properties: {
+      	qtype: { type: String, value: null },
+        qkind: { type: String, value: null },
+        disabled: { type: Boolean, value: false },
+        title: { type: String, value: '' },
+        qtext: { type: String, value: '' },
+        options: { type: Array, value: [] }
+      },
+      whichMCQ: function(qtype){
+      	if(qtype == 'single') return false;
+      	else if(qtype == 'multiple') return true;
+      	else return null;
+      },
+      isMCQ: function(qtype){
+      	if(qtype == 'single'  || qtype == 'multiple') return true;
+      	else return false;
+      },
+      isTF: function(qtype){
+      	if(qtype == 'truefalse') return true;
+      	else return false;
+      },
+      isInteger: function(qtype){
+      	if(qtype == 'integer') return true;
+      	else return false;
+      },
+      isFloat: function(qtype){
+      	if(qtype == 'float') return true;
+      	else return false;
+      },
+      isWord: function(qtype){
+      	if(qtype == 'word') return true;
+      	else return false;
+      },
+      isShort: function(qtype){
+      	if(qtype == 'short') return true;
+      	else return false;
+      },
+      getElement: function(qtype){
+        if(qtype == 'single' || qtype == 'multiple') return 'mcq-element';
+        else if(qtype == 'truefalse') return 'truefalse-element';
+        else if(qtype == 'integer') return 'integer-question';
+        else if(qtype == 'float') return 'float-question';
+        else if(qtype == 'word') return 'word-question';
+        else if(qtype == 'short') return 'short-question';
+      },
+      isValid: function(){
+        this.title = this.title.trim();
+        this.qtext = this.qtext.trim();
+        var qchild = Polymer.dom(this.$.qtypediv).querySelector(this.getElement(this.qtype));
+        var valid = qchild.isValid();
+        var valid = (this.title != '') && (this.qtext != '') && valid;
+        this.$.titleid.validate();
+        this.$.qtextid.validate();
+        if(this.title == '' || this.qtext == '') this.showError("Question title and content cannot be empty!!");
+        return valid;
+      },
+      getQuestion: function(){
+        var qchild = Polymer.dom(this.$.qtypediv).querySelector(this.getElement(this.qtype));
+        var question = {};
+        question["title"] = this.title;
+        question["qtext"] = this.qtext;
+        question["qtype"] = this.qtype;
+        question["qkind"] = this.qkind;
+        question["options"] = qchild.getOptions();
+        return question;
+      },
+      showError: function(err){
+        this.$.toaster.text=err;
+        this.$.toaster.show();
+      }
+    });
+  </script>
+</dom-module>

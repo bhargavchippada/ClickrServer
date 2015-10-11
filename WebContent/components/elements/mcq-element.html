@@ -1,0 +1,69 @@
+<link rel="import" href="option-mcq.html">
+
+<dom-module name="mcq-element">
+  <template>
+    <style include="shared-styles">
+    :host{
+      display:block;
+    }
+    paper-button {
+      background-color: #eaeaea;
+      color: #333;
+    }
+    </style>
+    <div id = "mcqoptions">
+      <template is="dom-repeat" items="{{options}}">
+        <option-mcq opindex="{{index}}" ischeckbox="{{ischeckbox}}" optext="{{item.optext}}" answer="{{item.answer}}" radioselected="{{radioselected}}" qkind="{{qkind}}" disabled$="{{disabled}}"></option-mcq>
+      </template>
+    </div>
+    <paper-button tabindex="0" raised class="btn-css" on-click="addOptionClick"><iron-icon icon="add" hidden$="{{disabled}}"></iron-icon>Add Option</paper-button>
+  </template>
+  <script>
+    Polymer({
+      is: 'mcq-element',
+      properties: {
+        options: { type: Array, value: [{ optext:'', answer:'0'}], reflectToAttribute: true, notify: true },
+        radioselected: { type: Number, value: -1 },
+        ischeckbox: { type:Boolean, value: null, reflectToAttribute: true, notify: true },
+        qkind: { type: String, value: null },
+        options: { type: Array, value: [], observer: 'optionsChanged' },
+        disabled: { type: Boolean, value: false }
+      },
+      addOptionClick: function(){
+        var newop = {};
+        newop["optext"] = '';
+        newop["answer"] = '0';
+        this.push('options', newop);
+      },
+      deleteOption: function(ind){
+        this.splice('options',ind,1);
+      },
+      isValid: function(){
+        var valid = true;
+        var answer = false;
+        var children = Polymer.dom(this.$.mcqoptions).querySelectorAll('option-mcq');
+        for(var i=0; i<children.length; i++){
+          valid = valid && children[i].isValid();
+          if(children[i].answer == 1) answer = true;
+        }
+
+        if(!valid) this.domHost.showError("Options cannot be empty!!");
+        else if(!answer && this.qkind=='question') this.domHost.showError("Select an option!!");
+
+        if(this.qkind == 'question') valid = valid && answer;
+        return valid;
+      },
+      getOptions: function(){
+        var arr = [];
+        var children = Polymer.dom(this.$.mcqoptions).querySelectorAll('option-mcq');
+        for(var i=0; i<children.length; i++){
+           arr.push(children[i].getOption());
+        }
+        return arr;
+      },
+      optionsChanged: function(options){
+        this.options = options;
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,33 @@
+<dom-module name="toggle-button">
+  <template>
+    <style include="shared-styles">
+    </style>
+    <paper-button id="togglebtn" raised class$="{{toggleCSS(btnbool,truecss,falsecss)}}" on-click="btnClick">{{toggleLabel(btnbool,truelabel,falselabel)}}</paper-button>
+  </template>
+  <script>
+    Polymer({
+      is: 'toggle-button',
+      properties: {
+        btnbool: { type: Boolean, value: false, reflectToAttribute:true, notify:true },
+        truelabel: { type: String, value: 'True Label' },
+        falselabel: { type: String, value: 'False Label' },
+        truecss: { type: String, value: 'red-bg' },
+        falsecss: { type: String, value: 'green-bg' }
+      },
+      changeState: function(bool){
+        this.btnbool=bool;
+      },
+      btnClick: function(){
+        console.log("Click");
+      },
+      toggleCSS: function(btnbool,truecss,falsecss){
+        if(btnbool) return 'btn-css ' + truecss;
+        else return 'btn-css ' + falsecss;
+      },
+      toggleLabel: function(btnbool,truelabel,falselabel){
+        if(btnbool) return truelabel;
+        else return falselabel;
+      }
+    });
+  </script>
+</dom-module>

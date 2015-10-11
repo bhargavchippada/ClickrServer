@@ -1,0 +1,37 @@
+<dom-module name="toggle-display">
+  <template>
+  	<style>
+    .heading {
+      font-size: 22px;
+      padding: 0 0 0 0;
+      margin: 0 8px 0 8px;
+    }
+    .small-line{
+        width:8px;
+    }
+	  </style>
+    <div class="layout horizontal center">
+      <div class="line-seperator small-line"></div>
+      <h3 class="heading">{{label}}</h3>
+      <div class="layout flex line-seperator"></div>
+      <paper-icon-button icon="{{showIcon(show)}}" on-click="toggleIcon"></paper-icon-button>
+      <div class="line-seperator small-line"></div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is:'toggle-display',
+      properties: {
+        show: { type: Boolean, value: true, reflectToAttribute:true, notify: true },
+        label: { type: String, value: 'Default',  reflectToAttribute:true }
+      },
+      showIcon: function(show){
+        if(show) return 'expand-less';
+        else return 'expand-more';
+      },
+      toggleIcon: function(){
+        this.show=!this.show;
+      }
+    })
+  </script>
+</dom-module>

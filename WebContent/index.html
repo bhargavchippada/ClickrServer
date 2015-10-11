@@ -1,35 +1,25 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-    <!-- 1. Load platform support before any code that touches the DOM. -->
-    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="bower_components/core-media-query/core-media-query.html">
-    <link rel="import" href="bower_components/polymer/polymer.html">
-    <link rel="import" href="elements/login-form.html">
+    
+    <link rel="import" href="imports.html">
+    <link rel="import" href="components/login-form.html">
     <title>Clickr Index Page</title>
-    <style>
-      body{
-        background-color: #ffffff;
-        overflow: auto;
-        text-align: center;
-        font-family: sans-serif;
-        color: #333;
-        padding-top: 128px;        
-      }
-      @media screen and (max-width: 1020px) {
-        body {
-          padding-top: 0px;
-        }
-      }
-    </style>
   </head>
   <body>
-    <polymer-element name="device-match" noscript>
+    <dom-module name="index-page" noscript>
       <template>
         <style>
-          #logoimage{
+          :host{
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding-top: 128px; 
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+          }
+          #logo-image{
             width: 200px;
             height: 200px;
             margin-left:64px;
@@ -38,32 +28,37 @@
           #title{
             font-size: 144px;
             text-align: center;
-            margin: 0 0;
-            padding: 0 0;
           }
-          @media screen and (max-width: 1020px) {
-            #logoimage {
-              display: none;
+          @media screen and (max-width: 1020px){
+            :host{
+              text-align: center;
+              padding-top: 0px; 
+              @apply(--layout-vertical);
+              @apply(--layout-center);
+            }
+            #logo-image{
+              width: 100px;
+              height: 100px;
             }
             #title{
               font-size: 96px;
             }
           }
-          .formcontainer{
+          #form-container{
             display: block;
             margin-left: auto;
             margin-right: auto;
             width: 328px;
           }
         </style>
-        <core-media-query query="max-width: 1020px" queryMatches="{{phoneScreen}}"></core-media-query>
-        <div id="dynamic_resize" layout vertical?="{{phoneScreen}}" horizontal?="{{!phoneScreen}}" center>
-            <div auto-vertical><img src="./media/inverted_launcher.png" id="logoimage"/></div>
-            <div auto-vertical><p id="title">Clickr</p></div>
-            <login-form class="formcontainer" auto-vertical></login-form>
-        </div>
+        <div><img src="./media/logo.png" id="logo-image"/></div>
+        <div><p id="title" class="margin0 pad0">Clickr</p></div>
+        <login-form id="form-container"></login-form>
       </template>
-    </polymer-element>
-    <device-match></device-match>
+      <script>
+        Polymer({is: "index-page"});
+      </script>
+    </dom-module>
+    <index-page/>
   </body>
 </html>

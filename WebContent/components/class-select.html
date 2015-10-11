@@ -1,0 +1,174 @@
+<link rel="import" href="elements/class-select-info.html">
+
+<dom-module id="class-select">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        margin: 16px;
+        padding: 4px 8px 16px 24px;
+
+        background: var(--paper-dialog-background-color, --primary-background-color);
+        color: var(--paper-dialog-color, --primary-text-color);
+
+        @apply(--layout-scroll);
+        @apply(--paper-font-body1);
+        @apply(--shadow-elevation-16dp);
+        @apply(--paper-dialog);
+      }
+      #closedialog {
+        color: #D9534F;
+        text-align: right;
+      }
+      #previewdiv {
+        max-height: 128px;
+      }
+      paper-fab.blue {
+        --paper-fab-background: var(--paper-light-blue-500);
+        --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+      }
+    </style>
+    <iron-ajax
+      id="ironajax"
+      url="../Classrooms"
+      params='{{params}}'
+      handleAs="json"
+      contentType="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
+
+    <div class="layout vertical">
+      <div class="layout horizontal end-justified">
+        <paper-icon-button id="closedialog" dialog-dismiss icon="close"></paper-icon-button>
+      </div>
+      <div class="layout horizontal center">
+      <input type="file" id="browse" name="fileupload" style="display: none" on-change="readClassFile"/>
+      <paper-input id="filename" class="inputmedium mright16" no-label-float label="{{filelabel}}" disabled></paper-input>
+      <paper-button id="browsebtn" class="btn-css blue-bg" on-click="browseFileClick">Upload Class</paper-button>
+      <paper-input id="classlabel" class="inputlarge msides16" no-label-float value="{{classname}}" label="Class Name" maxlength="64" error-message="Invalid Classname!!" required auto-validate></paper-input>
+      <paper-button id="saveclassbtn" class="btn-css green-bg" on-click="saveClassClick">Save Class</paper-button>
+      </div>
+      <h2 id="newpreview" class="margin0 mtop16" hidden='true'><u>Preview</u></h2>
+      <div id="previewdiv" class="layout scroll">
+        <pre>{{classusers}}</pre>
+      </div>
+      <div class="layout horizontal center">
+        <h2 class="mright16"><u>Your Classes</u></h2>
+        <paper-fab mini icon="refresh" class="blue" on-click="refreshClassClick"></paper-fab>
+      </div>
+      <div id="radiogroup" class="layout vertical">
+        <template is="dom-repeat" items="{{classroomslist}}">
+            <class-select-info name="{{item.classid}}" classid="{{item.classid}}" classname="{{item.classname}}" student_count="{{item.student_count}}" created_time="{{item.created_time}}" selectedclassid="{{selectedclassid}}"></class-select-info>
+        </template>
+      </div>
+    </div>
+  </template>
+  <script>
+  var filetext = "";
+  var fileread = false;
+  (function() {
+
+    Polymer({
+
+      is: 'class-select',
+
+      behaviors: [
+        Polymer.PaperDialogBehavior
+      ],
+
+      properties: {
+          filelabel: { type: String, value: 'File Name' },
+          classname: { type: String, value: '' },
+          classusers: { type: String, value: '' },
+          classroomslist: { type: Array, value: [] },
+          params: { type: Object, value: {} },
+          selectedclassid: { type:Number, value:null, reflectToAttribute: true, notify: true },
+          selectedclassname: { type: String, value: '', reflectToAttribute: true, notify: true }
+      },
+      ready: function() {
+        this.refreshClassClick();
+      },
+      refreshClassClick: function() {
+        this.params = {};
+        this.params["action"] = "classroomslist";
+        this.$.ironajax.generateRequest();
+      },
+      saveClassClick: function(){
+        this.classname = this.classname.trim();
+        this.classusers = this.classusers.trim();
+        var satisfied = true;
+        if(this.classname == '') {this.$.classlabel.validate(); satisfied = false; }
+        if(this.classusers == '') {
+          this.domHost.showError("Please select a file to upload!!");
+          satisfied = false;
+        }
+        if(!satisfied) return;
+        this.params = {};
+        this.params["action"] = "uploadnewclass";
+        this.params["classusers"] = this.classusers;
+        this.params["classname"] = this.classname;
+        this.$.ironajax.generateRequest();
+      },
+      browseFileClick: function(){
+        this.$.browse.click();
+      },
+      fileLoadComplete: function(event){
+        if (event.target.readyState == FileReader.DONE) {
+          filetext = event.target.result;
+          fileread = true;
+        }
+      },
+      readClassFile: function(e,detail,sender){
+        // Check for the various File API support.
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          // Great success! All the File APIs are supported.
+          filetext = '';
+          fileread = false;
+          var fReader = new FileReader();
+          fReader.readAsText(this.$.browse.files[0]);
+          fReader.onloadend = this.fileLoadComplete;
+          this.filelabel = this.$.browse.value.replace("C:\\fakepath\\", "");
+          this.async(function() {
+            if(fileread){
+              this.classusers = filetext;
+              fileread = false;
+              this.$.newpreview.removeAttribute("hidden");
+            } else alert('The file read failed, try again.');
+          }, 1000);
+        } else {
+          alert('The File APIs are not fully supported in this browser.');
+        }
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.domHost.showError(ajax_response.error_msg);
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'classroomslist':
+                  this.classroomslist = JSON.parse(ajax_response.classroomslist);
+                  break;
+              case 'uploadnewclass':
+                  this.refreshClassClick();
+                  break;
+              default:
+                  console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.domHost.showError(resp.detail.error);
+      },
+      showError: function(err){
+        this.domHost.showError(err);
+      },
+      setSelectedClassName: function(name){
+        this.selectedclassname = name;
+      }
+    });
+
+  })();
+
+  </script>
+</dom-module>

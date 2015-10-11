@@ -1,0 +1,48 @@
+<link rel="import" href="elements/make-question.html">
+<link rel="import" href="elements/toggle-display.html">
+<link rel="import" href="question-select.html">
+<dom-module name="question-settings">
+  <template>
+    <style include="shared-styles">
+    :host{
+    	margin-top: 8px;
+    	width: 100%;
+    }
+    question-select {
+      position: fixed;
+      width: 80%;
+      height: 80%;
+      top: 16px;
+    }
+    </style>
+    <toggle-display show="{{showthis}}" label="Question"></toggle-display>
+    <div class="layout vertical" hidden="{{!showthis}}">
+    	<paper-button raised class="btn-css blue-bg" on-click="selectQuestionClick">Pick Question</paper-button>
+    	<div class="layout vertical center">
+    		<make-question types='["single","multiple","truefalse","integer","float","word","short"]' qtype='6' kinds='["question","poll"]' qkind='1'></make-question>
+    	</div>
+		</div>
+		<question-select id="questionselect" modal></question-select>
+    <paper-toast id="toast" text=""></paper-toast>
+    <paper-toast id="notice" text=""></paper-toast>
+  </template>
+  <script>
+    Polymer({
+      is: "question-settings",
+      properties: {
+	      showthis: { type: Boolean, value: true }
+	  	},
+	  	selectQuestionClick: function(){
+	  		this.$.questionselect.toggle();
+	  	},
+      showError: function(err){
+        this.$.toast.text=err;
+        this.$.toast.show();
+      },
+      showNotice: function(msg){
+        this.$.notice.text=msg;
+        this.$.notice.show();
+      }
+    });
+  </script>
+</dom-module>
