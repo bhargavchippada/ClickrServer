@@ -19,8 +19,8 @@
     </style>
     <div class="layout vertical center" hidden="{{!showthis}}">
       <div class="layout horizontal center">
-        <paper-button class$="{{trueCSS(optext)}}" on-click="trueClick" disabled$="{{disabled}}">True</paper-button>
-        <paper-button class$="{{falseCSS(optext)}}" on-click="falseClick" disabled$="{{disabled}}">False</paper-button>
+        <paper-button class$="{{trueCSS(optext)}}" on-click="trueClick">True</paper-button>
+        <paper-button class$="{{falseCSS(optext)}}" on-click="falseClick">False</paper-button>
       </div>
     </div>
   </template>
@@ -31,8 +31,7 @@
         optext: { type: String, value: '', reflectToAttribute: true, notify: true },
         qkind: { type: String, value: null, observer: 'qkindChanged' },
         showthis: { type: Boolean, value: true },
-        options: { type: Array, value: [], observer: 'optionsChanged' },
-        disabled: { type: Boolean, value: false }
+        options: { type: Array, value: [], observer: 'optionsChanged' }
       },
       trueClick: function(){
         this.optext = 'true';
@@ -42,12 +41,12 @@
         this.optext = 'false';
       },
       trueCSS: function(optext){
-        if(optext=='true') return 'btn-css green';
-        else return 'btn-css grey';
+        if(optext=='true') return 'round green';
+        else return 'round grey';
       },
       falseCSS: function(optext){
-        if(optext=='false') return 'btn-css red';
-        else return 'btn-css grey';
+        if(optext=='false') return 'round red';
+        else return 'round grey';
       },
       isValid: function(){
         if(this.qkind == 'question' && this.optext == ''){
@@ -71,9 +70,11 @@
         else this.showthis = false;
       },
       optionsChanged: function(options){
-        var optext = options[0].optext;
-        if(optext=='true') this.trueClick();
-        else if(optext=='false') this.falseClick();
+        if(this.options.length >= 1) {
+          var optext = options[0].optext;
+          if(optext=='true') this.trueClick();
+          else if(optext=='false') this.falseClick();
+        }
       }
     });
   </script>

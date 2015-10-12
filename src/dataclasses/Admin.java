@@ -1,5 +1,8 @@
 package dataclasses;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 public class Admin {
 	
 	private String username;
@@ -9,6 +12,10 @@ public class Admin {
 	public Integer classid = null;
 	public String classtype = "classonly";
 	public Boolean serverstate = false;
+	
+	public Integer questionid = null;
+	public JsonObject question = null;
+	public JsonArray options = null;
 	
 	Admin(String name, Integer id){
 		username = name;

@@ -1,6 +1,8 @@
+<link rel="import" href="question-element.html">
+
 <dom-module name="question-select-info">
   <template>
-    <style>
+    <style include="shared-styles">
     h2,h3 {
       text-transform: capitalize;
     }
@@ -19,23 +21,24 @@
       on-response="handleResponse"
       on-error="handleError"
       debounceDuration="1500"></iron-ajax>
-
-    <div class="layout vertical">
-      <div class="layout horizontal center">
-        <paper-radio-button id="radiobutton" on-click="radioClicked"></paper-radio-button>
-        <h2 class="mright16only">{{qkind}}<span>:</span></h2>
-        <h2 class="green-text mright16only">{{qtype}}</h2>
-        <h3 class="blue-text mright16only">CreateTime: <span>{{created_time}}</span></h3>
-        <div class="layout horizontal flex end-justified">
-          <paper-icon-button on-click="toggleShowQuestion" icon="{{visibility}}"></paper-icon-button>
-          <paper-icon-button on-click="copyQuestionClick" icon="content-copy"></paper-icon-button>
-          <paper-icon-button on-click="deleteQuestionClick" icon="delete"></paper-icon-button>
+    <paper-card class="layout horizontal flex mtop8" elevation="2">
+      <div class="layout vertical flex card-content">
+        <div class="layout horizontal center">
+          <paper-radio-button id="radiobutton" on-click="radioClicked"></paper-radio-button>
+          <h2 class="mright16only">{{qkind}}<span>:</span></h2>
+          <h2 class="green-text mright16only">{{qtype}}</h2>
+          <h3 class="blue-text mright16only">CreateTime: <span>{{created_time}}</span></h3>
+          <div class="layout horizontal flex end-justified">
+            <paper-icon-button on-click="toggleShowQuestion" icon="{{visibility}}"></paper-icon-button>
+            <paper-icon-button on-click="copyQuestionClick" icon="content-copy"></paper-icon-button>
+            <paper-icon-button on-click="deleteQuestionClick" icon="delete"></paper-icon-button>
+          </div>
         </div>
+        <h4>Title: <span>{{title}}</span></h4>
+        <p>Question: <span>{{qtext}}</span></p>
+        <question-element id="preview" hidden disabled questionid="{{questionid}}" qtype="{{qtype}}" qkind="{{qkind}}" title="{{title}}" qtext="{{qtext}}" options="{{options}}"></question-element>
       </div>
-      <h4>Title: <span>{{title}}</span></h4>
-      <p>Question: <span>{{qtext}}</span></p>
-    </div>
-    <div class="layout flex line-seperator"></div>
+    </paper-card>
     <paper-dialog id="alert" class="fixedpos pad8">
       <h2>Alert</h2>
       <h4>Do you really want to delete this question?</h4>
@@ -53,18 +56,37 @@
         questionid: { type: Number, value: 0, observer: 'questionidChanged' },
         qtype: { type: String, value: 'single' },
         qkind: { type: String, value: 'question' },
-        title: { type: String, value: 'Question title' },
-        qtext: { type: String, value: 'Question body it is' }, 
+        title: { type: String, value: 'Default Question title' },
+        qtext: { type: String, value: 'Default Question body it is' },
+        option_count: { type: Number, value: 0 },
+        options: { type: Array, value: [] },
         created_time: { type: String, value: '2015-1-10 16:50:00' },
         params: { type: Object, value: {} },
         selectedqid: { type:Number, value:null, observer: 'selectedqidChanged', reflectToAttribute: true, notify: true },
         visibility: { type: String, value: 'visibility'}
+      },
+      toggleShowQuestion: function(){
+        if(this.visibility == 'visibility'){
+          this.visibility = 'visibility-off';
+          this.$.preview.removeAttribute("hidden");
+          if(this.options.length != this.option_count){
+            this.params["action"] = "getoptions";
+            this.params["questionid"] = this.questionid;
+            this.$.ironajax.generateRequest();
+          }
+        }else {
+          this.visibility = 'visibility';
+          this.$.preview.setAttribute("hidden",'true');
+        }
       },
       selectedqidChanged: function(newValue){
         if(newValue == this.questionid) this.$.radiobutton.checked = true;
         else this.$.radiobutton.checked = false;
       },
       questionidChanged: function(newValue){
+        this.options = [];
+        this.visibility = 'visibility';
+        this.$.preview.setAttribute("hidden",'true');
         if(this.selectedqid == this.questionid) this.$.radiobutton.checked = true;
         else this.$.radiobutton.checked = false;
       },
@@ -104,6 +126,9 @@
                 var question = JSON.parse(ajax_response.question);
                 var options = JSON.parse(ajax_response.options);
                 this.domHost.setQuestion(question[0], options);
+                break;
+              case 'getoptions':
+                this.options = JSON.parse(ajax_response.options);
                 break;
               default:
                 console.log("unidentified action request");

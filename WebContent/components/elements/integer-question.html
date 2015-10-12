@@ -5,7 +5,7 @@
     <div class="layout vertical center" hidden="{{!showthis}}">
       <div class="layout horizontal center">
         <h3 class="mright16">Answer:</h3>
-        <paper-input id="opinput" class="small" label="Type Integer.." value="{{optext}}" no-label-float type="number" prevent-invalid-input required auto-validate disabled$="{{disabled}}"></paper-input>
+        <paper-input id="opinput" class="small" label="Type Integer.." value="{{optext}}" no-label-float type="number" prevent-invalid-input required auto-validate></paper-input>
       </div>
     </div>
   </template>
@@ -16,8 +16,7 @@
         optext: { type: String, value: '', reflectToAttribute: true, notify: true },
         qkind: { type: String, value: null, observer: 'qkindChanged' },
         showthis: { type: Boolean, value: true },
-        options: { type: Array, value: [], observer: 'optionsChanged' },
-        disabled: { type: Boolean, value: false }
+        options: { type: Array, value: [], observer: 'optionsChanged' }
       },
       isValid: function(){
         this.optext = this.optext.trim();
@@ -46,7 +45,7 @@
         else this.showthis = false;
       },
       optionsChanged: function(options){
-        this.optext = options[0].optext;
+        if(this.options.length >= 1) this.optext = options[0].optext;
       }
     });
   </script>

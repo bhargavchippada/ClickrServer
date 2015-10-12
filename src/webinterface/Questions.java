@@ -13,6 +13,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import dataclasses.Admin;
+
 public class Questions extends WebHttpServlet {
 
 	private static final long serialVersionUID = 734797539096515654L;
@@ -24,8 +26,9 @@ public class Questions extends WebHttpServlet {
 	String upload_question = "insert into question (adminid, title, qtext, qtype, qkind) values(?, ?, ?, ?, ?)";
 	String last_insert_rowid = "select last_insert_rowid()";
 	String insert_option = "insert into qoption (questionid, opindex, optext, answer) values(?, ?, ?, ?)";
-	String get_question = "select questionid,title,qtext,qtype,qkind from question where questionid = ?";
+	String get_question = "select questionid,title,qtext,qtype,qkind,option_count	 from question where questionid = ?";
 	String get_options = "select opindex,optext,answer from qoption where questionid = ? order by opindex asc";
+
 	@Override
 	public String getClassname() {
 		return CLASSNAME;
@@ -46,9 +49,15 @@ public class Questions extends WebHttpServlet {
 				JsonObject question = (new JsonParser().parse(request.getReader()))
 						.getAsJsonObject();
 				uploadQuestion(question, sqliteconn, responseJson);
-			} else if (action.equals("copyquestion") || action.equals("getquestion")) {
+			} else if (action.equals("copyquestion")) {
 				Integer questionid = Integer.parseInt(request.getParameter("questionid"));
 				getQuestion(questionid, sqliteconn, responseJson);
+			} else if (action.equals("getoptions")) {
+				Integer questionid = Integer.parseInt(request.getParameter("questionid"));
+				getOptions(questionid, sqliteconn, responseJson);
+			} else if (action.equals("selectquestion")) {
+				Integer questionid = Integer.parseInt(request.getParameter("questionid"));
+				selectQuestion(questionid, sqliteconn, responseJson);
 			} else {
 				responseJson.addProperty("error_msg", "Unidentified action request!");
 				responseJson.addProperty("status", FAIL);
@@ -138,12 +147,33 @@ public class Questions extends WebHttpServlet {
 			throws SQLException {
 		PreparedStatement pstmt_question = sqliteconn.prepareStatement(get_question);
 		pstmt_question.setInt(1, questionid);
-		executePreparedStmt(pstmt_question, "question", "Fetching Question", WebHttpServlet.ARRAYOFOBJ,
-				responseJson);
-		
+		executePreparedStmt(pstmt_question, "question", "Fetching Question",
+				WebHttpServlet.ARRAYOFOBJ, responseJson);
+
 		PreparedStatement pstmt_options = sqliteconn.prepareStatement(get_options);
 		pstmt_options.setInt(1, questionid);
-		executePreparedStmt(pstmt_options, "options", "Fetching options", WebHttpServlet.ARRAYOFOBJ,
-				responseJson);
+		executePreparedStmt(pstmt_options, "options", "Fetching options",
+				WebHttpServlet.ARRAYOFOBJ, responseJson);
+	}
+
+	private void getOptions(int questionid, Connection sqliteconn, JsonObject responseJson)
+			throws SQLException {
+		PreparedStatement pstmt_options = sqliteconn.prepareStatement(get_options);
+		pstmt_options.setInt(1, questionid);
+		executePreparedStmt(pstmt_options, "options", "Fetching options",
+				WebHttpServlet.ARRAYOFOBJ, responseJson);
+	}
+
+	private void selectQuestion(int questionid, Connection sqliteconn, JsonObject responseJson)
+			throws SQLException {
+		getQuestion(questionid, sqliteconn, responseJson);
+
+		if (responseJson.get("status").getAsString().equals(SUCCESS)) {
+			Admin admin = getAdminProfile();
+			admin.questionid = questionid;
+			JsonArray arr = jparser.parse(responseJson.get("question").getAsString()).getAsJsonArray();
+			admin.question = arr.get(0).getAsJsonObject();
+			admin.options = jparser.parse(responseJson.get("options").getAsString()).getAsJsonArray();
+		}
 	}
 }

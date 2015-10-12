@@ -1,6 +1,6 @@
 <dom-module name="option-mcq">
   <template>
-    <style>
+    <style include="shared-styles">
       paper-radio-button {
         --paper-radio-button-checked-color: var(--paper-green-500);
         --paper-radio-button-checked-ink-color: var(--paper-green-500);
@@ -15,9 +15,9 @@
       }
     </style>
     <div class="layout horizontal center">
-    <paper-radio-button hidden="{{ischeckbox}}" id="radiobtn" on-click="radioClicked" disabled$="{{isDisabled(disabled,disablethis)}}"></paper-radio-button>
-    <paper-checkbox hidden="{{!ischeckbox}}" checked="{{checked}}" on-click="checkChanged" disabled$="{{isDisabled(disabled,disablethis)}}"></paper-checkbox>
-    <paper-textarea id="opinput" class="layout flex" label="Type..." value="{{optext}}" no-label-float required auto-validate disabled$="{{disabled}}"></paper-textarea>
+    <paper-radio-button hidden="{{ischeckbox}}" id="radiobtn" on-click="radioClicked" disabled$="{{disablethis}}"></paper-radio-button>
+    <paper-checkbox hidden="{{!ischeckbox}}" checked="{{checked}}" on-click="checkChanged" disabled$="{{disablethis}}"></paper-checkbox>
+    <paper-textarea id="opinput" class="layout flex" label="Type..." value="{{optext}}" no-label-float required auto-validate></paper-textarea>
     <paper-icon-button suffix icon="cancel" alt="cancel" title="cancel" on-click="deleteOption" hidden$="{{disabled}}"></paper-icon-button>
     </div>
   </template>
@@ -91,9 +91,6 @@
         op["optext"] = this.optext;
         op["answer"] = this.answer;
         return op;
-      },
-      isDisabled: function(disabled,disablethis) {
-        return disabled || disablethis;
       }
     });
   </script>

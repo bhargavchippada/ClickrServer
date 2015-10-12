@@ -8,7 +8,7 @@
     </style>
     <div class="layout horizontal center" hidden="{{!showthis}}">
       <h3 class="mright16">Answer:</h3>
-      <paper-textarea id="opinput" class="layout flex" label="Type answer..." value="{{optext}}" no-label-float type="text" required auto-validate disabled$="{{disabled}}"></paper-textarea>
+      <paper-textarea id="opinput" class="layout flex" label="Type answer..." value="{{optext}}" no-label-float type="text" required auto-validate></paper-textarea>
     </div>
   </template>
   <script>
@@ -18,8 +18,7 @@
         optext: { type: String, value: '', reflectToAttribute: true, notify: true },
         qkind: { type: String, value: null, observer: 'qkindChanged' },
         showthis: { type: Boolean, value: true },
-        options: { type: Array, value: [], observer: 'optionsChanged' },
-        disabled: { type: Boolean, value: false }
+        options: { type: Array, value: [], observer: 'optionsChanged' }
       },
       isValid: function(){
         this.optext = this.optext.trim();
@@ -45,7 +44,7 @@
         else this.showthis = false;
       },
       optionsChanged: function(options){
-        this.optext = options[0].optext;
+        if(this.options.length >= 1) this.optext = options[0].optext;
       }
     });
   </script>

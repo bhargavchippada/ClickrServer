@@ -1,6 +1,6 @@
-<link rel="import" href="elements/make-question.html">
 <link rel="import" href="elements/toggle-display.html">
 <link rel="import" href="question-select.html">
+<link rel="import" href="elements/question-element.html">
 <dom-module name="question-settings">
   <template>
     <style include="shared-styles">
@@ -14,15 +14,29 @@
       height: 80%;
       top: 16px;
     }
+    question-element {
+      width: 80%;
+      margin-top: 8px;
+    }
     </style>
+    <iron-ajax
+      id="ironajax"
+      url="../Questions"
+      params='{{params}}'
+      handle-as="json"
+      content-type="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
+
     <toggle-display show="{{showthis}}" label="Question"></toggle-display>
     <div class="layout vertical" hidden="{{!showthis}}">
-    	<paper-button raised class="btn-css blue-bg" on-click="selectQuestionClick">Pick Question</paper-button>
+    	<paper-button raised class="round blue-bg" on-click="selectQuestionClick">Pick Question</paper-button>
     	<div class="layout vertical center">
-    		<make-question types='["single","multiple","truefalse","integer","float","word","short"]' qtype='6' kinds='["question","poll"]' qkind='1'></make-question>
+    		<question-element id="chosenq" disabled hidden></question-element>
     	</div>
 		</div>
-		<question-select id="questionselect" modal></question-select>
+		<question-select id="questionselect" modal selectedqid="{{selectedqid}}"></question-select>
     <paper-toast id="toast" text=""></paper-toast>
     <paper-toast id="notice" text=""></paper-toast>
   </template>
@@ -30,7 +44,9 @@
     Polymer({
       is: "question-settings",
       properties: {
-	      showthis: { type: Boolean, value: true }
+	      showthis: { type: Boolean, value: true },
+        selectedqid: { type: Number, value: null, observer: 'selectedqidChanged' },
+        params: { type: Object, value: {} }
 	  	},
 	  	selectQuestionClick: function(){
 	  		this.$.questionselect.toggle();
@@ -42,6 +58,39 @@
       showNotice: function(msg){
         this.$.notice.text=msg;
         this.$.notice.show();
+      },
+      selectedqidChanged: function(newValue){
+        if(newValue != null && newValue >=0){
+          this.params = {};
+          this.params["action"] = "selectquestion";
+          this.params["questionid"] = newValue;
+          this.$.ironajax.generateRequest();
+        }
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.showError(ajax_response.error_msg);
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'selectquestion':
+                  var questionarr = JSON.parse(ajax_response.question);
+                  var question = questionarr[0];
+                  this.$.chosenq.removeAttribute('hidden');
+                  this.$.chosenq.setAttribute('questionid',question.questionid);
+                  this.$.chosenq.setAttribute('qkind',question.qkind);
+                  this.$.chosenq.setAttribute('qtype',question.qtype);
+                  this.$.chosenq.setAttribute('title',question.title);
+                  this.$.chosenq.setAttribute('qtext',question.qtext);
+                  this.$.chosenq.setAttribute('options',ajax_response.options);
+                  break;
+              default:
+                  console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.showError(resp.detail.error);
       }
     });
   </script>

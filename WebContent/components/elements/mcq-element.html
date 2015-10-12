@@ -6,7 +6,7 @@
     :host{
       display:block;
     }
-    paper-button {
+    paper-button.grey {
       background-color: #eaeaea;
       color: #333;
     }
@@ -16,7 +16,7 @@
         <option-mcq opindex="{{index}}" ischeckbox="{{ischeckbox}}" optext="{{item.optext}}" answer="{{item.answer}}" radioselected="{{radioselected}}" qkind="{{qkind}}" disabled$="{{disabled}}"></option-mcq>
       </template>
     </div>
-    <paper-button tabindex="0" raised class="btn-css" on-click="addOptionClick"><iron-icon icon="add" hidden$="{{disabled}}"></iron-icon>Add Option</paper-button>
+    <paper-button tabindex="0" raised class="round grey" on-click="addOptionClick" hidden$="{{disabled}}"><iron-icon icon="add"></iron-icon>Add Option</paper-button>
   </template>
   <script>
     Polymer({
@@ -26,7 +26,7 @@
         radioselected: { type: Number, value: -1 },
         ischeckbox: { type:Boolean, value: null, reflectToAttribute: true, notify: true },
         qkind: { type: String, value: null },
-        options: { type: Array, value: [], observer: 'optionsChanged' },
+        options: { type: Array, value: [] },
         disabled: { type: Boolean, value: false }
       },
       addOptionClick: function(){
@@ -60,9 +60,6 @@
            arr.push(children[i].getOption());
         }
         return arr;
-      },
-      optionsChanged: function(options){
-        this.options = options;
       }
     });
   </script>

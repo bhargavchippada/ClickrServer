@@ -12,41 +12,44 @@
       width: 50%;
     }
     </style>
-    <div class="layout horizontal center-justified flex">
-      <p class="small-tab tab-green">{{qtype}}</p>
-      <p class="small-tab tab-teal">{{qkind}}</p>
+    <div id="questionele">
+      <div class="layout horizontal center-justified flex" hidden$="{{!disabled}}">
+        <p class="small-tab tab-green">{{qtype}}</p>
+        <p class="small-tab tab-teal">{{qkind}}</p>
+      </div>
+      <paper-input id="titleid" class="title" value="{{title}}" label="Question Title" no-label-float required auto-validate></paper-input>
+      <paper-textarea id="qtextid" label="Type Question..." value="{{qtext}}" rows="1" max-rows="8" no-label-float required auto-validate></paper-textarea>
+      <div id="qtypediv"> 
+        <template is="dom-if" if="{{isMCQ(qtype)}}">
+        	<mcq-element id="mcqele" ischeckbox="{{whichMCQ(qtype)}}" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></mcq-element>
+        </template>
+        <template is="dom-if" if="{{isTF(qtype)}}">
+        	<truefalse-element id="tfele" qkind="{{qkind}}" options="{{options}}"></truefalse-element>
+        </template>
+        <template is="dom-if" if="{{isInteger(qtype)}}">
+        	<integer-question id="intele" qkind="{{qkind}}" options="{{options}}"></integer-question>
+        </template>
+        <template is="dom-if" if="{{isFloat(qtype)}}">
+        	<float-question id="floatele" qkind="{{qkind}}" options="{{options}}"></float-question>
+        </template>
+        <template is="dom-if" if="{{isWord(qtype)}}">
+        	<word-question id="wordele" qkind="{{qkind}}" options="{{options}}"></word-question>
+        </template>
+        <template is="dom-if" if="{{isShort(qtype)}}">
+        	<short-question id="shortele" qkind="{{qkind}}" options="{{options}}"></short-question>
+        </template>
+      </div>
+      <paper-toast id="toaster" text=""></paper-toast>
     </div>
-    <paper-input id="titleid" class="title" value="{{title}}" label="Question Title" no-label-float required auto-validate disabled$="{{disabled}}"></paper-input>
-    <paper-textarea id="qtextid" label="Type Question..." value="{{qtext}}" rows="1" max-rows="8" no-label-float required auto-validate disabled$="{{disabled}}"></paper-textarea>
-    <div id="qtypediv"> 
-      <template is="dom-if" if="{{isMCQ(qtype)}}">
-      	<mcq-element id="mcqele" ischeckbox="{{whichMCQ(qtype)}}" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></mcq-element>
-      </template>
-      <template is="dom-if" if="{{isTF(qtype)}}">
-      	<truefalse-element id="tfele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></truefalse-element>
-      </template>
-      <template is="dom-if" if="{{isInteger(qtype)}}">
-      	<integer-question id="intele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></integer-question>
-      </template>
-      <template is="dom-if" if="{{isFloat(qtype)}}">
-      	<float-question id="floatele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></float-question>
-      </template>
-      <template is="dom-if" if="{{isWord(qtype)}}">
-      	<word-question id="wordele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></word-question>
-      </template>
-      <template is="dom-if" if="{{isShort(qtype)}}">
-      	<short-question id="shortele" qkind="{{qkind}}" options="{{options}}" disabled="{{disabled}}"></short-question>
-      </template>
-    </div>
-    <paper-toast id="toaster" text=""></paper-toast>
   </template>
   <script>
     Polymer({
       is: 'question-element',
       properties: {
+        questionid: { type: Number, value: null },
       	qtype: { type: String, value: null },
         qkind: { type: String, value: null },
-        disabled: { type: Boolean, value: false },
+        disabled: { type: Boolean, value: false, observer: 'disabledChanged' },
         title: { type: String, value: '' },
         qtext: { type: String, value: '' },
         options: { type: Array, value: [] }
@@ -112,6 +115,13 @@
       showError: function(err){
         this.$.toaster.text=err;
         this.$.toaster.show();
+      },
+      disabledChanged: function(newValue){
+        if(newValue){
+          this.$.questionele.style.pointerEvents = "none";
+        }else {
+          this.$.questionele.style.pointerEvents = "auto";
+        }
       }
     });
   </script>

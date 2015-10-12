@@ -1,6 +1,6 @@
 <dom-module name="login-form">
   <template>
-  	<style>
+  	<style include="shared-styles">
   	:host {
       color: #333;
       font-family: 'Roboto', sans-serif;
@@ -40,10 +40,10 @@
       	<div class="layout horizontal center">
           <input type="file" id="browse" name="file" style="display: none" on-change="readFilePath"/>
           <paper-input class="inputlarge" value="{{database_path}}" label="Database path (May be Optional)" error-message="Invalid path!"></paper-input>
-          <paper-icon-button on-click="browseDatabase" icon="search">Log In</paper-icon-button>
+          <paper-icon-button on-click="browseDatabase" icon="search"></paper-icon-button>
         </div>
         <div class="mtop32">
-        	<paper-button raised on-click="submitLoginCred" class="mtop8 btn-css blue-bg">Log In</paper-button>
+        	<paper-button raised on-click="submitLoginCred" class="btn-css blue-bg">Log In</paper-button>
       		<p id="error_display" class="mtop16"></p>
         </div>
 	  </div>

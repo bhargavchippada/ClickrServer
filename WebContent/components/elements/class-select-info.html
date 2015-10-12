@@ -17,38 +17,39 @@
       on-error="handleError"
       debounceDuration="1500"></iron-ajax>
 
-    <div class="layout horizontal center">
-      <paper-radio-button id="radiobutton" on-click="radioClicked"></paper-radio-button>
-      <h2 class="mright16only">{{classname}}</h2>
-      <h4 class="green-text mright16only"><span>{{student_count}}</span> Students</h4>
-      <h4 class="blue-text mright16only">CreateTime: <span>{{created_time}}</span></h4>
-      <div class="layout horizontal flex end-justified">
-        <paper-icon-button on-click="toggleShowClass" icon="{{visibility}}"></paper-icon-button>
-        <paper-icon-button on-click="deleteClassClick" icon="delete"></paper-icon-button>
+    <paper-card class="layout vertical flex mtop8" elevation="2">
+      <div class="layout horizontal center flex card-content">
+        <paper-radio-button id="radiobutton" on-click="radioClicked"></paper-radio-button>
+        <h1 class="mright16only">{{classname}}</h1>
+        <h3 class="green-text mright16only"><span>{{student_count}}</span> Students</h3>
+        <h3 class="blue-text mright16only">CreateTime: <span>{{created_time}}</span></h3>
+        <div class="layout horizontal flex end-justified">
+          <paper-icon-button on-click="toggleShowClass" icon="{{visibility}}"></paper-icon-button>
+          <paper-icon-button on-click="deleteClassClick" icon="delete"></paper-icon-button>
+        </div>
       </div>
-    </div>
-    <div id="preview" class="layout vertical center" hidden='true'>
-      <h3 class="all0"><u>Preview</u></h3>
-      <div id="previewdiv" class="layout scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Rollnumber</th>
-              <th>Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template is="dom-repeat" items="{{classusers}}">
+      <div id="preview" class="layout vertical center" hidden='true'>
+        <h3 class="all0"><u>Preview</u></h3>
+        <div id="previewdiv" class="layout vertical center scroll">
+          <table>
+            <thead>
               <tr>
-                <td>{{item.0}}</td>
-                <td>{{item.1}}</td>
+                <th>Rollnumber</th>
+                <th>Name</th>
               </tr>
-            </template>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <template is="dom-repeat" items="{{classusers}}">
+                <tr>
+                  <td>{{item.0}}</td>
+                  <td>{{item.1}}</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-    <div class="layout flex line-seperator"></div>
+    </paper-card>
     <paper-dialog id="alert" class="fixedpos pad8">
       <h2>Alert</h2>
       <h4>Do you really want to delete <span>{{classname}}</span>?</h4>

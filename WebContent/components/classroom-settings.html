@@ -38,7 +38,7 @@
   <toggle-display show="{{showthis}}" label="Classroom Settings"></toggle-display>
   <div class="layout horizontal center" hidden="{{!showthis}}">
     <paper-input class="inputmedium mright16 dark" no-label-float label="{{classname}}" disabled></paper-input>
-    <paper-button id="browsebtn" raised class="btn-css blue-bg" on-click="selectClassClick" disabled$="{{uploadBtnState(classtype,serverstate)}}">Select Class</paper-button>
+    <paper-button id="browsebtn" raised class="round blue-bg" on-click="selectClassClick" disabled$="{{uploadBtnState(classtype,serverstate)}}">Select Class</paper-button>
     <class-select id="classselect" modal selectedclassname="{{classname}}" selectedclassid="{{classid}}"></class-select>
     <paper-radio-group id="radiogroup" selected="{{classtype}}">
       <paper-radio-button name="classonly" disabled$="[[serverstate]]">Class Only</paper-radio-button>
@@ -133,8 +133,8 @@
       }
     },
     toggleCSS: function(btnbool){
-      if(btnbool) return 'btn-css ' + 'red-bg';
-      else return 'btn-css ' + 'green-bg';
+      if(btnbool) return 'round ' + 'red-bg';
+      else return 'round ' + 'green-bg';
     },
     toggleLabel: function(btnbool){
       if(btnbool) return "Stop Server";

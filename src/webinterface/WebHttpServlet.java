@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import dataclasses.Admin;
@@ -33,7 +34,8 @@ public abstract class WebHttpServlet extends HttpServlet {
 	public static final String FAIL = "FAIL";
 	public static final int ARRAYOFOBJ = 0;
 	public static final int ARRAYOFARRAY = 1;
-
+	public static final JsonParser jparser = new JsonParser();
+	
 	private String adminUserName = null;
 	private Integer adminId = null;
 	private Admin adminProfile = null;
@@ -68,11 +70,11 @@ public abstract class WebHttpServlet extends HttpServlet {
 				adminId = (Integer) adminidObj;
 				adminUserName = (String) usernameObj;
 				adminProfile = Admins.getAdmin(adminUserName);
-				return true;
-			} else {
-				responseJson.addProperty("status", FAIL); // no session
-				responseJson.addProperty("error_msg", "Authentication failed!!");
+				if(adminProfile!=null) return true;
 			}
+			
+			responseJson.addProperty("status", FAIL); // no session
+			responseJson.addProperty("error_msg", "Authentication failed!!");
 		}
 		return false;
 	}

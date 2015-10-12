@@ -44,7 +44,7 @@
       </div>
       <div class="layout vertical center" hidden="{{!showthis}}">
         <make-question id="makequestionele" types='["single","multiple","truefalse","integer","float","word","short"]' qtype='0' kinds='["question","poll"]' qkind='0'></make-question>
-        <paper-button class="btn-css green-bg mtop16" on-click="saveQuestionClick">Save Question</paper-button>
+        <paper-button class="round green-bg mtop16" on-click="saveQuestionClick">Save Question</paper-button>
       </div>
       <div class="layout horizontal center">
         <h2 class="mright16"><u>Your Questions</u></h2>
@@ -52,7 +52,7 @@
       </div>
       <div id="radiogroup" class="layout vertical">
         <template is="dom-repeat" items="{{questionslist}}">
-            <question-select-info questionid="{{item.questionid}}" qtype="{{item.qtype}}" qkind="{{item.qkind}}" title="{{item.title}}" qtext="{{item.qtext}}" created_time="{{item.created_time}}" selectedqid="{{selectedqid}}"></question-select-info>
+            <question-select-info questionid="{{item.questionid}}" qtype="{{item.qtype}}" qkind="{{item.qkind}}" title="{{item.title}}" qtext="{{item.qtext}}" created_time="{{item.created_time}}" option_count="{{item.option_count}}" selectedqid="{{selectedqid}}"></question-select-info>
         </template>
       </div>
     </div>
@@ -84,8 +84,8 @@
         this.showthis = !this.showthis;
       },
       toggleCSS: function(showthis){
-        if(showthis) return 'btn-css red-bg';
-        else return 'btn-css blue-bg';
+        if(showthis) return 'round red-bg';
+        else return 'round blue-bg';
       },
       saveQuestionClick: function(){
         var question = this.$.makequestionele.getQuestion();

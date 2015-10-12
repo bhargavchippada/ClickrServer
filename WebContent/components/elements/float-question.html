@@ -8,9 +8,9 @@
     <div class="layout vertical center" hidden="{{!showthis}}">
       <div class="layout horizontal center">
         <h3>[</h3>
-        <paper-input id="opinput0" class="smaller" label="Type Float.." value="{{optext0}}" no-label-float type="number" required auto-validate disabled$="{{disabled}}"></paper-input>
+        <paper-input id="opinput0" class="smaller" label="Type Float.." value="{{optext0}}" no-label-float type="number" required auto-validate></paper-input>
         <h3 class="mright16 mleft16">&lt;= Answer &lt;=</h3>
-        <paper-input id="opinput1" class="smaller" label="Type Float.." value="{{optext1}}" no-label-float type="number" required auto-validate disabled$="{{disabled}}"></paper-input>
+        <paper-input id="opinput1" class="smaller" label="Type Float.." value="{{optext1}}" no-label-float type="number" required auto-validate></paper-input>
         <h3>]</h3>
       </div>
     </div>
@@ -23,8 +23,7 @@
         optext1: { type: String, value: '', reflectToAttribute: true, notify: true },
         qkind: { type: String, value: null, observer: 'qkindChanged' },
         showthis: { type: Boolean, value: true },
-        options: { type: Array, value: [], observer: 'optionsChanged' },
-        disabled: { type: Boolean, value: false }
+        options: { type: Array, value: [], observer: 'optionsChanged' }
       },
       isValid: function(){
         this.optext0 = this.optext0.trim();
@@ -61,8 +60,10 @@
         else this.showthis = false;
       },
       optionsChanged: function(options){
-        this.optext0 = options[0].optext;
-        this.optext1 = options[1].optext;
+        if(this.options.length >= 2){ 
+          this.optext0 = options[0].optext;
+          this.optext1 = options[1].optext;
+        }
       }
     });
   </script>
