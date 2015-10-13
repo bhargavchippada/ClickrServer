@@ -28,6 +28,7 @@ public class Questions extends WebHttpServlet {
 	String insert_option = "insert into qoption (questionid, opindex, optext, answer) values(?, ?, ?, ?)";
 	String get_question = "select questionid,title,qtext,qtype,qkind,option_count	 from question where questionid = ?";
 	String get_options = "select opindex,optext,answer from qoption where questionid = ? order by opindex asc";
+	String new_quiz = "insert into quiz (adminid, questionid, classid, classtype, feedback, timedquiz, quiztime) values(?, ?, ?, ?, ?, ?, ?)";
 
 	@Override
 	public String getClassname() {
@@ -58,6 +59,15 @@ public class Questions extends WebHttpServlet {
 			} else if (action.equals("selectquestion")) {
 				Integer questionid = Integer.parseInt(request.getParameter("questionid"));
 				selectQuestion(questionid, sqliteconn, responseJson);
+			} else if (action.equals("fetch")) {
+				fetchQuestionSettings(responseJson);
+			} else if (action.equals("startquiz")) {
+				startQuiz(request, sqliteconn, responseJson);
+			} else if (action.equals("stopquiz")) {
+				Admin admin = getAdminProfile();
+				admin.clearQuizSettings();
+				responseJson.addProperty("status", SUCCESS);
+				responseJson.addProperty("quizstatus", false);
 			} else {
 				responseJson.addProperty("error_msg", "Unidentified action request!");
 				responseJson.addProperty("status", FAIL);
@@ -171,9 +181,91 @@ public class Questions extends WebHttpServlet {
 		if (responseJson.get("status").getAsString().equals(SUCCESS)) {
 			Admin admin = getAdminProfile();
 			admin.questionid = questionid;
-			JsonArray arr = jparser.parse(responseJson.get("question").getAsString()).getAsJsonArray();
+			JsonArray arr = jparser.parse(responseJson.get("question").getAsString())
+					.getAsJsonArray();
 			admin.question = arr.get(0).getAsJsonObject();
-			admin.options = jparser.parse(responseJson.get("options").getAsString()).getAsJsonArray();
+			admin.options = jparser.parse(responseJson.get("options").getAsString())
+					.getAsJsonArray();
+		}
+	}
+
+	private void fetchQuestionSettings(JsonObject responseJson) {
+		try {
+			Admin admin = getAdminProfile();
+			if (admin.questionid != null) {
+				responseJson.addProperty("questionid", admin.questionid);
+				responseJson.addProperty("quizstatus", admin.quizstatus);
+				responseJson.addProperty("feedback", admin.feedback);
+				responseJson.addProperty("timedquiz", admin.timedquiz);
+				responseJson.addProperty("quiztime", admin.quiztime);
+			}
+			responseJson.addProperty("status", SUCCESS);
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseJson.addProperty("status", FAIL);
+			responseJson.addProperty("error_msg", "Fetching question settings has Failed!!");
+		}
+	}
+
+	private void startQuiz(HttpServletRequest request, Connection sqliteconn,
+			JsonObject responseJson) {
+		Admin admin = getAdminProfile();
+		if (!admin.serverstate) {
+			responseJson.addProperty("status", FAIL);
+			responseJson.addProperty("error_msg", "Select classroom!!");
+		} else {
+			try {
+				admin.feedback = Boolean.parseBoolean(request.getParameter("feedback"));
+				admin.timedquiz = Boolean.parseBoolean(request.getParameter("timedquiz"));
+				if (admin.timedquiz) {
+					admin.quiztime = Integer.parseInt(request.getParameter("quiztime"));
+				} else admin.quiztime = -1;
+
+				sqliteconn.setAutoCommit(false);
+				int adminid = getAdminId();
+				PreparedStatement pstmt_newquiz = sqliteconn.prepareStatement(new_quiz);
+				pstmt_newquiz.setInt(1, adminid);
+				pstmt_newquiz.setInt(2, admin.questionid);
+				pstmt_newquiz.setInt(3, admin.classid);
+				pstmt_newquiz.setString(4, admin.classtype);
+				pstmt_newquiz.setBoolean(5, admin.feedback);
+				pstmt_newquiz.setBoolean(6, admin.timedquiz);
+				pstmt_newquiz.setInt(7, admin.quiztime);
+				pstmt_newquiz.executeUpdate();
+
+				PreparedStatement pstmt_quizid = sqliteconn.prepareStatement(last_insert_rowid);
+				ResultSet rs_qid = pstmt_quizid.executeQuery();
+				rs_qid.next();
+				int quizid = rs_qid.getInt(1);
+				admin.quizid = quizid;
+				sqliteconn.commit();
+				
+				admin.quizstatus = true;
+				responseJson.addProperty("quizstatus", true);
+				responseJson.addProperty("status", SUCCESS);
+			} catch (SQLException e) {
+				try {
+					sqliteconn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+				admin.clearQuizSettings();
+				LOGGER.info("Quiz Insertion into database has failed!!");
+				responseJson.addProperty("status", FAIL);
+				responseJson.addProperty("error_msg", "Question Insertion into database has failed!!");
+			} catch (Exception e) {
+				e.printStackTrace();
+				admin.clearQuizSettings();
+				responseJson.addProperty("status", FAIL);
+				responseJson.addProperty("error_msg", "Starting quiz has Failed!!");
+			} finally {
+				try {
+					sqliteconn.setAutoCommit(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }

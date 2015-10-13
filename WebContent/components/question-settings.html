@@ -4,20 +4,20 @@
 <dom-module name="question-settings">
   <template>
     <style include="shared-styles">
-    :host{
-    	margin-top: 8px;
-    	width: 100%;
-    }
-    question-select {
-      position: fixed;
-      width: 80%;
-      height: 80%;
-      top: 16px;
-    }
-    question-element {
-      width: 80%;
-      margin-top: 8px;
-    }
+      :host{
+      	margin-top: 8px;
+      	width: 100%;
+      }
+      question-select {
+        position: fixed;
+        width: 80%;
+        height: 80%;
+        top: 16px;
+      }
+      question-element {
+        width: 80%;
+        margin-top: 8px;
+      }
     </style>
     <iron-ajax
       id="ironajax"
@@ -31,9 +31,19 @@
 
     <toggle-display show="{{showthis}}" label="Question"></toggle-display>
     <div class="layout vertical" hidden="{{!showthis}}">
-    	<paper-button raised class="round blue-bg" on-click="selectQuestionClick">Pick Question</paper-button>
-    	<div class="layout vertical center">
-    		<question-element id="chosenq" disabled hidden></question-element>
+    	<paper-button raised class="round blue-bg" on-click="selectQuestionClick" disabled$="{{quizstatus}}">Pick Question</paper-button>
+    	<div id="quizsettings" class="layout vertical center" hidden>
+    		<question-element id="chosenq" disabled></question-element>
+        <div class="layout horizontal center">
+          <paper-checkbox checked="{{feedback}}" disabled$="{{quizstatus}}"></paper-checkbox>
+          <h3 class="margin0">Immediate feedback to students</h3>
+        </div>
+        <div class="layout horizontal center mbottom16">
+          <paper-checkbox checked="{{timedquiz}}" disabled$="{{quizstatus}}"></paper-checkbox>
+          <h3 class="mright16only">Timed<br>Quiz</h3>
+          <paper-input class="dark" label="Time in sec" value="{{quiztime}}" disabled$="{{isDisabledQuizTime(timedquiz,quizstatus)}}" type="number" pattern="[0-9]" prevent-invalid-input></paper-input>
+        </div>
+        <paper-button raised class$="{{toggleCSS(quizstatus)}}" on-click="toggleQuizClick">Start Quiz</paper-button>
     	</div>
 		</div>
 		<question-select id="questionselect" modal selectedqid="{{selectedqid}}"></question-select>
@@ -46,11 +56,19 @@
       properties: {
 	      showthis: { type: Boolean, value: true },
         selectedqid: { type: Number, value: null, observer: 'selectedqidChanged' },
-        params: { type: Object, value: {} }
+        params: { type: Object, value: {} },
+        feedback: {type: Boolean, value: false },
+        timedquiz: { type: Boolean, value: false },
+        quiztime: { type: Number, value: null },
+        quizstatus: { type: Boolean, value: false }
 	  	},
 	  	selectQuestionClick: function(){
 	  		this.$.questionselect.toggle();
 	  	},
+      ready: function(){
+        this.params["action"] = "fetch";
+        this.$.ironajax.generateRequest();
+      },
       showError: function(err){
         this.$.toast.text=err;
         this.$.toast.show();
@@ -60,6 +78,7 @@
         this.$.notice.show();
       },
       selectedqidChanged: function(newValue){
+        this.showNotice("Question ID selected: "+this.selectedqid);
         if(newValue != null && newValue >=0){
           this.params = {};
           this.params["action"] = "selectquestion";
@@ -76,13 +95,22 @@
               case 'selectquestion':
                   var questionarr = JSON.parse(ajax_response.question);
                   var question = questionarr[0];
-                  this.$.chosenq.removeAttribute('hidden');
-                  this.$.chosenq.setAttribute('questionid',question.questionid);
-                  this.$.chosenq.setAttribute('qkind',question.qkind);
-                  this.$.chosenq.setAttribute('qtype',question.qtype);
-                  this.$.chosenq.setAttribute('title',question.title);
-                  this.$.chosenq.setAttribute('qtext',question.qtext);
-                  this.$.chosenq.setAttribute('options',ajax_response.options);
+                  this.setQuestion(question,ajax_response.options);
+                  break;
+              case 'fetch':
+                  this.selectedqid = ajax_response.questionid;
+                  if(this.selectedqid != null){
+                    this.quizstatus = ajax_response.quizstatus;
+                    this.feedback = ajax_response.feedback;
+                    this.timedquiz = ajax_response.timedquiz;
+                    this.quiztime = ajax_response.quiztime;
+                  }
+                  break;
+              case 'stopquiz':
+                  this.quizstatus = ajax_response.quizstatus;
+                  break;
+              case 'startquiz':
+                  this.quizstatus = ajax_response.quizstatus;
                   break;
               default:
                   console.log("unidentified action request");
@@ -91,6 +119,40 @@
       },
       handleError: function(resp, err) {
         this.showError(resp.detail.error);
+      },
+      setQuestion: function(question,options) {
+        this.$.quizsettings.removeAttribute('hidden');
+        this.$.chosenq.setAttribute('questionid',question.questionid);
+        this.$.chosenq.setAttribute('qkind',question.qkind);
+        this.$.chosenq.setAttribute('qtype',question.qtype);
+        this.$.chosenq.setAttribute('title',question.title);
+        this.$.chosenq.setAttribute('qtext',question.qtext);
+        this.$.chosenq.setAttribute('options',options);
+      },
+      toggleQuizClick: function() {
+        if(!this.quizstatus){
+          this.params = {};
+          this.params["action"] = "startquiz";
+          this.params["questionid"] = this.selectedqid;
+          this.params["feedback"] = this.feedback;
+          this.params["timedquiz"] = this.timedquiz;
+          if(this.timedquiz && this.quiztime<1) {
+            this.showError("Incorrect time!!");
+            return;
+          }
+          this.params["quiztime"] = this.quiztime;
+        }else {
+          this.params = {};
+          this.params["action"] = "stopquiz";
+        }
+        this.$.ironajax.generateRequest();
+      },
+      toggleCSS: function(quizstatus) {
+        if(quizstatus) return 'round red-bg';
+        else return 'round green-bg';
+      },
+      isDisabledQuizTime: function(timedquiz,quizstatus){
+        return !timedquiz || quizstatus;
       }
     });
   </script>

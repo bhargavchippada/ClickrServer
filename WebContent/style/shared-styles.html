@@ -11,7 +11,7 @@
         text-transform: inherit;
         color: white;
         --paper-button-disabled: {
-          color: #a8a8a8;
+          background: #7e7e7e;
         }
       }
       paper-input.dark {
@@ -23,6 +23,18 @@
       paper-icon-button {
         width: 24px;
         height: 24px;
+      }
+      paper-radio-button {
+        --paper-radio-button-checked-color: var(--paper-green-500);
+        --paper-radio-button-checked-ink-color: var(--paper-green-500);
+        --paper-radio-button-unchecked-color: var(--paper-green-900);
+        --paper-radio-button-unchecked-ink-color: var(--paper-green-900);
+      }
+      paper-checkbox {
+        --paper-checkbox-checked-color: var(--paper-green-500);
+        --paper-checkbox-checked-ink-color: var(--paper-green-500);
+        --paper-checkbox-unchecked-color: var(--paper-green-900);
+        --paper-checkbox-unchecked-ink-color: var(--paper-green-900);
       }
     </style> 
   </template>

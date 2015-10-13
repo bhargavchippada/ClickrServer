@@ -16,6 +16,11 @@ public class Admin {
 	public Integer questionid = null;
 	public JsonObject question = null;
 	public JsonArray options = null;
+	public Boolean feedback = null;
+	public Boolean timedquiz = null;
+	public Integer quiztime = null;
+	public Boolean quizstatus = false;
+	public Integer quizid = null;
 	
 	Admin(String name, Integer id){
 		username = name;
@@ -36,5 +41,11 @@ public class Admin {
 		this.classtype = classtype;
 		this.serverstate = serverstate;
 	}
-
+	
+	public void clearQuizSettings(){
+		feedback = null;
+		timedquiz = null;
+		quiztime = null;
+		quizstatus = false;
+	}
 }
