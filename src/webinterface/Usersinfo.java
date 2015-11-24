@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import dataclasses.Admin;
@@ -37,10 +38,19 @@ public class Usersinfo extends WebHttpServlet {
 	private void getUsersInfo(long updatedon, JsonObject responseJson) {
 		Admin admin = getAdminProfile();
 		if (updatedon != admin.updatedon) {
-			responseJson.addProperty("usersinfo", getAdminProfile().getUsersInfoArray().toString());
+			responseJson.addProperty("usersinfo", admin.getUsersInfoArray().toString());
+			JsonArray stats = admin.getOptionWiseStats();
+			responseJson.addProperty("optionwise", stats.toString());
+			if(admin.qtype!=null){
+				if(!admin.qtype.equals("multiple")){
+					stats.remove(0);
+					stats.remove(0);
+					responseJson.addProperty("responsewise", stats.toString());
+				}else{
+					responseJson.addProperty("responsewise", admin.getResponseWiseStats().toString());
+				}
+			}
 			responseJson.addProperty("updatedon", admin.updatedon);
-			if (admin.timedquiz == null) responseJson.addProperty("timed", false);
-			else responseJson.addProperty("timed", admin.timedquiz);
 		}
 		responseJson.addProperty("status", SUCCESS);
 	}

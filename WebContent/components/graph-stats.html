@@ -25,16 +25,18 @@
     }
   	</style>
     <div class="layout vertical center">
-      <barstat-element heading="Bar1" barcolor="{{getColorCode(0)}}" barvalue="50"></barstat-element>
-      <barstat-element heading="Bar2" barcolor="{{getColorCode(1)}}" barvalue="20"></barstat-element>
-      <barstat-element heading="Bar3" barcolor="{{getColorCode(2)}}" barvalue="30"></barstat-element>
+
+      <template is="dom-repeat" items="{{optionwise}}">
+        <barstat-element heading="{{item.0}}" barcolor="{{getColorCode(index)}}" barvalue="{{item.1}}"></barstat-element>
+      </template>
+
       <div id="selection-demo">
         <google-chart
           type="pie"
           id="selection-chart"
-          options='{"title": "Distribution of days in 2001H1"}'
-          cols='[{"label": "Month", "type": "string"},{"label": "Days", "type": "number"}]'
-          rows='[ ["Jan", 31],["Feb", 28],["Mar", 31],["Apr", 30],["May", 31],["Jun", 30] ]'>
+          options='{"title": "Distribution of Answers"}'
+          cols='[{"label": "Answer", "type": "string"},{"label": "Count", "type": "number"}]'
+          rows='{{responsewise}}'>
         </google-chart>
         <div id="selection-display">
           Selected row: <span id="selection-label">None</span>.
@@ -63,11 +65,13 @@
   	Polymer({
       is: "graph-stats",
       properties: {
+        optionwise: { type: Array, value: [['Bar1','50'],['Bar2','30']]},
+        responsewise: { type: Array, value: [ ['Ans1', 50],['Ans2', 30],['Ans3', 20] ]},
         data : { type: Array, value: [] }
       },
       getColorCode: function(ind){
-        var availcolors = ['info','warning','danger','success','primary','grey'];
-        return availcolors[ind];
+        var availcolors = ['primary', 'success', 'info','warning','danger','grey'];
+        return availcolors[ind%6];
       }
   	});
   </script>

@@ -23,14 +23,24 @@
         background-color: #337AB7;
       }
   	</style>
+    <iron-ajax
+      id="ironajax"
+      url="../Usersinfo"
+      params='{{params}}'
+      handle-as="json"
+      content-type="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
+
     <toggle-display show="{{showthis}}" label="Question"></toggle-display>
     <div class="layout vertical center" hidden="{{!showthis}}">
       <paper-tabs class="layout horizontal round-blue" selected="{{tabid}}" no-bar self-end>
         <paper-tab>Students-wise</paper-tab>
         <paper-tab>Quiz-stats</paper-tab>
       </paper-tabs>
-      <users-info hidden$="{{hiddenornot(0,tabid)}}"></users-info>
-      <graph-stats hidden$="{{hiddenornot(1,tabid)}}"></graph-stats>
+      <users-info hidden$="{{hiddenornot(0,tabid)}}" usersinfo="{{usersinfo}}"></users-info>
+      <graph-stats hidden$="{{hiddenornot(1,tabid)}}" optionwise="{{optionwise}}" responsewise="{{responsewise}}"></graph-stats>
     </div>
     <paper-toast id="toast" text=""></paper-toast>
   </template>
@@ -39,7 +49,13 @@
       is: "quiz-stats",
       properties: {
         showthis: { type: Boolean, value: true },
-        tabid: { type: Number, value: 1 }
+        tabid: { type: Number, value: 1 },
+        updatedon: { type: String, value: '-1' },
+        asyncstop: { type: Boolean, value: false },
+        usersinfo: { type: Array, value: [['1','1200500xx','zzzzz','yyy','Done','xxxx','53']] },
+        params: { type: Object, value: {} },
+        optionwise: { type: Array, value: [['Bar1','50'],['Bar2','30']]},
+        responsewise: { type: Array, value: [ ['Ans1', 50],['Ans2', 30],['Ans3', 20] ]}
       },
       showError: function(err){
         this.$.toast.text=err;
@@ -48,6 +64,40 @@
       hiddenornot: function(id,tabid){
         if(id==tabid) return false;
         else return true;
+      },
+      ready: function(){
+        this.fetchdata();
+      },
+      fetchdata: function(){
+        this.params = {};
+        this.params["action"] = "getusersinfo";
+        this.params["updatedon"] = this.updatedon;
+        this.$.ironajax.generateRequest();
+
+        if(!this.asyncstop) this.async(this.fetchdata, 3000); 
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.showError(ajax_response.error_msg);
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'getusersinfo':
+                if(ajax_response.updatedon!=null){
+                  this.usersinfo = JSON.parse(ajax_response.usersinfo);
+                  this.optionwise = JSON.parse(ajax_response.optionwise);
+                  this.responsewise = JSON.parse(ajax_response.responsewise);
+                  this.updatedon = ajax_response.updatedon;
+                }
+                break;
+              default:
+                console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.showError(resp.detail.error);
+        this.asyncstop = true;
       }
   	});
   </script>

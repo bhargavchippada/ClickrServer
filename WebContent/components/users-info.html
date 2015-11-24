@@ -26,16 +26,6 @@
         padding: 0 0 8px 0;
       }
   	</style>
-    <iron-ajax
-      id="ironajax"
-      url="../Usersinfo"
-      params='{{params}}'
-      handle-as="json"
-      content-type="application/json"
-      method='POST'
-      on-response="handleResponse"
-      on-error="handleError"></iron-ajax>
-
     <div class="layout vertical center">
       <table>
         <thead>
@@ -61,7 +51,7 @@
             <tr class="border_top">
               <td>{{item.1}}</td>
               <td>{{item.2}}</td>
-              <td><span class$="{{answerCSS(item)}}">{{item.3}}</span></td>
+              <td><span class="color-primary">{{item.3}}</span></td>
               <td><span class$="{{statusCSS(item)}}">{{item.4}}</span></td>
               <td>{{item.5}}</td>
               <td>{{item.6}}</td>
@@ -81,23 +71,9 @@
         status: { type: String, value: '' },
         lastupdate: { type: String, value: '' },
         timetook: { type: String, value: '' },
-        usersinfo: { type: Array, value: [['1','120050053','Bhargav','Okay','Done','xxxx','20'],['2','120050001','Bhar','','Disconnected','yyyy',''],['3','120050028','Goku','Hmm','Attempting','zzzz','60']] },
+        usersinfo: { type: Array, value: [['1','1200500xx','zzzzz','yyy','Done','xxxx','53']] },
         sortColumn: { type: Number, value: null },
-        sortDescending: { type: Boolean, value: false },
-        timed: { type: Boolean, value: false },
-        updatedon: { type: String, value: '-1' },
-        asyncstop: { type: Boolean, value: false }
-      },
-      ready: function(){
-        this.fetchdata();
-      },
-      fetchdata: function(){
-        this.params = {};
-        this.params["action"] = "getusersinfo";
-        this.params["updatedon"] = this.updatedon;
-        this.$.ironajax.generateRequest();
-
-        if(!this.asyncstop) this.async(this.fetchdata, 3000); 
+        sortDescending: { type: Boolean, value: false }
       },
       changeSort: function(e){
         var clickedSortColumn = e.srcElement.id;
@@ -152,28 +128,6 @@
           else return false;
         };
       },
-      handleResponse: function(req) {
-          var ajax_response = req.detail.response;
-          if(ajax_response.status == 'FAIL'){
-            this.domHost.showError(ajax_response.error_msg);
-          }else if(ajax_response.status == 'SUCCESS'){
-            switch(ajax_response.action) {
-              case 'getusersinfo':
-                if(ajax_response.updatedon!=null){
-                  this.usersinfo = JSON.parse(ajax_response.usersinfo);
-                  this.updatedon = ajax_response.updatedon;
-                  this.timed = ajax_response.timedquiz;
-                }
-                break;
-              default:
-                console.log("unidentified action request");
-            }
-          }
-      },
-      handleError: function(resp, err) {
-        this.domHost.showError(resp.detail.error);
-        this.asyncstop = true;
-      },
       statusCSS: function(item){
         var statuscode = item[4];
         var correct = item[8];
@@ -186,11 +140,6 @@
           else return "label bgcolor-danger";
         }else if(statuscode=='Stopped') return "label bgcolor-primary";
         else return "label bgcolor-danger";
-      },
-      answerCSS: function(item){
-        var correct = item[8];
-        if(correct) return 'color-success';
-        else 'color-danger';
       }
   	});
   </script>

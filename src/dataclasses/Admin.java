@@ -1,8 +1,15 @@
 package dataclasses;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -23,7 +30,7 @@ public class Admin {
 	public Integer classid = null;
 	public String classtype = "classonly";
 	public Boolean serverstate = false;
-	public ConcurrentHashMap<String, JsonArray> usersList = null;
+	public ConcurrentHashMap<String, JsonArray> usersList = new ConcurrentHashMap<String, JsonArray>();
 	public long updatedon = 0;
 
 	public Integer questionid = null;
@@ -38,6 +45,12 @@ public class Admin {
 	public String feedanswer = null;
 	public String qkind = null;
 	public String qtype = null;
+
+	public Integer numOfResponses = 0;
+	public Integer numOfCorrect = 0;
+
+	HashMap<String, Integer> option_stats = new HashMap<String, Integer>();
+	HashMap<String, Integer> response_stats = new HashMap<String, Integer>();
 
 	public static final Gson gson = new Gson();
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("h:mm:ss a");
@@ -89,6 +102,10 @@ public class Admin {
 			}.getType()));// correct or not
 
 		}
+		numOfResponses = 0;
+		numOfCorrect = 0;
+		option_stats.clear();
+		response_stats.clear();
 		this.updatedon = System.currentTimeMillis() / 1000;
 	}
 
@@ -123,7 +140,138 @@ public class Admin {
 		}.getType()));
 		user.set(7, gson.toJsonTree(correct, new TypeToken<Boolean>() {
 		}.getType()));
+		updateStats(answer, correct);
 		this.updatedon = System.currentTimeMillis() / 1000;
+	}
+
+	public void updateStats(JsonArray answer,  Boolean correct) {
+		numOfResponses++;
+		if(correct) numOfCorrect++;
+		if (!qtype.equals("short")) {
+			if (!qtype.equals("multiple")) {
+				String key = answer.getAsString();
+				Integer value = option_stats.get(key);
+				if (value == null) value = 0;
+				option_stats.put(key, value + 1);
+			} else {
+				String rkey = answer.toString();
+				Integer rvalue = response_stats.get(rkey);
+				if (rvalue == null) rvalue = 0;
+				response_stats.put(rkey, rvalue + 1);
+				for (int i = 0; i < answer.size(); i++) {
+					String key = answer.get(i).getAsString();
+					Integer value = option_stats.get(key);
+					if (value == null) value = 0;
+					option_stats.put(key, value + 1);
+				}
+			}
+		}
+	}
+
+	public JsonArray getOptionWiseStats() {
+		JsonArray optionwise = new JsonArray();
+
+		JsonArray bargraph = new JsonArray();
+		int total = usersList.size();
+		if(total==0) return optionwise;
+		
+		int percent = (numOfResponses * 100) / total;
+		String bartitle = "Attempts (" + numOfResponses + "/" + total + ")";
+		bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
+		}.getType()));
+		bargraph.add(gson.toJsonTree(percent, new TypeToken<Integer>() {
+		}.getType()));
+		optionwise.add(bargraph);
+
+		if(qkind == null || qkind.equals("question")){
+			bargraph = new JsonArray();
+			percent = (numOfCorrect*100)/total;
+			bartitle = "Corrects (" + numOfCorrect + "/" + total + ")";
+			bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
+			}.getType()));
+			bargraph.add(gson.toJsonTree(percent, new TypeToken<Integer>() {
+			}.getType()));
+			optionwise.add(bargraph);
+		}
+		
+		List option_list = sortByValues(option_stats);
+
+		for (Iterator it = option_list.iterator(); it.hasNext();) {
+			Map.Entry entry = (Map.Entry) it.next();
+			if (qtype.equals("single") || qtype.equals("multiple")) {
+				Integer op = Integer.parseInt((String) entry.getKey());
+				JsonObject option = options.get(op-1).getAsJsonObject();
+				Integer count = (Integer) entry.getValue();
+				percent = (count * 100) / total;
+				bartitle = op + ")" + " " + option.get("optext").getAsString() + " (" + count + "/"
+						+ total + ")";
+			} else {
+				Integer count = (Integer) entry.getValue();
+				percent = (count * 100) / total;
+				bartitle = entry.getKey() + " (" + count + "/" + total + ")";
+			}
+
+			bargraph = new JsonArray();
+			bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
+			}.getType()));
+			bargraph.add(gson.toJsonTree(percent, new TypeToken<Integer>() {
+			}.getType()));
+			optionwise.add(bargraph);
+		}
+		return optionwise;
+	}
+	
+	public JsonArray getResponseWiseStats() {
+		JsonArray responsewise = new JsonArray();
+		JsonArray piegraph = new JsonArray();
+		int total = usersList.size();
+		if(total==0) return responsewise;
+		
+		List response_list = sortByValues(response_stats);
+		
+		Integer count;
+		String bartitle;
+		JsonArray bargraph;
+		
+		int max = 4;
+		int counter = 0;
+		for (Iterator it = response_list.iterator(); it.hasNext() && max>=1; max--) {
+			Map.Entry entry = (Map.Entry) it.next();
+			
+			count = (Integer) entry.getValue();
+			counter+=count;
+			bartitle = entry.getKey().toString();
+
+			bargraph = new JsonArray();
+			bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
+			}.getType()));
+			bargraph.add(gson.toJsonTree(count, new TypeToken<Integer>() {
+			}.getType()));
+			responsewise.add(bargraph);
+		}
+		
+		bargraph = new JsonArray();
+		bargraph.add(gson.toJsonTree("Others", new TypeToken<String>() {
+		}.getType()));
+		bargraph.add(gson.toJsonTree(numOfResponses-counter, new TypeToken<Integer>() {
+		}.getType()));
+		responsewise.add(bargraph);
+		
+		return responsewise;
+	}
+
+	private static List sortByValues(HashMap map) {
+		List list = new LinkedList(map.entrySet());
+
+		// Defined Custom Comparator here
+		Collections.sort(list, new Comparator() {
+			public int compare(Object o1, Object o2) {
+				return ((Comparable) ((Entry<String, Integer>) (o2)).getValue())
+						.compareTo(((Entry<String, Integer>) (o1)).getValue());
+			}
+		});
+
+		return list;
 	}
 
 	public void setFeedAnswer() {
