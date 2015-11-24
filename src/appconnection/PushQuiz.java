@@ -1,87 +1,119 @@
 package appconnection;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import oldsrc.ClassRoom;
-import oldsrc.Question;
-import oldsrc.UserProfile;
-import oldsrc.UserResponse;
-import support.Utils;
-
 import com.google.gson.JsonObject;
 
-/**Send question to the user if he was authenticated and quiz has started
+import dataclasses.Admin;
+
+/**
+ * Send question to the user if he was authenticated and quiz has started
+ * 
  * @author bhargav
  *
  */
-public class PushQuiz extends JSONHttpServlet{
+public class PushQuiz extends JSONHttpServlet {
 	private static final long serialVersionUID = 3622456660944045304L;
-	String classname = "PushQuiz";
+
+	private String update_status = "update response set status = ? , last_update = ? where quizid = ? and studentid = ?";
+
+	private static final int SERVEROFF = 0;
+	private static final int LOGGEDOFF = 1;
+	private static final int QUIZOFF = 2;
+	private static final int ATTEMPTED = 3;
+	private static final int RETRIEVED = 4;
+
+	private Connection sqliteconn;
 
 	@Override
-	protected JsonObject _processInput(JsonObject input, HttpServletRequest request, HttpServletResponse response) {
+	protected JsonObject _processInput(JsonObject input, HttpServletRequest request,
+			HttpServletResponse response) {
 		HttpSession mySession = request.getSession(false);
 
 		String uid = input.get("uid").getAsString();
 
 		JsonObject output = new JsonObject();
-		if(mySession==null || !(ClassRoom.serveronline)){
-			output.addProperty("status",0); //not authorized
-		}else if(!Question.startquiz || !Question.savedquiz){
-			output.addProperty("status",1); //quiz hasn't started yet
-		}else{
-			Object username = mySession.getAttribute("username");
-			Object password = mySession.getAttribute("password");
-
-			if(username!=null && password!=null){
-				UserProfile user = ClassRoom.users_map.get((String)username);
-				if(user!=null && user.password.equals((String) password) && uid.equals((String) username)){
-
-					UserResponse userresp = ClassRoom.users_responsemap.get((String)username);
-					if(user.status==2 || user.status==4){
-						output.addProperty("status",3); //user already got the quiz (but no user response)
-						user.status = 4;
-						user.updateTime = Utils.timeformat.format(new Date());
-					}else if(user.status==1){
-						
-						if(userresp!=null) userresp.print();
-						
-						output.addProperty("status",2); //user quiz can start
-						if(user.status==1) {
-							user.status = 2;
-							user.updateTime = Utils.timeformat.format(new Date());
+		try {
+			if (mySession == null) {
+				LOGGER.info("No session available!!");
+				output.addProperty("statuscode", LOGGEDOFF); // not authorized
+			} else {
+				String servername = input.get("servername").getAsString();
+				Admin admin = getAdminProfile(servername);
+				if (admin == null) {
+					LOGGER.info("Incorrect servername!!");
+					output.addProperty("statuscode", LOGGEDOFF); // not
+																	// authorized
+				} else if (!admin.serverstate) {
+					output.addProperty("statuscode", SERVEROFF); // not
+																	// authorized
+					LOGGER.info("Server is in stopped state now!!");
+				} else if (!admin.quizstatus) {
+					output.addProperty("statuscode", QUIZOFF);
+					LOGGER.info("Quiz hasn't started yet!!");
+				} else {
+					Integer classid = input.get("classid").getAsInt();
+					if (classid != admin.classid) {
+						LOGGER.info("Incorrect classid!!");
+						output.addProperty("statuscode", LOGGEDOFF); // not
+																		// authorized
+					} else {
+						String status = admin.usersList.get(uid).get(4).getAsString();
+						LOGGER.info(uid + " status is " + status);
+						if (status.equals("Disconnected")) {
+							LOGGER.info("User has to log in first!!");
+							output.addProperty("statuscode", LOGGEDOFF); // not
+																			// authorized
+						} else if (status.equals("Connected")) {
+							LOGGER.info("Sending quiz to user!!");
+							updateStudentStatus(admin, uid, "Attempting");
+							output.addProperty("quizid", admin.quizid);
+							output.add("question", admin.question);
+							output.add("options", admin.options);
+							output.addProperty("feedback", admin.feedback);
+							output.addProperty("timedquiz", admin.timedquiz);
+							output.addProperty("quiztime", admin.quiztime);
+							output.addProperty("statuscode", RETRIEVED);
+						} else {
+							LOGGER.info("User already got the quiz!!");
+							if (status.equals("Attempting")) updateStudentStatus(admin, uid,
+									"Stopped");
+							output.addProperty("statuscode", ATTEMPTED);
 						}
-						output.addProperty("qid", Question.ID);
-						output.addProperty("title", Question.title);
-						output.addProperty("question", Question.question);
-						output.addProperty("type", Question.type);
-						output.add("options", Question.options);
-						output.addProperty("feedback", Question.feedback);
-						output.addProperty("timed", Question.timed);
-						output.addProperty("time", Question.time);
-					}else if(user.status==3){
-						// this user has already attempted the quiz
-						output.addProperty("status",3); //user already attempted (user response)
-					}else if(user.status==0){
-						output.addProperty("status",0); //not authorized
-					}else{
-						output.addProperty("status",404); //un defined status
 					}
-				}else{
-					output.addProperty("status",0); //not authorized
 				}
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			output = null;
 		}
 
 		return output;
 	}
 
-	@Override
-	public String getClassname() {
-		return classname;
+	private void updateStudentStatus(Admin admin, String uid, String status) throws SQLException {
+		int studentid = admin.usersList.get(uid).get(0).getAsInt();
+		Object conn = getServletContext().getAttribute("sqliteconn");
+		if (conn == null) throw new SQLException();
+		else {
+			sqliteconn = (Connection) conn;
+			Date date = new Date();
+			String formattedDate = sdf.format(date);
+			PreparedStatement pstmt = sqliteconn.prepareStatement(update_status);
+			pstmt.setString(1, status);
+			pstmt.setString(2, formattedDate);
+			pstmt.setInt(3, admin.quizid);
+			pstmt.setInt(4, studentid);
+			pstmt.executeUpdate();
+
+			admin.setStatus(uid, status);
+		}
 	}
 }

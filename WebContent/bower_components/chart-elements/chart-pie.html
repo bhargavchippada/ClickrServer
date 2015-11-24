@@ -1,0 +1,89 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="chart-js-import.html">
+<link rel="import" href="data-properties-behavior.html">
+<link rel="import" href="context-behavior.html">
+<link rel="import" href="resize-behavior.html">
+
+<!--
+Pie and doughnut charts are probably the most commonly used chart there are. They are divided into segments, the arc of each segment shows a the proportional value of each piece of data.
+
+They are excellent at showing the relational proportions between data.
+
+Pie and doughnut charts in are effectively the same class in Chart.js, but have one different default value - their percentageInnerCutout. This equates what percentage of the inner should be cut out. This defaults to 0 for pie charts, and 50 for doughnuts.
+
+They are also registered under two aliases in the Chart core. Other than their different default value, and different alias, they are exactly the same.
+
+##### Example
+
+    <chart-pie data="[[data]]"></chart-pie>
+
+    ...
+
+    this.data = [
+      {
+        value: 300,
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: "Red"
+      },
+      {
+        value: 50,
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: "Green"
+      },
+      {
+        value: 100,
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: "Yellow"
+      }
+    ];
+
+@group Chart Elements
+@element chart-pie
+@demo demo/chart-pie.html
+-->
+
+<link rel="import" href="chart-styles.html">
+<dom-module id="chart-pie">
+
+  <template>
+
+    <style include="chart-styles"></style>
+
+    <canvas id="canvas"></canvas>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'chart-pie',
+
+      behaviors: [
+        ChartBehaviors.DataPropertiesBehavior,
+        ChartBehaviors.ContextBehavior,
+        ChartBehaviors.ResizeBehavior
+      ],
+
+      updateChart: function () {
+
+        this.async(function () {
+
+          if (this.chart) {
+            this.chart.destroy();
+          }
+
+          this.async(function() {
+            this.chart = new Chart(this.ctx).Pie(this.data, this.options);
+          }, null, 0);
+
+        }, null, 0);
+
+      }
+
+    });
+  </script>
+
+</dom-module>

@@ -1,0 +1,74 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="elements/barstat-element.html">
+<link rel="import" href="../bower_components/google-chart/google-chart.html">
+<dom-module name="graph-stats">
+  <template>
+  	<style>
+    :host {
+      width: 100%;
+    }
+    google-chart {
+      height: 800px;
+      width: 800px;
+    }
+    #selection-demo {
+      position: relative;
+    }
+    #selection-chart {
+      float: left;
+    }
+
+    #selection-display {
+      display: inline-block;
+      position: relative;
+      top: 50%;
+    }
+  	</style>
+    <div class="layout vertical center">
+      <barstat-element heading="Bar1" barcolor="{{getColorCode(0)}}" barvalue="50"></barstat-element>
+      <barstat-element heading="Bar2" barcolor="{{getColorCode(1)}}" barvalue="20"></barstat-element>
+      <barstat-element heading="Bar3" barcolor="{{getColorCode(2)}}" barvalue="30"></barstat-element>
+      <div id="selection-demo">
+        <google-chart
+          type="pie"
+          id="selection-chart"
+          options='{"title": "Distribution of days in 2001H1"}'
+          cols='[{"label": "Month", "type": "string"},{"label": "Days", "type": "number"}]'
+          rows='[ ["Jan", 31],["Feb", 28],["Mar", 31],["Apr", 30],["May", 31],["Jun", 30] ]'>
+        </google-chart>
+        <div id="selection-display">
+          Selected row: <span id="selection-label">None</span>.
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('WebComponentsReady', function() {
+          var chart = document.querySelector('#selection-chart');
+          var label = document.querySelector('#selection-label');
+          chart.drawChart();
+          chart.addEventListener('google-chart-render', function() {
+            chart.selection = [{row: 1, column: null}];
+            label.textContent = chart.selection[0].row;
+          });
+
+          document.addEventListener('google-chart-select', function(e) {
+            label.textContent =
+                chart.selection[0] ? chart.selection[0].row : 'None';
+          });
+        });
+      </script>
+    </div>
+  </template>
+  <script>
+  	Polymer({
+      is: "graph-stats",
+      properties: {
+        data : { type: Array, value: [] }
+      },
+      getColorCode: function(ind){
+        var availcolors = ['info','warning','danger','success','primary','grey'];
+        return availcolors[ind];
+      }
+  	});
+  </script>
+</dom-module>

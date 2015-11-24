@@ -174,3 +174,44 @@ h1,h2,h3,h4 {
 	margin:0 8px 0 8px;
 	text-transform: capitalize;
 }
+.label {
+  color: #fff;
+  padding: 4px;
+  border-radius: 4px;
+}
+.bgcolor-grey {
+  background-color: #8C8C8C;
+}
+.bgcolor-success {
+  background-color: #5CB85C;
+}
+.bgcolor-danger {
+  background-color: #D9534F;
+}
+.bgcolor-info {
+  background-color: #5bc0de;
+}
+.bgcolor-warning {
+  background-color: #f0ad4e;
+}
+.bgcolor-primary {
+  background-color: #337ab7;
+}
+.color-grey {
+  color: #8C8C8C;
+}
+.color-success {
+  color: #5CB85C;
+}
+.color-danger {
+  color: #D9534F;
+}
+.color-info {
+  color: #5bc0de;
+}
+.color-warning {
+  color: #f0ad4e;
+}
+.color-primary {
+  color: #337ab7;
+}

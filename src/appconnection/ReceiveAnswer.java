@@ -83,9 +83,4 @@ public class ReceiveAnswer extends JSONHttpServlet{
 
 		return output;
 	}
-
-	@Override
-	public String getClassname() {
-		return classname;
-	}
 }

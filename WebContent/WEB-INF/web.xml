@@ -29,6 +29,24 @@
     <servlet-name>Questions</servlet-name>
     <servlet-class>webinterface.Questions</servlet-class>
   </servlet>
+  <servlet>
+    <description></description>
+    <display-name>Usersinfo</display-name>
+    <servlet-name>Usersinfo</servlet-name>
+    <servlet-class>webinterface.Usersinfo</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
+    <display-name>Authentication</display-name>
+    <servlet-name>Authentication</servlet-name>
+    <servlet-class>appconnection.Authentication</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
+    <display-name>PushQuiz</display-name>
+    <servlet-name>PushQuiz</servlet-name>
+    <servlet-class>appconnection.PushQuiz</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>AdminLogin</servlet-name>
     <url-pattern>/AdminLogin</url-pattern>
@@ -40,5 +58,17 @@
   <servlet-mapping>
     <servlet-name>Questions</servlet-name>
     <url-pattern>/Questions</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Usersinfo</servlet-name>
+    <url-pattern>/Usersinfo</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Authentication</servlet-name>
+    <url-pattern>/Authentication</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PushQuiz</servlet-name>
+    <url-pattern>/PushQuiz</url-pattern>
   </servlet-mapping>
 </web-app>

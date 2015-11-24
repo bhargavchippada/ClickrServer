@@ -4,33 +4,30 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import dataclasses.Admin;
 
 public class Classrooms extends WebHttpServlet {
 
 	private static final long serialVersionUID = -4803387961711005076L;
-	private String CLASSNAME = "Classrooms";
-	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	String classrooms_of_admin = "select classid,classname,student_count,created_time from classroom where adminid=? order by created_time desc";
 	String students_of_class = "select rollnumber,name from student where classid=?";
+	String students_of_class_2 = "select studentid,rollnumber,name from student where classid=?";
 	String delete_class = "delete from classroom where classid=?";
 	String upload_class = "insert into classroom (adminid, classname) values(?, ?)";
 	String insert_student = "insert into student (classid, rollnumber, password, name) values(?, ?, ?, ?)";
 	String last_insert_rowid = "select last_insert_rowid()";
-
-	@Override
-	public String getClassname() {
-		return CLASSNAME;
-	}
 
 	@Override
 	protected void _processInput(HttpServletRequest request, Connection sqliteconn,
@@ -51,7 +48,7 @@ public class Classrooms extends WebHttpServlet {
 				String classname = request.getParameter("classname");
 				uploadClass(classusers, classname, sqliteconn, responseJson);
 			} else if (action.equals("changeserverstate")) {
-				changeServerState(request, responseJson);
+				changeServerState(request, sqliteconn, responseJson);
 			} else if (action.equals("fetch")) {
 				fetchClassSettings(responseJson);
 			} else {
@@ -121,7 +118,7 @@ public class Classrooms extends WebHttpServlet {
 			pstmt_student.executeBatch();
 
 			sqliteconn.commit();
-			
+
 			responseJson.addProperty("status", SUCCESS);
 		} catch (SQLException e) {
 			try {
@@ -142,23 +139,48 @@ public class Classrooms extends WebHttpServlet {
 		}
 	}
 
-	private void changeServerState(HttpServletRequest request, JsonObject responseJson) {
+	private void changeServerState(HttpServletRequest request, Connection sqliteconn,
+			JsonObject responseJson) {
 		try {
 			Boolean serverstate = Boolean.valueOf(request.getParameter("serverstate"));
 			responseJson.addProperty("serverstate", serverstate);
 			Admin admin = getAdminProfile();
 			if (!serverstate) {
-				admin.setClassSettings(null, null, "classonly", serverstate);
+				admin.setClassSettings(null, null, "classonly", null, serverstate);
 				responseJson.addProperty("status", SUCCESS);
 			} else {
 				String classtype = (String) request.getParameter("classtype");
 				String classname = null;
 				Integer classid = null;
+				ConcurrentHashMap<String, JsonArray> usersList = null;
 				if (!classtype.equals("anonymous")) {
 					classid = Integer.parseInt(request.getParameter("classid"));
 					classname = request.getParameter("classname");
+					PreparedStatement pstmt = sqliteconn.prepareStatement(students_of_class_2);
+					pstmt.setInt(1, classid);
+					JsonArray jarr = executePreparedStmt(pstmt, "Fetching students of classroom",
+							WebHttpServlet.ARRAYOFARRAY);
+
+					usersList = new ConcurrentHashMap<String, JsonArray>();
+					Date date = new Date();
+					String formattedDate = sdf.format(date);
+					for (int i = 0; i < jarr.size(); i++) {
+						JsonArray user = jarr.get(i).getAsJsonArray();
+						user.add(gson.toJsonTree(null, new TypeToken<String>() {
+						}.getType()));// answer
+						user.add(gson.toJsonTree("Disconnected", new TypeToken<String>() {
+						}.getType()));// status
+						user.add(gson.toJsonTree(formattedDate, new TypeToken<String>() {
+						}.getType()));// LastUpdate
+						user.add(gson.toJsonTree(-1, new TypeToken<Integer>() {
+						}.getType()));// Timetook
+						user.add(gson.toJsonTree(0, new TypeToken<Integer>() {
+						}.getType()));// correct or not
+
+						usersList.put(user.get(1).getAsString(), user);
+					}
 				}
-				admin.setClassSettings(classname, classid, classtype, serverstate);
+				admin.setClassSettings(classname, classid, classtype, usersList, serverstate);
 				responseJson.addProperty("status", SUCCESS);
 			}
 		} catch (Exception e) {

@@ -1,0 +1,197 @@
+<dom-module name="users-info">
+  <template>
+  	<style>
+      :host{
+        display: block;
+        margin: 32px 0 32px 0;
+      }
+      tr.border_top {
+        width: 100%;
+        border-top: 1px solid #939393;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse; 
+      }
+      td,th {
+        text-align: center;
+        width: 20%;
+        padding: 8px 0 8px 0;
+      }
+      input {
+        width: 80%;
+        text-transform: lowercase;
+      }
+      .thinput {
+        padding: 0 0 8px 0;
+      }
+  	</style>
+    <iron-ajax
+      id="ironajax"
+      url="../Usersinfo"
+      params='{{params}}'
+      handle-as="json"
+      content-type="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
+
+    <div class="layout vertical center">
+      <table>
+        <thead>
+          <tr class="border_top">
+            <th id="0" on-click="changeSort" style$="{{thStyle('0',sortColumn,sortDescending)}}">Rollnumber</th>
+            <th id="1" on-click="changeSort" style$="{{thStyle('1',sortColumn,sortDescending)}}">Name</th>
+            <th id="2" on-click="changeSort" style$="{{thStyle('2',sortColumn,sortDescending)}}">Answer</th>
+            <th id="3" on-click="changeSort" style$="{{thStyle('3',sortColumn,sortDescending)}}">Status</th>
+            <th id="4" on-click="changeSort" style$="{{thStyle('4',sortColumn,sortDescending)}}">LastUpdate</th>
+            <th id="5" on-click="changeSort" style$="{{thStyle('5',sortColumn,sortDescending)}}">TimeTook</th>
+          </tr>
+          <tr>
+            <th class="thinput"><input type="search" value="{{rollnumber::input}}"/></th>
+            <th class="thinput"><input type="search" value="{{name::input}}"/></th>
+            <th class="thinput"><input type="search" value="{{answer::input}}"/></th>
+            <th class="thinput"><input type="search" value="{{status::input}}"/></th>
+            <th class="thinput"><input type="search" value="{{lastupdate::input}}"/></th>
+            <th class="thinput"><input type="search" value="{{timetook::input}}"/></th>
+          </tr>
+        </thead>
+        <tbody>
+          <template is="dom-repeat" items="{{usersinfo}}" filter="{{_filter(rollnumber,name,answer,status,lastupdate,timetook)}}" sort="{{_sort(sortColumn, sortDescending)}}">
+            <tr class="border_top">
+              <td>{{item.1}}</td>
+              <td>{{item.2}}</td>
+              <td><span class$="{{answerCSS(item)}}">{{item.3}}</span></td>
+              <td><span class$="{{statusCSS(item)}}">{{item.4}}</span></td>
+              <td>{{item.5}}</td>
+              <td>{{item.6}}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </template>
+  <script>
+  	Polymer({
+      is: "users-info",
+      properties: {
+        rollnumber: { type: String, value: '' },
+        name: { type: String, value: '' },
+        answer: { type: String, value: '' },
+        status: { type: String, value: '' },
+        lastupdate: { type: String, value: '' },
+        timetook: { type: String, value: '' },
+        usersinfo: { type: Array, value: [['1','120050053','Bhargav','Okay','Done','xxxx','20'],['2','120050001','Bhar','','Disconnected','yyyy',''],['3','120050028','Goku','Hmm','Attempting','zzzz','60']] },
+        sortColumn: { type: Number, value: null },
+        sortDescending: { type: Boolean, value: false },
+        timed: { type: Boolean, value: false },
+        updatedon: { type: String, value: '-1' },
+        asyncstop: { type: Boolean, value: false }
+      },
+      ready: function(){
+        this.fetchdata();
+      },
+      fetchdata: function(){
+        this.params = {};
+        this.params["action"] = "getusersinfo";
+        this.params["updatedon"] = this.updatedon;
+        this.$.ironajax.generateRequest();
+
+        if(!this.asyncstop) this.async(this.fetchdata, 3000); 
+      },
+      changeSort: function(e){
+        var clickedSortColumn = e.srcElement.id;
+        if(clickedSortColumn == this.sortColumn){
+          //column already sorted, reverse sort
+          this.sortDescending = !this.sortDescending;
+        }else{
+          this.sortColumn = clickedSortColumn;
+        }
+      },
+      thStyle: function(column,sortColumn,sortDescending){
+        if(column == sortColumn){
+          if(sortDescending) return 'text-decoration:overline';
+          else return 'text-decoration:underline';
+        }else return '';
+      },
+      _sort : function(key, desc) {
+        return function(a, b) {
+          var x = a[key];
+          var y = b[key];
+          //console.log(key+" "+x+" "+y);
+       
+          if (typeof x == "string" && typeof y == "string"){
+            x = x.toLowerCase(); 
+            y = y.toLowerCase();
+          }
+          if(desc){
+            return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+          }else{
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+          }
+        };
+      },
+      _filter: function(rollnumber,name,answer,status,lastupdate,timetook) {
+        return function(a) {
+          function evalMatch (str,val){
+            str = JSON.stringify(str).toLowerCase();
+            val = val.toLowerCase();
+            if(val.charAt(0)=='!'){
+              var temp = val.substring(1)
+              return temp =='' || !(str.indexOf(temp) > -1);
+            }else return str.indexOf(val) > -1;
+          }
+          var b0 = rollnumber =='' || evalMatch(a[1],rollnumber);
+          var b1 = name =='' || evalMatch(a[2],name);
+          var b2 = answer =='' || evalMatch(a[3],answer);
+          var b3 = status =='' || evalMatch(a[4],status);
+          var b4 = lastupdate =='' || evalMatch(a[5],lastupdate);
+          var b5 = timetook =='' || parseInt(a[6]) >= parseInt(timetook);
+
+          if(b0 && b1 && b2 && b3 && b4 && b5) return true;
+          else return false;
+        };
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.domHost.showError(ajax_response.error_msg);
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'getusersinfo':
+                if(ajax_response.updatedon!=null){
+                  this.usersinfo = JSON.parse(ajax_response.usersinfo);
+                  this.updatedon = ajax_response.updatedon;
+                  this.timed = ajax_response.timedquiz;
+                }
+                break;
+              default:
+                console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.domHost.showError(resp.detail.error);
+        this.asyncstop = true;
+      },
+      statusCSS: function(item){
+        var statuscode = item[4];
+        var correct = item[8];
+        if(statuscode=='Disconnected') return "label bgcolor-grey";
+        else if(statuscode=='Connected') return "label bgcolor-info";
+        else if(statuscode=='Attempting') return "label bgcolor-warning";
+        else if(statuscode=='Completed') {
+          if(correct==null) return "label bgcolor-success";
+          else if(correct) return "label bgcolor-success";
+          else return "label bgcolor-danger";
+        }else if(statuscode=='Stopped') return "label bgcolor-primary";
+        else return "label bgcolor-danger";
+      },
+      answerCSS: function(item){
+        var correct = item[8];
+        if(correct) return 'color-success';
+        else 'color-danger';
+      }
+  	});
+  </script>
+</dom-module>

@@ -5,21 +5,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Logger;
+import java.util.Date;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import dataclasses.Admin;
 
 public class Questions extends WebHttpServlet {
 
 	private static final long serialVersionUID = 734797539096515654L;
-	private String CLASSNAME = "Questions";
-	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	String questions_of_admin = "select questionid,title,qtext,qtype,qkind,created_time from question where adminid=? order by created_time desc";
 	String delete_question = "delete from question where questionid=?";
@@ -29,11 +29,7 @@ public class Questions extends WebHttpServlet {
 	String get_question = "select questionid,title,qtext,qtype,qkind,option_count	 from question where questionid = ?";
 	String get_options = "select opindex,optext,answer from qoption where questionid = ? order by opindex asc";
 	String new_quiz = "insert into quiz (adminid, questionid, classid, classtype, feedback, timedquiz, quiztime) values(?, ?, ?, ?, ?, ?, ?)";
-
-	@Override
-	public String getClassname() {
-		return CLASSNAME;
-	}
+	String student_response = "insert into response (quizid, studentid, rollnumber, name, status, last_update) values(?,?,?,?,?,?)";
 
 	@Override
 	protected void _processInput(HttpServletRequest request, Connection sqliteconn,
@@ -238,8 +234,27 @@ public class Questions extends WebHttpServlet {
 				rs_qid.next();
 				int quizid = rs_qid.getInt(1);
 				admin.quizid = quizid;
-				sqliteconn.commit();
 				
+				Date date = new Date();
+				String formattedDate = sdf.format(date);
+				PreparedStatement pstmt_studresp = sqliteconn.prepareStatement(student_response);
+				for (Entry<String, JsonArray> entry : admin.usersList.entrySet())
+				{
+					JsonArray student = entry.getValue();
+					pstmt_studresp.setInt(1, admin.quizid);
+					pstmt_studresp.setInt(2, student.get(0).getAsInt());
+					pstmt_studresp.setString(3, student.get(1).getAsString());
+					pstmt_studresp.setString(4, student.get(2).getAsString());
+					pstmt_studresp.setString(5, student.get(4).getAsString());
+					student.set(5, gson.toJsonTree(formattedDate, new TypeToken<String>() {
+					}.getType()));
+					pstmt_studresp.setString(6, student.get(5).getAsString());
+					pstmt_studresp.addBatch();
+				}
+				pstmt_studresp.executeBatch();
+				
+				sqliteconn.commit();
+
 				admin.quizstatus = true;
 				responseJson.addProperty("quizstatus", true);
 				responseJson.addProperty("status", SUCCESS);
@@ -253,7 +268,8 @@ public class Questions extends WebHttpServlet {
 				admin.clearQuizSettings();
 				LOGGER.info("Quiz Insertion into database has failed!!");
 				responseJson.addProperty("status", FAIL);
-				responseJson.addProperty("error_msg", "Question Insertion into database has failed!!");
+				responseJson.addProperty("error_msg",
+						"Question Insertion into database has failed!!");
 			} catch (Exception e) {
 				e.printStackTrace();
 				admin.clearQuizSettings();

@@ -1,0 +1,54 @@
+<link rel="import" href="elements/toggle-display.html">
+<link rel="import" href="users-info.html">
+<link rel="import" href="graph-stats.html">
+<dom-module name="quiz-stats">
+  <template>
+  	<style>
+      paper-tab {
+        font-size: 16px;
+        font-family: 'Roboto', sans-serif;
+        padding-left: 32px;
+        padding-right: 32px;
+        border-radius: 24px;
+      }
+      paper-tabs.round-blue {
+        color: #337AB7;
+        margin:0 8px 0 8px;
+        height: 36px;
+        width: 60%;
+        font-weight: bold;
+      }
+      paper-tabs.round-blue paper-tab.iron-selected {
+        color : #fff;
+        background-color: #337AB7;
+      }
+  	</style>
+    <toggle-display show="{{showthis}}" label="Question"></toggle-display>
+    <div class="layout vertical center" hidden="{{!showthis}}">
+      <paper-tabs class="layout horizontal round-blue" selected="{{tabid}}" no-bar self-end>
+        <paper-tab>Students-wise</paper-tab>
+        <paper-tab>Quiz-stats</paper-tab>
+      </paper-tabs>
+      <users-info hidden$="{{hiddenornot(0,tabid)}}"></users-info>
+      <graph-stats hidden$="{{hiddenornot(1,tabid)}}"></graph-stats>
+    </div>
+    <paper-toast id="toast" text=""></paper-toast>
+  </template>
+  <script>
+  	Polymer({
+      is: "quiz-stats",
+      properties: {
+        showthis: { type: Boolean, value: true },
+        tabid: { type: Number, value: 1 }
+      },
+      showError: function(err){
+        this.$.toast.text=err;
+        this.$.toast.show();
+      },
+      hiddenornot: function(id,tabid){
+        if(id==tabid) return false;
+        else return true;
+      }
+  	});
+  </script>
+</dom-module>

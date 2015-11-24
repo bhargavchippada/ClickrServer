@@ -1,0 +1,27 @@
+{
+  "name": "chart-elements",
+  "version": "2.0.0",
+  "authors": [
+    "Rob Dodson"
+  ],
+  "description": "A custom element implementation of the Chart.js library",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "main": "chart-elements.html",
+  "license": "http://robdodson.mit-license.org/",
+  "homepage": "https://robdodson.github.io/chart-elements",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "Chart.js": "chartjs#^1.0.2",
+    "polymer": "Polymer/polymer#^1.1.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  }
+}

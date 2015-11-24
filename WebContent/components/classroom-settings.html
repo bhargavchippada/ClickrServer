@@ -33,7 +33,6 @@
   <div class="layout horizontal center">
     <img src="../media/logo.png" class="logo-image">
     <p class="form-heading">Clickr</p>
-    <paper-input label="Event Name" value="{{eventname}}"></paper-input>
   </div>
   <toggle-display show="{{showthis}}" label="Classroom Settings"></toggle-display>
   <div class="layout horizontal center" hidden="{{!showthis}}">
@@ -58,7 +57,6 @@
     properties: {
       showthis: { type: Boolean, value: true },
       serverstate: { type: Boolean, value: false, reflectToAttribute: true, notify: true },
-      eventname: { type: String, value: 'Classroom Event' },
       classname: { type: String, value: 'Class Name' },
       classid: { type: Number, value: null, observer: 'classidChanged' },
       classtype: { type: Number, value: 'classonly'},

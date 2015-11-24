@@ -1,0 +1,55 @@
+<dom-module name="barstat-element">
+  <template>
+  	<style>
+      :host {
+        width: 100%;
+        margin: 16px 0 0 0;
+      }
+      h3 {
+        margin: 0 8px 0 0;
+        padding: 0;
+      }
+      paper-progress {
+        width: 100%;
+        --paper-progress-height: 16px;
+        margin: 8px 0 0 0;
+      }
+      paper-progress.grey {
+        --paper-progress-active-color: #8C8C8C;
+      }
+      paper-progress.success {
+        --paper-progress-active-color: #5CB85C;
+      }
+      paper-progress.danger {
+        --paper-progress-active-color: #D9534F;
+      }
+      paper-progress.info {
+        --paper-progress-active-color: #5bc0de;
+      }
+      paper-progress.warning {
+        --paper-progress-active-color: #f0ad4e;
+      }
+      paper-progress.primary {
+        --paper-progress-active-color: #337ab7;
+      }
+  	</style>
+      <div class="layout horizontal">
+        <h3><span>{{heading}}</span>:</h3>
+        <h3 class="{{prependColor(barcolor)}}"><span>{{barvalue}}</span>%</h3>
+      </div>
+      <paper-progress value="{{barvalue}}" class$="{{barcolor}}"></paper-progress>
+  </template>
+  <script>
+  	Polymer({
+      is: "barstat-element",
+      properties: {
+        heading: {type: String, value: 'lion' },
+        barcolor: { type: String, value: 'info' },
+        barvalue: { type: Number, value: 30 }
+      },
+      prependColor: function(val){
+        return 'color-'+val;
+      }
+  	});
+  </script>
+</dom-module>
