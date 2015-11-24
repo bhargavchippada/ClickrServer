@@ -182,6 +182,7 @@ public class Questions extends WebHttpServlet {
 			admin.question = arr.get(0).getAsJsonObject();
 			admin.options = jparser.parse(responseJson.get("options").getAsString())
 					.getAsJsonArray();
+			admin.setFeedAnswer();
 		}
 	}
 
@@ -237,6 +238,9 @@ public class Questions extends WebHttpServlet {
 				
 				Date date = new Date();
 				String formattedDate = sdf.format(date);
+				
+				admin.clearUserResponses();
+				
 				PreparedStatement pstmt_studresp = sqliteconn.prepareStatement(student_response);
 				for (Entry<String, JsonArray> entry : admin.usersList.entrySet())
 				{

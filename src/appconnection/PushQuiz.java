@@ -49,11 +49,9 @@ public class PushQuiz extends JSONHttpServlet {
 				Admin admin = getAdminProfile(servername);
 				if (admin == null) {
 					LOGGER.info("Incorrect servername!!");
-					output.addProperty("statuscode", LOGGEDOFF); // not
-																	// authorized
+					output.addProperty("statuscode", LOGGEDOFF);
 				} else if (!admin.serverstate) {
-					output.addProperty("statuscode", SERVEROFF); // not
-																	// authorized
+					output.addProperty("statuscode", SERVEROFF);
 					LOGGER.info("Server is in stopped state now!!");
 				} else if (!admin.quizstatus) {
 					output.addProperty("statuscode", QUIZOFF);
@@ -62,16 +60,11 @@ public class PushQuiz extends JSONHttpServlet {
 					Integer classid = input.get("classid").getAsInt();
 					if (classid != admin.classid) {
 						LOGGER.info("Incorrect classid!!");
-						output.addProperty("statuscode", LOGGEDOFF); // not
-																		// authorized
+						output.addProperty("statuscode", LOGGEDOFF);
 					} else {
 						String status = admin.usersList.get(uid).get(4).getAsString();
 						LOGGER.info(uid + " status is " + status);
-						if (status.equals("Disconnected")) {
-							LOGGER.info("User has to log in first!!");
-							output.addProperty("statuscode", LOGGEDOFF); // not
-																			// authorized
-						} else if (status.equals("Connected")) {
+						if (status.equals("Connected") || status.equals("Disconnected")) {
 							LOGGER.info("Sending quiz to user!!");
 							updateStudentStatus(admin, uid, "Attempting");
 							output.addProperty("quizid", admin.quizid);

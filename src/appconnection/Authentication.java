@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,10 +26,14 @@ import dataclasses.Admin;
 public class Authentication extends JSONHttpServlet {
 	private static final long serialVersionUID = 8842827877500138557L;
 
+	private String update_status = "update response set status = ? , last_update = ? where quizid = ? and studentid = ?";
+
 	private static final int SERVEROFF = 0;
 	private static final int LOGINSUCCESS = 1;
 	private static final int LOGINFAIL = 2;
 	private static final int INVALIDSERVERNAME = 3;
+	
+	private Connection sqliteconn;
 
 	String user_authentication = "select studentid,name from student where classid = ? and rollnumber = ? and password = ?";
 
@@ -75,7 +80,7 @@ public class Authentication extends JSONHttpServlet {
 			} else {
 				LOGGER.info("User login is success!");
 				HttpSession mySession = request.getSession(true);
-				mySession.setMaxInactiveInterval(3600 * 6);
+				mySession.setMaxInactiveInterval(3600 * 3);
 				mySession.setAttribute("rollnumber", uid);
 				mySession.setAttribute("studentid", sqlresp.getInt(1));
 				mySession.setAttribute("name", sqlresp.getString(2));
@@ -85,7 +90,8 @@ public class Authentication extends JSONHttpServlet {
 				LOGGER.info("Rollnumber: " + mySession.getAttribute("rollnumber"));
 				LOGGER.info("UserId: " + mySession.getAttribute("studentid"));
 
-				admin.setStatus(uid, "Connected");
+				String status = admin.usersList.get(uid).get(4).getAsString();
+				if(status.equals("Disconnected")) updateStudentStatus(admin,uid,"Connected");
 				output.addProperty("ip", request.getRemoteHost());
 				output.addProperty("name", sqlresp.getString(2));
 				output.addProperty("classname", admin.classname);
@@ -96,6 +102,25 @@ public class Authentication extends JSONHttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			output = null;
+		}
+	}
+	
+	private void updateStudentStatus(Admin admin, String uid, String status) throws SQLException {
+		int studentid = admin.usersList.get(uid).get(0).getAsInt();
+		Object conn = getServletContext().getAttribute("sqliteconn");
+		if (conn == null) throw new SQLException();
+		else {
+			sqliteconn = (Connection) conn;
+			Date date = new Date();
+			String formattedDate = sdf.format(date);
+			PreparedStatement pstmt = sqliteconn.prepareStatement(update_status);
+			pstmt.setString(1, status);
+			pstmt.setString(2, formattedDate);
+			pstmt.setInt(3, admin.quizid);
+			pstmt.setInt(4, studentid);
+			pstmt.executeUpdate();
+
+			admin.setStatus(uid, status);
 		}
 	}
 }

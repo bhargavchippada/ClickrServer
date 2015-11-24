@@ -47,6 +47,12 @@
     <servlet-name>PushQuiz</servlet-name>
     <servlet-class>appconnection.PushQuiz</servlet-class>
   </servlet>
+  <servlet>
+    <description></description>
+    <display-name>ReceiveAnswer</display-name>
+    <servlet-name>ReceiveAnswer</servlet-name>
+    <servlet-class>appconnection.ReceiveAnswer</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>AdminLogin</servlet-name>
     <url-pattern>/AdminLogin</url-pattern>
@@ -70,5 +76,9 @@
   <servlet-mapping>
     <servlet-name>PushQuiz</servlet-name>
     <url-pattern>/PushQuiz</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ReceiveAnswer</servlet-name>
+    <url-pattern>/ReceiveAnswer</url-pattern>
   </servlet-mapping>
 </web-app>

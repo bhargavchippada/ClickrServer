@@ -147,6 +147,7 @@ public class Classrooms extends WebHttpServlet {
 			Admin admin = getAdminProfile();
 			if (!serverstate) {
 				admin.setClassSettings(null, null, "classonly", null, serverstate);
+				admin.clearUserResponses();
 				responseJson.addProperty("status", SUCCESS);
 			} else {
 				String classtype = (String) request.getParameter("classtype");
@@ -166,7 +167,7 @@ public class Classrooms extends WebHttpServlet {
 					String formattedDate = sdf.format(date);
 					for (int i = 0; i < jarr.size(); i++) {
 						JsonArray user = jarr.get(i).getAsJsonArray();
-						user.add(gson.toJsonTree(null, new TypeToken<String>() {
+						user.add(gson.toJsonTree(null, new TypeToken<JsonArray>() {
 						}.getType()));// answer
 						user.add(gson.toJsonTree("Disconnected", new TypeToken<String>() {
 						}.getType()));// status
