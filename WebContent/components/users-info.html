@@ -26,6 +26,7 @@
         padding: 0 0 8px 0;
       }
   	</style>
+    <h3><span>{{count}}</span>/<span>{{getTotal(usersinfo)}}</span>  selected</h3>
     <div class="layout vertical center">
       <table>
         <thead>
@@ -46,7 +47,7 @@
             <th class="thinput"><input type="search" value="{{timetook::input}}"/></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tablebody">
           <template is="dom-repeat" items="{{usersinfo}}" filter="{{_filter(rollnumber,name,answer,status,lastupdate,timetook)}}" sort="{{_sort(sortColumn, sortDescending)}}">
             <tr class="border_top">
               <td>{{item.1}}</td>
@@ -65,15 +66,17 @@
   	Polymer({
       is: "users-info",
       properties: {
-        rollnumber: { type: String, value: '' },
-        name: { type: String, value: '' },
-        answer: { type: String, value: '' },
-        status: { type: String, value: '' },
-        lastupdate: { type: String, value: '' },
-        timetook: { type: String, value: '' },
+        rollnumber: { type: String, value: '', observer: 'filterChanged'},
+        name: { type: String, value: '', observer: 'filterChanged' },
+        answer: { type: String, value: '', observer: 'filterChanged' },
+        status: { type: String, value: '', observer: 'filterChanged' },
+        lastupdate: { type: String, value: '', observer: 'filterChanged' },
+        timetook: { type: String, value: '', observer: 'filterChanged' },
         usersinfo: { type: Array, value: [['1','1200500xx','zzzzz','yyy','Done','xxxx','53']] },
         sortColumn: { type: Number, value: null },
-        sortDescending: { type: Boolean, value: false }
+        sortDescending: { type: Boolean, value: false },
+        total: { type: Number, value: 0 },
+        count: { type: Number, value: 0}
       },
       changeSort: function(e){
         var clickedSortColumn = e.srcElement.id;
@@ -125,7 +128,7 @@
           var b5 = timetook =='' || parseInt(a[6]) >= parseInt(timetook);
 
           if(b0 && b1 && b2 && b3 && b4 && b5) return true;
-          else return false;
+          return false;
         };
       },
       statusCSS: function(item){
@@ -140,6 +143,21 @@
           else return "label bgcolor-danger";
         }else if(statuscode=='Stopped') return "label bgcolor-primary";
         else return "label bgcolor-danger";
+      },
+      getTotal: function(arr){
+        this.total = arr.length;
+        this.count = this.total;
+        return this.total;
+      },
+      evalCount: function(){
+        var children = Polymer.dom(this.$.tablebody).querySelectorAll('tr');
+        this.count = 0;
+        for(var i=0;i<children.length;i++){
+          if(!children[i].hidden) this.count++;
+        }
+      },
+      filterChanged: function(){
+        this.async(this.evalCount);
       }
   	});
   </script>
