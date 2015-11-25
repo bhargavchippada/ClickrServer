@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +99,6 @@ public class Admin {
 			}.getType()));// TimeTook
 			student.set(7, gson.toJsonTree(0, new TypeToken<Integer>() {
 			}.getType()));// correct or not
-
 		}
 		numOfResponses = 0;
 		numOfCorrect = 0;
@@ -144,9 +142,10 @@ public class Admin {
 		this.updatedon = System.currentTimeMillis() / 1000;
 	}
 
-	public void updateStats(JsonArray answer,  Boolean correct) {
+	public void updateStats(JsonArray answer, Boolean correct) {
+		if (answer == null || answer.size() == 0) return;
 		numOfResponses++;
-		if(correct) numOfCorrect++;
+		if (correct) numOfCorrect++;
 		if (!qtype.equals("short")) {
 			if (!qtype.equals("multiple")) {
 				String key = answer.getAsString();
@@ -173,8 +172,8 @@ public class Admin {
 
 		JsonArray bargraph = new JsonArray();
 		int total = usersList.size();
-		if(total==0) return optionwise;
-		
+		if (total == 0) return optionwise;
+
 		int percent = (numOfResponses * 100) / total;
 		String bartitle = "Attempts (" + numOfResponses + "/" + total + ")";
 		bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
@@ -183,9 +182,9 @@ public class Admin {
 		}.getType()));
 		optionwise.add(bargraph);
 
-		if(qkind == null || qkind.equals("question")){
+		if (qkind == null || qkind.equals("question")) {
 			bargraph = new JsonArray();
-			percent = (numOfCorrect*100)/total;
+			percent = (numOfCorrect * 100) / total;
 			bartitle = "Corrects (" + numOfCorrect + "/" + total + ")";
 			bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
 			}.getType()));
@@ -193,14 +192,14 @@ public class Admin {
 			}.getType()));
 			optionwise.add(bargraph);
 		}
-		
+
 		List option_list = sortByValues(option_stats);
 
 		for (Iterator it = option_list.iterator(); it.hasNext();) {
 			Map.Entry entry = (Map.Entry) it.next();
 			if (qtype.equals("single") || qtype.equals("multiple")) {
 				Integer op = Integer.parseInt((String) entry.getKey());
-				JsonObject option = options.get(op-1).getAsJsonObject();
+				JsonObject option = options.get(op - 1).getAsJsonObject();
 				Integer count = (Integer) entry.getValue();
 				percent = (count * 100) / total;
 				bartitle = op + ")" + " " + option.get("optext").getAsString() + " (" + count + "/"
@@ -220,26 +219,26 @@ public class Admin {
 		}
 		return optionwise;
 	}
-	
+
 	public JsonArray getResponseWiseStats() {
 		JsonArray responsewise = new JsonArray();
 		JsonArray piegraph = new JsonArray();
 		int total = usersList.size();
-		if(total==0) return responsewise;
-		
+		if (total == 0) return responsewise;
+
 		List response_list = sortByValues(response_stats);
-		
+
 		Integer count;
 		String bartitle;
 		JsonArray bargraph;
-		
-		int max = 4;
+
+		int max = 10;
 		int counter = 0;
-		for (Iterator it = response_list.iterator(); it.hasNext() && max>=1; max--) {
+		for (Iterator it = response_list.iterator(); it.hasNext() && max >= 1; max--) {
 			Map.Entry entry = (Map.Entry) it.next();
-			
+
 			count = (Integer) entry.getValue();
-			counter+=count;
+			counter += count;
 			bartitle = entry.getKey().toString();
 
 			bargraph = new JsonArray();
@@ -249,14 +248,14 @@ public class Admin {
 			}.getType()));
 			responsewise.add(bargraph);
 		}
-		
+
 		bargraph = new JsonArray();
 		bargraph.add(gson.toJsonTree("Others", new TypeToken<String>() {
 		}.getType()));
-		bargraph.add(gson.toJsonTree(numOfResponses-counter, new TypeToken<Integer>() {
+		bargraph.add(gson.toJsonTree(numOfResponses - counter, new TypeToken<Integer>() {
 		}.getType()));
 		responsewise.add(bargraph);
-		
+
 		return responsewise;
 	}
 

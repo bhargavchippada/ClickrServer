@@ -1,5 +1,6 @@
 <link rel="import" href="elements/toggle-display.html">
 <link rel="import" href="class-select.html">
+<link rel="import" href="quiz-select.html">
 
 <dom-module name="classroom-settings">
 <template>
@@ -13,6 +14,12 @@
       margin: auto 16px auto 16px;
     }
     class-select {
+      position: fixed;
+      width: 80%;
+      height: 90%;
+      top: 16px;
+    }
+    quiz-select {
       position: fixed;
       width: 80%;
       height: 90%;
@@ -33,6 +40,8 @@
   <div class="layout horizontal center">
     <img src="../media/logo.png" class="logo-image">
     <p class="form-heading">Clickr</p>
+    <paper-button raised class="round blue-bg" on-click="selectQuizClick">Select Quiz</paper-button>
+    <quiz-select modal id="quizselect" selectedquizid="{{quizid}}"></quiz-select>
   </div>
   <toggle-display show="{{showthis}}" label="Classroom Settings"></toggle-display>
   <div class="layout horizontal center" hidden="{{!showthis}}">
@@ -60,7 +69,8 @@
       classname: { type: String, value: 'Class Name' },
       classid: { type: Number, value: null, observer: 'classidChanged' },
       classtype: { type: Number, value: 'classonly'},
-      params: { type: Object, value: {} }
+      params: { type: Object, value: {} },
+      quizid: { type: Number, value: null }
     },
     uploadBtnState: function(classtype,serverstate){
       if(serverstate || classtype=='anonymous') return true;
@@ -68,6 +78,9 @@
     },
     selectClassClick: function(){
       this.$.classselect.toggle();
+    },
+    selectQuizClick: function(){
+      this.$.quizselect.toggle();
     },
     ready: function(){
       this.params["action"] = "fetch";

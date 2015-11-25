@@ -7,21 +7,17 @@
     :host {
       width: 100%;
     }
+    #selectiondemo {
+      position: relative;
+      height: 600px;
+
+    }
     google-chart {
-      height: 800px;
+      height: 600px;
       width: 800px;
     }
-    #selection-demo {
-      position: relative;
-    }
-    #selection-chart {
+    #selectionchart {
       float: left;
-    }
-
-    #selection-display {
-      display: inline-block;
-      position: relative;
-      top: 50%;
     }
   	</style>
     <div class="layout vertical center">
@@ -30,33 +26,20 @@
         <barstat-element heading="{{item.0}}" barcolor="{{getColorCode(index)}}" barvalue="{{item.1}}"></barstat-element>
       </template>
 
-      <div id="selection-demo">
+      <div id="selectiondemo">
         <google-chart
           type="pie"
-          id="selection-chart"
+          id="selectionchart"
           options='{"title": "Distribution of Answers"}'
           cols='[{"label": "Answer", "type": "string"},{"label": "Count", "type": "number"}]'
           rows='{{responsewise}}'>
         </google-chart>
-        <div id="selection-display">
-          Selected row: <span id="selection-label">None</span>.
-        </div>
       </div>
 
       <script>
         document.addEventListener('WebComponentsReady', function() {
-          var chart = document.querySelector('#selection-chart');
-          var label = document.querySelector('#selection-label');
+          var chart = document.querySelector('#selectionchart');
           chart.drawChart();
-          chart.addEventListener('google-chart-render', function() {
-            chart.selection = [{row: 1, column: null}];
-            label.textContent = chart.selection[0].row;
-          });
-
-          document.addEventListener('google-chart-select', function(e) {
-            label.textContent =
-                chart.selection[0] ? chart.selection[0].row : 'None';
-          });
         });
       </script>
     </div>
@@ -66,7 +49,7 @@
       is: "graph-stats",
       properties: {
         optionwise: { type: Array, value: [['Bar1','50'],['Bar2','30']]},
-        responsewise: { type: Array, value: [ ['Ans1', 50],['Ans2', 30],['Ans3', 20] ]},
+        responsewise: { type: Array, value: [ ['Ans1', 50],['Ans2', 30],['Ans3', 20] ] },
         data : { type: Array, value: [] }
       },
       getColorCode: function(ind){

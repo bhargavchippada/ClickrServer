@@ -32,7 +32,7 @@ public class Authentication extends JSONHttpServlet {
 	private static final int LOGINSUCCESS = 1;
 	private static final int LOGINFAIL = 2;
 	private static final int INVALIDSERVERNAME = 3;
-	
+
 	private Connection sqliteconn;
 
 	String user_authentication = "select studentid,name from student where classid = ? and rollnumber = ? and password = ?";
@@ -85,13 +85,13 @@ public class Authentication extends JSONHttpServlet {
 				mySession.setAttribute("studentid", sqlresp.getInt(1));
 				mySession.setAttribute("name", sqlresp.getString(2));
 				mySession.setAttribute("servername", admin.username);
-				
+
 				LOGGER.info("SESSIONID: " + mySession.getId());
 				LOGGER.info("Rollnumber: " + mySession.getAttribute("rollnumber"));
 				LOGGER.info("UserId: " + mySession.getAttribute("studentid"));
 
 				String status = admin.usersList.get(uid).get(4).getAsString();
-				if(status.equals("Disconnected")) updateStudentStatus(admin,uid,"Connected");
+				if (status.equals("Disconnected")) updateStudentStatus(admin, uid, "Connected");
 				output.addProperty("ip", request.getRemoteHost());
 				output.addProperty("name", sqlresp.getString(2));
 				output.addProperty("classname", admin.classname);
@@ -104,7 +104,7 @@ public class Authentication extends JSONHttpServlet {
 			output = null;
 		}
 	}
-	
+
 	private void updateStudentStatus(Admin admin, String uid, String status) throws SQLException {
 		int studentid = admin.usersList.get(uid).get(0).getAsInt();
 		Object conn = getServletContext().getAttribute("sqliteconn");

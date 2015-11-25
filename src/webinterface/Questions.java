@@ -235,15 +235,14 @@ public class Questions extends WebHttpServlet {
 				rs_qid.next();
 				int quizid = rs_qid.getInt(1);
 				admin.quizid = quizid;
-				
+
 				Date date = new Date();
 				String formattedDate = sdf.format(date);
-				
+
 				admin.clearUserResponses();
-				
+
 				PreparedStatement pstmt_studresp = sqliteconn.prepareStatement(student_response);
-				for (Entry<String, JsonArray> entry : admin.usersList.entrySet())
-				{
+				for (Entry<String, JsonArray> entry : admin.usersList.entrySet()) {
 					JsonArray student = entry.getValue();
 					pstmt_studresp.setInt(1, admin.quizid);
 					pstmt_studresp.setInt(2, student.get(0).getAsInt());
@@ -256,7 +255,7 @@ public class Questions extends WebHttpServlet {
 					pstmt_studresp.addBatch();
 				}
 				pstmt_studresp.executeBatch();
-				
+
 				sqliteconn.commit();
 
 				admin.quizstatus = true;

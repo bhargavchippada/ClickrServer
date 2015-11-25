@@ -1,0 +1,122 @@
+<dom-module name="quiz-select-info">
+  <template>
+    <style include="shared-styles">
+    </style>
+    <iron-ajax
+      id="ironajax"
+      url="../../Usersinfo"
+      params='{{params}}'
+      handleAs="json"
+      contentType="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"
+      debounceDuration="1500"></iron-ajax>
+
+    <paper-card class="layout horizontal flex mtop8 pad8" elevation="2">
+      <div class="layout vertical flex card-content">
+        <div class="layout horizontal center flex">
+          <paper-radio-button id="radiobutton" on-click="radioClicked"></paper-radio-button>
+          <h2 class="mright16only">{{qtype}}<span>:</span></h2>
+          <h2 class="mright16only">{{qkind}}</h2>
+          <div class="layout horizontal flex center end-justified">
+            <h3 class="blue-text">CreateTime: <span>{{created_time}}</span></h3>
+            <paper-icon-button on-click="deleteQuizClick" icon="delete"></paper-icon-button>
+          </div>
+        </div>
+        <h3>Title: <span>{{title}}</span></h3>
+        <div class="layout horizontal center">
+          <h4 class="mright16only">feedback: <span>{{feedback}}</span>,</h4>
+          <h4 class="mright16only">timedquiz: <span>{{timedquiz}}</span>,</h4>
+          <h4 class="mright16only">quiztime: <span>{{quiztime}}</span></h4>
+        </div>
+        <div class="layout horizontal center">
+          <h2 class="mright16only">{{classtype}}<span>:</span></h2>
+          <h2 class="mright16only">{{classname}}</h2>
+        </div>
+      </div>
+    </paper-card>
+    <paper-dialog id="alert" class="fixedpos pad8">
+      <h2>Alert</h2>
+      <h4>Do you really want to delete the Quiz?</h4>
+      <div class="layout horizontal end-justified">
+        <paper-icon-button class="green-color" icon="check" on-click="confirmDeleteClick"></paper-icon-button>
+        <paper-icon-button class="red-color" icon="close" on-click="dismissDialogClick"></paper-icon-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: 'quiz-select-info',
+      properties: {
+        qindex: { type: Number, value: 0 },
+        selectedqindex: { type: Number, value: 0, reflectToAttribute: true, notify: true},
+        quizid: { type: Number, value: 0, observer: 'quizidChanged' },
+        classid: { type: Number, value: 0 },
+        questionid: { type: Number, value: 0 },
+        qtype: { type: String, value: 'Qtype' },
+        qkind: { type: String, value: 'Qkind' },
+        title: { type: String, value: 'Title' },
+        feedback: { type: Boolean, value: false },
+        timedquiz: { type: Boolean, value: false },
+        quiztime: { type: Number, value: -1 },
+        classtype: { type: String, value: 'ClassType' },
+        classname: { type: String, value: 'ClassName' },
+        created_time: { type: String, value: '2015-1-10 16:50:00'},
+        params: { type: Object, value: {} },
+        selectedquizid: { type:Number, value:null, observer: 'selectedquizidChanged', reflectToAttribute: true, notify: true }
+      },
+      selectedquizidChanged: function(newValue){
+        if(newValue == this.quizid) {
+          this.$.radiobutton.checked = true;
+          this.selectedqindex = this.qindex;
+        } else this.$.radiobutton.checked = false;
+      },
+      quizidChanged: function(newValue){
+        if(this.selectedquizid == this.quizid) {
+          this.$.radiobutton.checked = true;
+          this.selectedqindex = this.qindex;
+        }else this.$.radiobutton.checked = false;
+      },
+      radioClicked: function(){
+        this.$.radiobutton.checked = true;
+        this.selectedqindex = this.qindex;
+        this.selectedquizid = this.quizid;
+        this.domHost.close();
+      },
+      deleteQuizClick: function(){
+        this.$.alert.open();
+      },
+      dismissDialogClick: function(){
+        this.$.alert.close();
+      },
+      confirmDeleteClick: function(){
+        this.params = {}
+        this.params["action"] = "deletequiz";
+        this.params["quizid"] = this.quizid;
+        this.$.ironajax.generateRequest();
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.domHost.showError(ajax_response.error_msg);
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'deletequiz':
+                this.$.alert.close();
+                if(this.selectedquizid == this.quizid) {
+                  this.selectedquizid = null;
+                }
+                this.domHost.refreshQuizClick();
+                break;
+              default:
+                console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.domHost.showError(resp.detail.error);
+      }
+    });
+  </script>
+</dom-module>

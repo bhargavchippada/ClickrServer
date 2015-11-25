@@ -146,7 +146,8 @@ public class Classrooms extends WebHttpServlet {
 			responseJson.addProperty("serverstate", serverstate);
 			Admin admin = getAdminProfile();
 			if (!serverstate) {
-				admin.setClassSettings(null, null, "classonly", null, serverstate);
+				admin.setClassSettings(null, null, "classonly",
+						new ConcurrentHashMap<String, JsonArray>(), serverstate);
 				admin.clearUserResponses();
 				responseJson.addProperty("status", SUCCESS);
 			} else {

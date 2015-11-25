@@ -75,13 +75,24 @@ public class ReceiveAnswer extends JSONHttpServlet {
 						} else if (status.equals("Attempting")) {
 							LOGGER.info("Retrieving answer from user!!");
 							JsonArray answer = (JsonArray) input.get("myanswer");
-							Integer timetook = input.get("timetook").getAsInt();
-							Boolean correct = admin.verifyAnswer(answer);
-							updateStudentResponse(admin, uid, "Completed", answer, timetook,
-									correct);
+							if (answer.size() != 0) {
+								Integer timetook = input.get("timetook").getAsInt();
+								Boolean correct = admin.verifyAnswer(answer);
+								updateStudentResponse(admin, uid, "Completed", answer, timetook,
+										correct);
 
-							if (admin.feedback) {
-								output.addProperty("feedback", admin.getFeedBack(correct));
+								if (admin.feedback) {
+									output.addProperty("feedback", admin.getFeedBack(correct));
+								}
+							} else {
+								Boolean correct = false;
+								Integer timetook = input.get("timetook").getAsInt();
+								updateStudentResponse(admin, uid, "Stopped", answer, timetook,
+										correct);
+
+								if (admin.feedback) {
+									output.addProperty("feedback", admin.getFeedBack(correct));
+								}
 							}
 
 							output.addProperty("statuscode", SUBMITTED);

@@ -1,0 +1,120 @@
+<link rel="import" href="elements/quiz-select-info.html">
+
+<dom-module id="quiz-select">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        margin: 16px;
+        padding: 4px 8px 16px 24px;
+        width: 100%;
+
+        background: var(--paper-dialog-background-color, --primary-background-color);
+        color: var(--paper-dialog-color, --primary-text-color);
+
+        @apply(--layout-scroll);
+        @apply(--paper-font-body1);
+        @apply(--shadow-elevation-16dp);
+        @apply(--paper-dialog);
+      }
+      #closedialog {
+        color: #D9534F;
+        text-align: right;
+      }
+      paper-fab.blue {
+        --paper-fab-background: var(--paper-light-blue-500);
+        --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+      }
+    </style>
+    <iron-ajax
+      id="ironajax"
+      url="../Usersinfo"
+      params='{{params}}'
+      handleAs="json"
+      contentType="application/json"
+      method='POST'
+      on-response="handleResponse"
+      on-error="handleError"></iron-ajax>
+
+    <div class="layout vertical">
+      <div class="layout horizontal end-justified">
+        <paper-icon-button id="closedialog" dialog-dismiss icon="close"></paper-icon-button>
+      </div>
+      <div class="layout horizontal center">
+        <h2 class="mright16"><u>Your Quizzes</u></h2>
+        <paper-fab mini icon="refresh" class="blue" on-click="refreshQuizClick"></paper-fab>
+      </div>
+      <div id="radiogroup" class="layout vertical">
+        <template is="dom-repeat" items="{{quizzeslist}}">
+            <quiz-select-info quizid="{{item.0}}" classid="{{item.1}}" questionid="{{item.2}}" qtype="{{item.9}}" qkind="{{item.10}}" title="{{item.8}}" feedback="{{item.4}}" timedquiz="{{item.5}}" quiztime="{{item.6}}" classtype="{{item.3}}" classname="{{item.11}}" created_time="{{item.7}}" selectedquizid="{{selectedquizid}}" qindex="{{index}}" selectedqindex="{{selectedqindex}}"></quiz-select-info>
+        </template>
+      </div>
+    </div>
+  </template>
+  <script>
+  (function() {
+
+    Polymer({
+
+      is: 'quiz-select',
+
+      behaviors: [
+        Polymer.PaperDialogBehavior
+      ],
+
+      properties: {
+          quizzeslist: { type: Array, value: [] },
+          params: { type: Object, value: {} },
+          selectedquizid: { type:Number, value:null, observer: 'selectedquizidChanged' },
+          selectedqindex: { type: Number, value: null}
+      },
+      ready: function() {
+        this.refreshQuizClick();
+      },
+      refreshQuizClick: function() {
+        this.params = {};
+        this.params["action"] = "quizzeslist";
+        this.$.ironajax.generateRequest();
+      },
+      handleResponse: function(req) {
+          var ajax_response = req.detail.response;
+          if(ajax_response.status == 'FAIL'){
+            this.domHost.showError(ajax_response.error_msg);
+            this.selectedquizid = null;
+            this.selectedqindex = null;
+          }else if(ajax_response.status == 'SUCCESS'){
+            switch(ajax_response.action) {
+              case 'quizzeslist':
+                  this.quizzeslist = JSON.parse(ajax_response.quizzeslist);
+                  break;
+              case 'selectquiz':
+                  window.location.reload();
+                  break;
+              default:
+                  console.log("unidentified action request");
+            }
+          }
+      },
+      handleError: function(resp, err) {
+        this.domHost.showError(resp.detail.error);
+      },
+      showError: function(err){
+        this.domHost.showError(err);
+      },
+      selectedquizidChanged: function(newValue){
+        this.domHost.showNotice("Quiz ID selected: "+newValue+" index is "+this.selectedqindex);
+        if(newValue != null && newValue >=0){
+          this.params = {};
+          this.params["action"] = "selectquiz";
+          this.params["quizid"] = newValue;
+          this.params["quizinfo"] = JSON.stringify(this.quizzeslist[this.selectedqindex]);
+          //console.log(this.params);
+          this.$.ironajax.generateRequest();
+        }
+      },
+    });
+
+  })();
+
+  </script>
+</dom-module>

@@ -46,6 +46,7 @@
       <input type="file" id="browse" name="fileupload" style="display: none" on-change="readClassFile"/>
       <paper-input id="filename" class="inputmedium mright16" no-label-float label="{{filelabel}}" disabled></paper-input>
       <paper-button id="browsebtn" class="round blue-bg" on-click="browseFileClick">Upload Class</paper-button>
+      <h3>  (format: rollno,pwd,name)</h3>
       <paper-input id="classlabel" class="inputlarge msides16" no-label-float value="{{classname}}" label="Class Name" maxlength="64" error-message="Invalid Classname!!" required auto-validate></paper-input>
       <paper-button id="saveclassbtn" class="round green-bg" on-click="saveClassClick">Save Class</paper-button>
       </div>

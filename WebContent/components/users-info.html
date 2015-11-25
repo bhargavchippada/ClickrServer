@@ -1,6 +1,6 @@
 <dom-module name="users-info">
   <template>
-  	<style>
+  	<style include="shared-styles">
       :host{
         display: block;
         margin: 32px 0 32px 0;
@@ -26,10 +26,15 @@
         padding: 0 0 8px 0;
       }
   	</style>
-    <h3><span>{{count}}</span>/<span>{{getTotal(usersinfo)}}</span>  selected</h3>
-    <div class="layout vertical center">
+    <div class="layout horizontal center">
+      <b><span>{{count}}</span>/<span>{{getTotal(usersinfo)}}</span><span>  selected</span></b>
+      <div class="layout horizontal flex end-justified">
+        <paper-button class="round blue-bg" on-click="downloadClick">Download</paper-button>
+      </div>
+    </div>
+    <div class="layout vertical center mtop8">
       <table>
-        <thead>
+        <thead id="tablehead">
           <tr class="border_top">
             <th id="0" on-click="changeSort" style$="{{thStyle('0',sortColumn,sortDescending)}}">Rollnumber</th>
             <th id="1" on-click="changeSort" style$="{{thStyle('1',sortColumn,sortDescending)}}">Name</th>
@@ -158,6 +163,58 @@
       },
       filterChanged: function(){
         this.async(this.evalCount);
+      },
+      downloadClick: function(){
+        //https://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
+        var textToWrite="";
+
+        var ths = Polymer.dom(this.$.tablehead).querySelectorAll('tr')[0].querySelectorAll('th');
+        var temp=""
+        for (var i=0; i<ths.length; i++) {
+          temp+=ths[i].innerHTML;
+          if(i!=ths.length-1) temp+=",";
+        }
+        textToWrite+=temp+"\n";
+
+        var children = Polymer.dom(this.$.tablebody).querySelectorAll('tr');
+        for (var i=0; i<children.length; i++) {
+          temp="";
+          if(!children[i].hidden) {
+            var tds = children[i].querySelectorAll('td');
+            for(var j=0; j<tds.length; j++){
+              var inner = tds[j].querySelectorAll('span')[0];
+              if(inner!=undefined) inner = inner.innerHTML;
+              else inner = tds[j].innerHTML;
+              temp+=inner;
+              if(j!=tds.length-1) temp+=",";
+            }
+            textToWrite+=temp+"\n";
+          }
+        }
+
+        var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+        var fileNameToSaveAs = 'quizstats';
+
+        var downloadLink = document.createElement("a");
+        downloadLink.download = fileNameToSaveAs;
+        downloadLink.innerHTML = "Download File";
+        if (window.URL != null)
+        {
+          // Chrome allows the link to be clicked
+          // without actually adding it to the DOM.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        }
+        else
+        {
+          // Firefox requires the link to be added to the DOM
+          // before it can be clicked.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+          downloadLink.onclick = this.destroyClickedElement;
+          downloadLink.style.display = "none";
+          document.body.appendChild(downloadLink);
+        }
+
+        downloadLink.click();
       }
   	});
   </script>
