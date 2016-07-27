@@ -101,7 +101,7 @@
               if(this.classname == null ) this.classname = 'Class Name';
               break;
           case 'changeserverstate':
-              console.log(ajax_response.serverstate);
+              //console.log(ajax_response.serverstate);
               this.serverstate = ajax_response.serverstate;
               break;
           default:
@@ -134,12 +134,12 @@
         this.params["classid"] = this.classid;
         this.params["classname"] = this.classname;
         this.params["classtype"] = this.classtype;
-        console.log(this.params);
+        //console.log(this.params);
         this.$.ironajax.generateRequest();
       }else {
         this.params["action"] = "changeserverstate";
         this.params["serverstate"] = !this.serverstate;
-        console.log(this.params);
+        //console.log(this.params);
         this.$.ironajax.generateRequest();
       }
     },

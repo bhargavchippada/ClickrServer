@@ -63,10 +63,10 @@ public class Usersinfo extends WebHttpServlet {
 			responseJson.addProperty("usersinfo", admin.getUsersInfoArray().toString());
 			JsonArray stats = admin.getOptionWiseStats();
 			responseJson.addProperty("optionwise", stats.toString());
-			if (admin.qtype != null) {
-				if (!admin.qtype.equals("multiple") && stats.size() >= 2) {
+			if (admin.qtype != null && stats.size() > 0) {
+				if (!admin.qtype.equals("multiple")) {
 					stats.remove(0);
-					stats.remove(0);
+					if(admin.qkind.equals("question")) stats.remove(0);
 					responseJson.addProperty("responsewise", stats.toString());
 				} else {
 					responseJson.addProperty("responsewise", admin.getResponseWiseStats()

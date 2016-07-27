@@ -78,9 +78,6 @@ public class Admin {
 	}
 
 	public void clearQuizSettings() {
-		feedback = null;
-		timedquiz = null;
-		quiztime = null;
 		quizstatus = false;
 	}
 
@@ -100,6 +97,10 @@ public class Admin {
 			student.set(7, gson.toJsonTree(0, new TypeToken<Integer>() {
 			}.getType()));// correct or not
 		}
+		clearStats();
+	}
+
+	public void clearStats() {
 		numOfResponses = 0;
 		numOfCorrect = 0;
 		option_stats.clear();
@@ -171,24 +172,24 @@ public class Admin {
 		JsonArray optionwise = new JsonArray();
 
 		JsonArray bargraph = new JsonArray();
-		int total = usersList.size();
-		if (total == 0) return optionwise;
+		int total = numOfResponses;
+		if (total == 0 || usersList.size() == 0) return optionwise;
 
-		int percent = (numOfResponses * 100) / total;
-		String bartitle = "Attempts (" + numOfResponses + "/" + total + ")";
+		float percent = (float) (numOfResponses * 100.0) / usersList.size();
+		String bartitle = "Attempts (" + numOfResponses + "/" + usersList.size() + ")";
 		bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
 		}.getType()));
-		bargraph.add(gson.toJsonTree(percent, new TypeToken<Integer>() {
+		bargraph.add(gson.toJsonTree(percent, new TypeToken<Float>() {
 		}.getType()));
 		optionwise.add(bargraph);
 
-		if (qkind == null || qkind.equals("question")) {
+		if (qkind != null && qkind.equals("question")) {
 			bargraph = new JsonArray();
-			percent = (numOfCorrect * 100) / total;
+			percent = (float) (numOfCorrect * 100.0) / total;
 			bartitle = "Corrects (" + numOfCorrect + "/" + total + ")";
 			bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
 			}.getType()));
-			bargraph.add(gson.toJsonTree(percent, new TypeToken<Integer>() {
+			bargraph.add(gson.toJsonTree(percent, new TypeToken<Float>() {
 			}.getType()));
 			optionwise.add(bargraph);
 		}
@@ -201,19 +202,19 @@ public class Admin {
 				Integer op = Integer.parseInt((String) entry.getKey());
 				JsonObject option = options.get(op - 1).getAsJsonObject();
 				Integer count = (Integer) entry.getValue();
-				percent = (count * 100) / total;
+				percent = (float) (count * 100.0) / total;
 				bartitle = op + ")" + " " + option.get("optext").getAsString() + " (" + count + "/"
 						+ total + ")";
 			} else {
 				Integer count = (Integer) entry.getValue();
-				percent = (count * 100) / total;
+				percent = (float) (count * 100.0) / total;
 				bartitle = entry.getKey() + " (" + count + "/" + total + ")";
 			}
 
 			bargraph = new JsonArray();
 			bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
 			}.getType()));
-			bargraph.add(gson.toJsonTree(percent, new TypeToken<Integer>() {
+			bargraph.add(gson.toJsonTree(percent, new TypeToken<Float>() {
 			}.getType()));
 			optionwise.add(bargraph);
 		}
@@ -223,8 +224,8 @@ public class Admin {
 	public JsonArray getResponseWiseStats() {
 		JsonArray responsewise = new JsonArray();
 		JsonArray piegraph = new JsonArray();
-		int total = usersList.size();
-		if (total == 0) return responsewise;
+		int total = numOfResponses;
+		if (total == 0 || usersList.size() == 0) return responsewise;
 
 		List response_list = sortByValues(response_stats);
 
@@ -233,7 +234,7 @@ public class Admin {
 		JsonArray bargraph;
 
 		int max = 10;
-		int counter = 0;
+		float counter = 0;
 		for (Iterator it = response_list.iterator(); it.hasNext() && max >= 1; max--) {
 			Map.Entry entry = (Map.Entry) it.next();
 
@@ -244,7 +245,7 @@ public class Admin {
 			bargraph = new JsonArray();
 			bargraph.add(gson.toJsonTree(bartitle, new TypeToken<String>() {
 			}.getType()));
-			bargraph.add(gson.toJsonTree(count, new TypeToken<Integer>() {
+			bargraph.add(gson.toJsonTree(count, new TypeToken<Float>() {
 			}.getType()));
 			responsewise.add(bargraph);
 		}
@@ -252,7 +253,7 @@ public class Admin {
 		bargraph = new JsonArray();
 		bargraph.add(gson.toJsonTree("Others", new TypeToken<String>() {
 		}.getType()));
-		bargraph.add(gson.toJsonTree(numOfResponses - counter, new TypeToken<Integer>() {
+		bargraph.add(gson.toJsonTree(total - counter, new TypeToken<Float>() {
 		}.getType()));
 		responsewise.add(bargraph);
 
@@ -312,22 +313,31 @@ public class Admin {
 	}
 
 	public boolean verifyAnswer(JsonArray myanswer) {
-		if (qkind.equals("poll")) return false;
+		if (qkind.equals("poll")) return true;
 		else {
 			if (qtype.equals("single")) {
 				JsonObject option = (JsonObject) options.get(myanswer.getAsInt() - 1);
 				if (option.get("answer").getAsBoolean()) return true;
 				else return false;
 			} else if (qtype.equals("multiple")) {
-				int i = 0, pos = 0;
-				for (; i < options.size() && pos < myanswer.size(); i++) {
+				JsonArray temp = new JsonArray();
+				for (int i = 0; i < options.size(); i++) {
+					temp.add(gson.toJsonTree(false, new TypeToken<Boolean>() {
+					}.getType()));
+				}
+				for (int i = 0; i < myanswer.size(); i++) {
+					temp.set(myanswer.get(i).getAsInt() - 1,
+							gson.toJsonTree(true, new TypeToken<Boolean>() {
+							}.getType()));
+				}
+
+				for (int i = 0; i < options.size(); i++) {
 					JsonObject option = (JsonObject) options.get(i);
-					if (option.get("answer").getAsBoolean()
-							&& myanswer.get(pos).getAsInt() == i + 1) continue;
+					if (!(option.get("answer").getAsBoolean() ^ temp.get(i).getAsBoolean())) continue;
 					else return false;
 				}
-				if (i == options.size() && pos == myanswer.size()) return true;
-				else return false;
+				return true;
+				
 			} else if (qtype.equals("short")) return false;
 			else if (qtype.equals("word")) {
 				JsonObject option = (JsonObject) options.get(0);
@@ -342,6 +352,10 @@ public class Admin {
 				JsonObject option2 = (JsonObject) options.get(1);
 				if (option1.get("optext").getAsDouble() <= myanswer.getAsDouble()
 						&& option2.get("optext").getAsDouble() >= myanswer.getAsDouble()) return true;
+				else return false;
+			} else if (qtype.equals("truefalse")) {
+				JsonObject option = (JsonObject) options.get(0);
+				if (!(option.get("optext").getAsBoolean() ^ myanswer.getAsBoolean())) return true;
 				else return false;
 			}
 		}

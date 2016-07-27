@@ -26,7 +26,7 @@ string randomStr(){
 int main(){
 	long base = 120050000;
 	long temp;
-	for(int i=1;i<=200;i++){
+	for(int i=1;i<=100;i++){
 		temp = base+i;
 		cout<<temp<<","<<temp<<","<<randomStr()<<"\n";
 	}

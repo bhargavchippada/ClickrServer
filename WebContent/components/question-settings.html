@@ -43,7 +43,7 @@
           <h3 class="mright16only">Timed<br>Quiz</h3>
           <paper-input class="dark" label="Time in sec" value="{{quiztime}}" disabled$="{{isDisabledQuizTime(timedquiz,quizstatus)}}" type="number" pattern="[0-9]" prevent-invalid-input></paper-input>
         </div>
-        <paper-button raised class$="{{toggleCSS(quizstatus)}}" on-click="toggleQuizClick">Start Quiz</paper-button>
+        <paper-button raised class$="{{toggleCSS(quizstatus)}}" on-click="toggleQuizClick">{{toggleState(quizstatus)}}</paper-button>
     	</div>
 		</div>
 		<question-select id="questionselect" modal selectedqid="{{selectedqid}}"></question-select>
@@ -150,6 +150,10 @@
       toggleCSS: function(quizstatus) {
         if(quizstatus) return 'round red-bg';
         else return 'round green-bg';
+      },
+      toggleState: function(quizstatus) {
+        if(quizstatus) return 'Stop Quiz';
+        else return 'Start Quiz';
       },
       isDisabledQuizTime: function(timedquiz,quizstatus){
         return !timedquiz || quizstatus;

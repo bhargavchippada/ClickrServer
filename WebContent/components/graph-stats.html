@@ -49,12 +49,22 @@
       is: "graph-stats",
       properties: {
         optionwise: { type: Array, value: [['Bar1','50'],['Bar2','30']]},
-        responsewise: { type: Array, value: [ ['Ans1', 50],['Ans2', 30],['Ans3', 20] ] },
+        responsewise: { type: Array, value: [ ['Ans1', 50],['Ans2', 30],['Ans3', 20] ], observer: 'reponsewiseChanged' },
         data : { type: Array, value: [] }
       },
       getColorCode: function(ind){
         var availcolors = ['primary', 'success', 'info','warning','danger','grey'];
         return availcolors[ind%6];
+      },
+      reponsewiseChanged: function(newValue){
+        //console.log(newValue);
+        if(newValue.length == 0) {
+          this.$.selectiondemo.hidden = true;
+          //console.log("empty");
+        }else {
+          this.$.selectiondemo.hidden = false;
+          this.$.selectionchart.drawChart();
+        }
       }
   	});
   </script>

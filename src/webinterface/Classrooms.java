@@ -154,8 +154,9 @@ public class Classrooms extends WebHttpServlet {
 				String classtype = (String) request.getParameter("classtype");
 				String classname = null;
 				Integer classid = null;
-				ConcurrentHashMap<String, JsonArray> usersList = null;
-				if (!classtype.equals("anonymous")) {
+				ConcurrentHashMap<String, JsonArray> usersList = new ConcurrentHashMap<String, JsonArray>();
+				admin.clearStats();
+				if (classtype.equals("classonly")) {
 					classid = Integer.parseInt(request.getParameter("classid"));
 					classname = request.getParameter("classname");
 					PreparedStatement pstmt = sqliteconn.prepareStatement(students_of_class_2);
@@ -163,7 +164,6 @@ public class Classrooms extends WebHttpServlet {
 					JsonArray jarr = executePreparedStmt(pstmt, "Fetching students of classroom",
 							WebHttpServlet.ARRAYOFARRAY);
 
-					usersList = new ConcurrentHashMap<String, JsonArray>();
 					Date date = new Date();
 					String formattedDate = sdf.format(date);
 					for (int i = 0; i < jarr.size(); i++) {
@@ -176,11 +176,15 @@ public class Classrooms extends WebHttpServlet {
 						}.getType()));// LastUpdate
 						user.add(gson.toJsonTree(-1, new TypeToken<Integer>() {
 						}.getType()));// Timetook
-						user.add(gson.toJsonTree(0, new TypeToken<Integer>() {
+						user.add(gson.toJsonTree(false, new TypeToken<Boolean>() {
 						}.getType()));// correct or not
 
 						usersList.put(user.get(1).getAsString(), user);
 					}
+				}else{
+					responseJson.addProperty("status", FAIL);
+					responseJson.addProperty("error_msg", "Anonymous and mixed class features not yet available!!");
+					return;
 				}
 				admin.setClassSettings(classname, classid, classtype, usersList, serverstate);
 				responseJson.addProperty("status", SUCCESS);

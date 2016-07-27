@@ -56,6 +56,7 @@ public class PushQuiz extends JSONHttpServlet {
 				} else if (!admin.quizstatus) {
 					output.addProperty("statuscode", QUIZOFF);
 					LOGGER.info("Quiz hasn't started yet!!");
+					admin.setStatus(uid, "Connected");
 				} else {
 					Integer classid = input.get("classid").getAsInt();
 					if (classid != admin.classid) {

@@ -79,7 +79,7 @@
       handleResponse: function(req) {
           var ajax_response = req.detail.response;
           if(ajax_response.status == 'FAIL'){
-            this.domHost.showError(ajax_response.error_msg);
+            this.showError(ajax_response.error_msg);
             this.selectedquizid = null;
             this.selectedqindex = null;
           }else if(ajax_response.status == 'SUCCESS'){

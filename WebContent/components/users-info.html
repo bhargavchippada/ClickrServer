@@ -58,7 +58,7 @@
               <td>{{item.1}}</td>
               <td>{{item.2}}</td>
               <td><span class="color-primary">{{item.3}}</span></td>
-              <td><span class$="{{statusCSS(item)}}">{{item.4}}</span></td>
+              <td><span class$="{{statusCSS(item)}}">{{statusStr(item)}}</span></td>
               <td>{{item.5}}</td>
               <td>{{item.6}}</td>
             </tr>
@@ -125,10 +125,18 @@
               return temp =='' || !(str.indexOf(temp) > -1);
             }else return str.indexOf(val) > -1;
           }
+
+          function statusVal (statuscode,correct){
+            if(statuscode=='Completed') {
+              if(correct) return "Correct";
+              else return "Wrong";
+            }else return statuscode;
+          }
+
           var b0 = rollnumber =='' || evalMatch(a[1],rollnumber);
           var b1 = name =='' || evalMatch(a[2],name);
           var b2 = answer =='' || evalMatch(a[3],answer);
-          var b3 = status =='' || evalMatch(a[4],status);
+          var b3 = status =='' || evalMatch(statusVal(a[4],a[7]),status);
           var b4 = lastupdate =='' || evalMatch(a[5],lastupdate);
           var b5 = timetook =='' || parseInt(a[6]) >= parseInt(timetook);
 
@@ -138,16 +146,23 @@
       },
       statusCSS: function(item){
         var statuscode = item[4];
-        var correct = item[8];
+        var correct = item[7];
         if(statuscode=='Disconnected') return "label bgcolor-grey";
         else if(statuscode=='Connected') return "label bgcolor-info";
         else if(statuscode=='Attempting') return "label bgcolor-warning";
         else if(statuscode=='Completed') {
-          if(correct==null) return "label bgcolor-success";
-          else if(correct) return "label bgcolor-success";
+          if(correct) return "label bgcolor-success";
           else return "label bgcolor-danger";
         }else if(statuscode=='Stopped') return "label bgcolor-primary";
         else return "label bgcolor-danger";
+      },
+      statusStr: function(item){
+        var statuscode = item[4];
+        var correct = item[7];
+        if(statuscode=='Completed') {
+          if(correct) return "Correct";
+          else return "Wrong";
+        }else return statuscode;
       },
       getTotal: function(arr){
         this.total = arr.length;

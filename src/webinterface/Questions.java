@@ -209,7 +209,7 @@ public class Questions extends WebHttpServlet {
 		Admin admin = getAdminProfile();
 		if (!admin.serverstate) {
 			responseJson.addProperty("status", FAIL);
-			responseJson.addProperty("error_msg", "Select classroom!!");
+			responseJson.addProperty("error_msg", "Select classroom and start server!!");
 		} else {
 			try {
 				admin.feedback = Boolean.parseBoolean(request.getParameter("feedback"));
